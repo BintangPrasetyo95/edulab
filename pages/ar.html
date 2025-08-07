@@ -1,51 +1,276 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-    <title>AR.js Box with Texture</title>
-    <script src="https://cdn.jsdelivr.net/gh/aframevr/aframe@1.6.0/dist/aframe-master.min.js"></script>
-    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js"></script>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A-Frame + AR.js Demo</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aframe/1.4.0/aframe.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ar.js/2.2.2/aframe-ar.min.js"></script>
     <style>
-        .arjs-loader {
-            height: 100%;
-            width: 100%;
-            position: absolute;
-            top: 0;
-            left: 0;
-            background-color: rgba(0, 0, 0, 0.8);
-            z-index: 9999;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .arjs-loader div {
-            text-align: center;
-            font-size: 1.25em;
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #1a1a1a;
             color: white;
+        }
+        
+        .controls {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            z-index: 1000;
+            background: rgba(0,0,0,0.8);
+            padding: 15px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .controls button {
+            margin: 5px;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            background: #4CAF50;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .controls button:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+        }
+        
+        .controls button.active {
+            background: #2196F3;
+        }
+        
+        .instructions {
+            position: fixed;
+            bottom: 10px;
+            left: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.8);
+            padding: 15px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+        }
+        
+        #vr-scene {
+            display: block;
+        }
+        
+        #ar-scene {
+            display: none;
         }
     </style>
 </head>
-
-<body style="margin : 0px; overflow: hidden;">
-    <!-- minimal loader shown until image descriptors are loaded -->
-    <div class="arjs-loader">
-        <div>Loading, please wait...</div>
+<body>
+    <div class="controls">
+        <h3>A-Frame + AR.js Demo</h3>
+        <button id="vr-btn" class="active" onclick="switchToVR()">VR Mode</button>
+        <button id="ar-btn" onclick="switchToAR()">AR Mode</button>
     </div>
-    <a-scene vr-mode-ui="enabled: false;" renderer="logarithmicDepthBuffer: true; precision: medium;" embedded
-        arjs="trackingMethod: best; sourceType: webcam;debugUIEnabled: false;">
-        <!-- we use cors proxy to avoid cross-origin problems ATTENTION! you need to set up your server -->
-        <a-nft type="nft"
-            url="your-server/https://raw.githack.com/AR-js-org/AR.js/master/aframe/examples/image-tracking/nft/trex/trex-image/trex"
-            smooth="true" smoothCount="10" smoothTolerance=".01" smoothThreshold="5">
-            <a-entity
-                gltf-model="your-server/https://raw.githack.com/AR-js-org/AR.js/master/aframe/examples/image-tracking/nft/trex/scene.gltf"
-                scale="5 5 5" position="150 300 -100">
-            </a-entity>
-        </a-nft>
-        <a-entity camera></a-entity>
-    </a-scene>
-</body>
+    
+    <div class="instructions">
+        <div id="vr-instructions">
+            <strong>VR Mode:</strong> Use mouse to look around. Click and drag to rotate. WASD keys to move.
+        </div>
+        <div id="ar-instructions" style="display: none;">
+            <strong>AR Mode:</strong> Allow camera permissions when prompted. Print the <a href="https://github.com/AR-js-org/AR.js/blob/master/data/images/hiro.png" target="_blank" style="color: #4CAF50;">Hiro marker</a> or display it on another screen, then point your camera at it.
+        </div>
+    </div>
 
+    <!-- VR Scene -->
+    <a-scene 
+        id="vr-scene"
+        background="color: #001122"
+        vr-mode-ui="enabled: true">
+        
+        <!-- Assets -->
+        <a-assets>
+            <a-mixin id="cube-mixin" 
+                     geometry="primitive: box" 
+                     material="roughness: 0.3; metalness: 0.2">
+            </a-mixin>
+        </a-assets>
+
+        <!-- Lighting -->
+        <a-light type="ambient" color="#404040" intensity="0.4"></a-light>
+        <a-light type="directional" position="2 4 5" color="#ffffff" intensity="0.8"></a-light>
+
+        <!-- Animated Cubes -->
+        <a-box mixin="cube-mixin"
+               position="-2 1 -3"
+               color="#FF6B6B"
+               animation="property: rotation; to: 360 360 0; loop: true; dur: 8000">
+        </a-box>
+        
+        <a-box mixin="cube-mixin"
+               position="0 1.5 -3"
+               color="#4ECDC4"
+               animation="property: position; to: 0 2.5 -3; dir: alternate; loop: true; dur: 2000">
+        </a-box>
+        
+        <a-box mixin="cube-mixin"
+               position="2 1 -3"
+               color="#45B7D1"
+               animation="property: scale; to: 1.5 1.5 1.5; dir: alternate; loop: true; dur: 3000">
+        </a-box>
+
+        <!-- Floating Spheres -->
+        <a-sphere position="-1 3 -2" 
+                  color="#FFD93D" 
+                  radius="0.3"
+                  animation="property: rotation; to: 0 360 0; loop: true; dur: 5000">
+        </a-sphere>
+        
+        <a-sphere position="1 3 -2" 
+                  color="#6BCF7F" 
+                  radius="0.3"
+                  animation="property: rotation; to: 0 -360 0; loop: true; dur: 5000">
+        </a-sphere>
+
+        <!-- Ground -->
+        <a-plane position="0 0 -4" 
+                 rotation="-90 0 0" 
+                 width="10" 
+                 height="10" 
+                 color="#2C3E50"
+                 material="roughness: 0.8">
+        </a-plane>
+
+        <!-- Text -->
+        <a-text value="Welcome to A-Frame VR!" 
+                position="0 3.5 -3" 
+                align="center" 
+                color="#FFFFFF"
+                animation="property: color; to: #FF6B6B; dir: alternate; loop: true; dur: 2000">
+        </a-text>
+
+        <!-- Camera with controls -->
+        <a-camera wasd-controls look-controls position="0 1.6 0">
+            <a-cursor color="#FF6B6B"></a-cursor>
+        </a-camera>
+    </a-scene>
+
+    <!-- AR Scene -->
+    <a-scene 
+        id="ar-scene"
+        arjs="sourceType: webcam; sourceWidth:1280; sourceHeight:960; displayWidth: 1280; displayHeight: 960; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3;"
+        renderer="logarithmicDepthBuffer: true; antialias: true; alpha: true;"
+        vr-mode-ui="enabled: false"
+        gesture-detector>
+        
+        <!-- AR Marker -->
+        <a-marker 
+            preset="hiro" 
+            raycaster="objects: .clickable"
+            emitevents="true"
+            cursor="fuse: false; rayOrigin: mouse;"
+            smooth="true" 
+            smoothCount="10" 
+            smoothTolerance="0.01" 
+            smoothThreshold="5">
+            
+            <!-- 3D Content that appears on marker -->
+            <a-box position="0 0.5 0" 
+                   material="color: #FF6B6B; metalness: 0.2; roughness: 0.8;"
+                   class="clickable"
+                   animation="property: rotation; to: 360 360 0; loop: true; dur: 6000"
+                   gesture-handler>
+            </a-box>
+            
+            <a-sphere position="1 0.5 0" 
+                      material="color: #4ECDC4; metalness: 0.2; roughness: 0.8;"
+                      radius="0.3"
+                      class="clickable"
+                      animation="property: position; to: 1 1.5 0; dir: alternate; loop: true; dur: 2000"
+                      gesture-handler>
+            </a-sphere>
+            
+            <a-cylinder position="-1 0.5 0" 
+                        material="color: #45B7D1; metalness: 0.2; roughness: 0.8;"
+                        class="clickable"
+                        animation="property: scale; to: 1.2 2 1.2; dir: alternate; loop: true; dur: 3000"
+                        gesture-handler>
+            </a-cylinder>
+            
+            <a-text value="AR Works!" 
+                    position="0 1.5 0" 
+                    align="center" 
+                    color="#FFFFFF"
+                    scale="1 1 1">
+            </a-text>
+
+            <!-- Add a ground reference -->
+            <a-plane position="0 0 0" 
+                     rotation="-90 0 0" 
+                     width="4" 
+                     height="4" 
+                     color="#2C3E50"
+                     material="opacity: 0.7; transparent: true;">
+            </a-plane>
+        </a-marker>
+
+        <!-- AR Camera -->
+        <a-entity camera look-controls="enabled: false" arjs-look-controls="smoothingFactor: 0.1"></a-entity>
+    </a-scene>
+
+    <script>
+        function switchToVR() {
+            document.getElementById('vr-scene').style.display = 'block';
+            document.getElementById('ar-scene').style.display = 'none';
+            document.getElementById('vr-instructions').style.display = 'block';
+            document.getElementById('ar-instructions').style.display = 'none';
+            document.getElementById('vr-btn').classList.add('active');
+            document.getElementById('ar-btn').classList.remove('active');
+        }
+
+        function switchToAR() {
+            document.getElementById('vr-scene').style.display = 'none';
+            document.getElementById('ar-scene').style.display = 'block';
+            document.getElementById('vr-instructions').style.display = 'none';
+            document.getElementById('ar-instructions').style.display = 'block';
+            document.getElementById('vr-btn').classList.remove('active');
+            document.getElementById('ar-btn').classList.add('active');
+
+            // Check for camera permissions and provide feedback
+            setTimeout(() => {
+                if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                    navigator.mediaDevices.getUserMedia({ video: true })
+                        .then(function(stream) {
+                            console.log('Camera access granted');
+                            // Stop the stream immediately as AR.js will handle it
+                            stream.getTracks().forEach(track => track.stop());
+                        })
+                        .catch(function(err) {
+                            console.error('Camera access denied or error:', err);
+                            alert('Camera access is required for AR mode. Please allow camera permissions and reload the page. Note: This must be served over HTTPS.');
+                        });
+                } else {
+                    alert('Your browser does not support camera access. Please use a modern browser.');
+                }
+            }, 100);
+        }
+
+        // Add some interactive behavior
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add click events to VR objects
+            const boxes = document.querySelectorAll('a-box');
+            boxes.forEach(box => {
+                box.addEventListener('click', function() {
+                    // Change color on click
+                    const colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#FFD93D', '#6BCF7F'];
+                    const randomColor = colors[Math.floor(Math.random() * colors.length)];
+                    this.setAttribute('color', randomColor);
+                });
+            });
+
+            console.log('A-Frame + AR.js Demo loaded successfully!');
+            console.log('Switch between VR and AR modes using the buttons.');
+        });
+    </script>
+</body>
 </html>
