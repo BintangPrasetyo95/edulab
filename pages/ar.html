@@ -15,13 +15,7 @@
         Loading AR...
     </div>
 
-    <a-scene embedded arjs="sourceType: webcam; 
-              sourceWidth:1280; sourceHeight:960; 
-              displayWidth: 1280; displayHeight: 960;
-              debugUIEnabled: false;
-              detectionMode: mono_and_matrix;
-              matrixCodeType: 3x3;" renderer="logarithmicDepthBuffer: true; antialias: true; alpha: true;"
-        vr-mode-ui="enabled: false">
+    <a-scene embedded arjs vr-mode-ui="enabled: false">
 
         <!-- Assets -->
         <a-assets>
