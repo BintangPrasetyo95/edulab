@@ -3,22 +3,114 @@
 
 <head>
     <title>AR.js Box with Texture</title>
-    <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
-    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@3.4.5/aframe/build/aframe-ar.min.js"></script>
 </head>
 
 <body style="margin: 0; overflow: hidden;">
-    <a-scene embedded arjs>
+    <!-- Status indicator -->
+    <div id="status"
+        style="position: fixed; top: 10px; left: 10px; background: rgba(0,0,0,0.7); color: white; padding: 10px; border-radius: 5px; z-index: 999; font-family: Arial;">
+        Loading AR...
+    </div>
+
+    <a-scene embedded arjs="sourceType: webcam; 
+              sourceWidth:1280; sourceHeight:960; 
+              displayWidth: 1280; displayHeight: 960;
+              debugUIEnabled: false;
+              detectionMode: mono_and_matrix;
+              matrixCodeType: 3x3;" renderer="logarithmicDepthBuffer: true; antialias: true; alpha: true;"
+        vr-mode-ui="enabled: false">
+
+        <!-- Assets -->
+        <a-assets>
+            <!-- Using a sample texture from the web since your local path won't work -->
+            <img id="boxTexture" src="https://cdn.aframe.io/a-painter/images/floor.jpg" crossorigin="anonymous">
+        </a-assets>
+
         <!-- Marker -->
-        <a-marker preset="hiro">
-            <!-- Box with texture -->
-            <a-box position="0 0.5 0" radius="0.5" src="../assets/images/ingpo-min.jpeg"
-                material="shader: standard;"></a-box>
+        <a-marker preset="hiro" smooth="true" smoothCount="10" smoothTolerance=".01" smoothThreshold="5"
+            raycaster="objects: .raycastable" emitevents="true" cursor="fuse: false; rayOrigin: mouse;">
+
+            <!-- Box with texture (fixed attributes) -->
+            <a-box position="0 0.5 0" width="1" height="1" depth="1"
+                material="src: #boxTexture; shader: standard; roughness: 0.5; metalness: 0.1;"
+                animation="property: rotation; to: 0 360 0; loop: true; dur: 10000" class="raycastable">
+            </a-box>
+
+            <!-- Add some extra visual elements -->
+            <a-sphere position="1.5 0.5 0" radius="0.3" color="#FF6B6B"
+                animation="property: position; to: 1.5 1.5 0; dir: alternate; loop: true; dur: 2000">
+            </a-sphere>
+
+            <a-text value="AR Box Demo" position="0 1.5 0" align="center" color="white" scale="0.8 0.8 0.8">
+            </a-text>
+
+            <!-- Reference plane -->
+            <a-plane position="0 0 0" rotation="-90 0 0" width="3" height="3" color="#333333"
+                material="opacity: 0.5; transparent: true;">
+            </a-plane>
         </a-marker>
 
-        <!-- AR.js camera -->
-        <a-entity camera></a-entity>
+        <!-- AR.js camera with mobile-optimized settings -->
+        <a-entity camera look-controls="enabled: false" arjs-look-controls="smoothingFactor: 0.1"
+            arjs-device-orientation-controls="smoothingFactor: 0.1">
+        </a-entity>
     </a-scene>
+
+    <script>
+        // Status updates
+        const status = document.getElementById('status');
+
+        // Check if we're on mobile
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+        if (isMobile) {
+            status.innerHTML = 'Mobile detected. Loading camera...';
+        }
+
+        // AR.js events
+        document.addEventListener('DOMContentLoaded', function () {
+            const scene = document.querySelector('a-scene');
+            const marker = document.querySelector('a-marker');
+
+            // When AR is ready
+            scene.addEventListener('arjs-video-loaded', function () {
+                status.innerHTML = 'Camera loaded. Point at Hiro marker!';
+                console.log('AR camera loaded successfully');
+            });
+
+            // When marker is found
+            marker.addEventListener('markerFound', function () {
+                status.innerHTML = 'Marker found! 📱';
+                status.style.background = 'rgba(0,150,0,0.7)';
+            });
+
+            // When marker is lost
+            marker.addEventListener('markerLost', function () {
+                status.innerHTML = 'Marker lost. Keep marker in view.';
+                status.style.background = 'rgba(150,0,0,0.7)';
+            });
+
+            // Hide status after 5 seconds if marker found
+            setTimeout(() => {
+                if (status.innerHTML.includes('Marker found')) {
+                    status.style.display = 'none';
+                }
+            }, 5000);
+        });
+
+        // Handle camera errors
+        window.addEventListener('arjs-video-loaded', function () {
+            console.log('AR.js video loaded');
+        });
+
+        window.addEventListener('camera-error', function (event) {
+            status.innerHTML = 'Camera error. Please allow camera access.';
+            console.error('Camera error:', event);
+        });
+    </script>
 </body>
 
 </html>
