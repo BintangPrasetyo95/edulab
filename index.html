@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Siswa - Lab Virtual</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Roboto', Arial, sans-serif; background: #f0f4f8; min-height: 100vh; display: flex; flex-direction: column; }
+    header { background: #2196f3; color: white; padding: 1rem; position: sticky; top: 0; display: flex; justify-content: space-between; align-items: center; }
+    header h1 { font-size: 1.5rem; }
+    .profile { display: flex; align-items: center; gap: 0.5rem; }
+    .profile img { width: 2rem; height: 2rem; border-radius: 50%; }
+    main { flex: 1; max-width: 1000px; margin: 2rem auto; padding: 0 1rem; }
+    .topic-card { background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); padding: 1rem; margin-bottom: 1.5rem; }
+    .topic-card img { width: 100%; max-width: 300px; border-radius: 4px; }
+    .topic-card button { background: #4caf50; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 4px; cursor: pointer; transition: transform 0.2s; }
+    .topic-card button:hover { transform: scale(1.05); }
+    .progress { text-align: center; margin-bottom: 1.5rem; }
+    .progress-circle { width: 6rem; height: 6rem; border-radius: 50%; background: conic-gradient(#4caf50 75%, #ccc 25%); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.2rem; margin: 0 auto; }
+    .notifications { background: white; border-radius: 8px; padding: 1rem; margin-bottom: 1.5rem; }
+    .notifications p { display: flex; align-items: center; gap: 0.5rem; margin: 0.5rem 0; }
+    .notifications p::before { content: '🔔'; }
+    .quick-buttons { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; }
+    .quick-buttons button { background: #2196f3; color: white; border: none; padding: 1rem; border-radius: 4px; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; transition: transform 0.2s; }
+    .quick-buttons button:hover { transform: scale(1.05); }
+    footer { text-align: center; padding: 1rem; background: #2196f3; color: white; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Lab Virtual</h1>
+    <div class="profile">
+      <img src="https://via.placeholder.com/32?text=B" alt="Profil">
+      <span>Budi (10A)</span>
+    </div>
+  </header>
+  <main>
+    <section class="topic-card">
+      <h2>Topik Minggu Ini: Asam Basa</h2>
+      <img src="https://via.placeholder.com/300x100?text=Asam+Basa" alt="Asam Basa">
+      <p>Belajar tentang pH dan reaksi kimia!</p>
+      <button onclick="alert('Memulai topik Asam Basa!')">Mulai</button>
+    </section>
+    <section class="progress">
+      <h2>Progress Belajar</h2>
+      <div class="progress-circle">75%</div>
+    </section>
+    <section class="notifications">
+      <h2>Notifikasi</h2>
+      <p>Quiz Asam Basa besok jam 08.00!</p>
+      <p>Tugas kelompok harus selesai minggu ini.</p>
+    </section>
+    <section class="quick-buttons">
+      <button onclick="alert('Menuju Pre-Lab!')"><span>📚</span> Pre-Lab</button>
+      <button onclick="alert('Menuju Praktikum!')"><span>🧪</span> Praktikum</button>
+      <button onclick="alert('Menuju Tugas Kelompok!')"><span>🤝</span> Tugas Kelompok</button>
+    </section>
+  </main>
+  <footer>
+    <p>&copy; 2025 Lab Virtual</p>
+  </footer>
+  <script>
+    // Simulasi data notifikasi (ganti backend di masa depan)
+    const notifications = [
+      'Quiz Asam Basa besok jam 08.00!',
+      'Tugas kelompok harus selesai minggu ini.'
+    ];
+    document.querySelector('.notifications').innerHTML = '<h2>Notifikasi</h2>' + notifications.map(n => `<p>${n}</p>`).join('');
+  </script>
+</body>
+</html>
