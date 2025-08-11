@@ -1,73 +1,355 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard Siswa - Lab Virtual</title>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Roboto', Arial, sans-serif; background: #f0f4f8; min-height: 100vh; display: flex; flex-direction: column; }
-    header { background: #2196f3; color: white; padding: 1rem; position: sticky; top: 0; display: flex; justify-content: space-between; align-items: center; }
-    header h1 { font-size: 1.5rem; }
-    .profile { display: flex; align-items: center; gap: 0.5rem; }
-    .profile img { width: 2rem; height: 2rem; border-radius: 50%; }
-    main { flex: 1; max-width: 1000px; margin: 2rem auto; padding: 0 1rem; }
-    .topic-card { background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); padding: 1rem; margin-bottom: 1.5rem; }
-    .topic-card img { width: 100%; max-width: 300px; border-radius: 4px; }
-    .topic-card button { background: #4caf50; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 4px; cursor: pointer; transition: transform 0.2s; }
-    .topic-card button:hover { transform: scale(1.05); }
-    .progress { text-align: center; margin-bottom: 1.5rem; }
-    .progress-circle { width: 6rem; height: 6rem; border-radius: 50%; background: conic-gradient(#4caf50 75%, #ccc 25%); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.2rem; margin: 0 auto; }
-    .notifications { background: white; border-radius: 8px; padding: 1rem; margin-bottom: 1.5rem; }
-    .notifications p { display: flex; align-items: center; gap: 0.5rem; margin: 0.5rem 0; }
-    .notifications p::before { content: '🔔'; }
-    .quick-buttons { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; }
-    .quick-buttons button { background: #2196f3; color: white; border: none; padding: 1rem; border-radius: 4px; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; transition: transform 0.2s; }
-    .quick-buttons button:hover { transform: scale(1.05); }
-    footer { text-align: center; padding: 1rem; background: #2196f3; color: white; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Siswa - Lab Virtual</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: #f0f4f8;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Background lingkaran blur di belakang */
+        .bg-circle {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(50px);
+            opacity: 0.3;
+            z-index: -1;
+        }
+
+        .circle1 {
+            width: 300px;
+            height: 300px;
+            background: #1565c0;
+            top: 10%;
+            left: 5%;
+        }
+
+        .circle2 {
+            width: 200px;
+            height: 200px;
+            background: #2e7d32;
+            bottom: 20%;
+            right: 10%;
+        }
+
+        header {
+            background: #1565c0;
+            color: white;
+            padding: 1rem;
+            position: sticky;
+            top: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+        }
+
+        header h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .profile {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .profile img {
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+        }
+
+        aside {
+            width: 200px;
+            background: white;
+            padding: 1rem;
+            position: fixed;
+            top: 4rem;
+            bottom: 0;
+            box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
+            z-index: 5;
+        }
+
+        aside h2 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        aside select {
+            width: 100%;
+            padding: 0.5rem;
+            border-radius: 4px;
+            font-family: 'Montserrat', sans-serif;
+            margin-bottom: 0.5rem;
+        }
+
+        main {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            padding: 2rem 220px 2rem 220px;
+        }
+
+        .main-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            width: 100%;
+            padding: 1.5rem;
+            z-index: 1;
+        }
+
+        .topic-card {
+            background: #f9f9f9;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .topic-card img {
+            width: 100%;
+            max-width: 300px;
+            border-radius: 4px;
+        }
+
+        .topic-card button {
+            background: #1565c0;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            transition: transform 0.2s;
+        }
+
+        .topic-card button:hover {
+            transform: scale(1.05);
+        }
+
+        .progress {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .progress-circle {
+            width: 6rem;
+            height: 6rem;
+            border-radius: 50%;
+            background: conic-gradient(#2e7d32 75%, #ccc 25%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin: 0 auto;
+        }
+
+        .notifications {
+            background: #f9f9f9;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .notifications p {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 0.5rem 0;
+            font-size: 0.9rem;
+        }
+
+        .notifications p::before {
+            content: '🔔';
+        }
+
+        .quick-buttons {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .quick-buttons button {
+            background: #1565c0;
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            transition: transform 0.2s;
+        }
+
+        .quick-buttons button:hover {
+            transform: scale(1.05);
+        }
+
+        footer {
+            text-align: center;
+            padding: 1rem;
+            background: #1565c0;
+            color: white;
+            font-size: 0.9rem;
+            z-index: 1;
+        }
+    </style>
 </head>
+
 <body>
-  <header>
-    <h1>Lab Virtual</h1>
-    <div class="profile">
-      <img src="https://via.placeholder.com/32?text=B" alt="Profil">
-      <span>Budi (10A)</span>
-    </div>
-  </header>
-  <main>
-    <section class="topic-card">
-      <h2>Topik Minggu Ini: Asam Basa</h2>
-      <img src="https://via.placeholder.com/300x100?text=Asam+Basa" alt="Asam Basa">
-      <p>Belajar tentang pH dan reaksi kimia!</p>
-      <button onclick="alert('Memulai topik Asam Basa!')">Mulai</button>
-    </section>
-    <section class="progress">
-      <h2>Progress Belajar</h2>
-      <div class="progress-circle">75%</div>
-    </section>
-    <section class="notifications">
-      <h2>Notifikasi</h2>
-      <p>Quiz Asam Basa besok jam 08.00!</p>
-      <p>Tugas kelompok harus selesai minggu ini.</p>
-    </section>
-    <section class="quick-buttons">
-      <button onclick="alert('Menuju Pre-Lab!')"><span>📚</span> Pre-Lab</button>
-      <button onclick="alert('Menuju Praktikum!')"><span>🧪</span> Praktikum</button>
-      <button onclick="alert('Menuju Tugas Kelompok!')"><span>🤝</span> Tugas Kelompok</button>
-    </section>
-  </main>
-  <footer>
-    <p>&copy; 2025 Lab Virtual</p>
-  </footer>
-  <script>
-    // Simulasi data notifikasi (ganti backend di masa depan)
-    const notifications = [
-      'Quiz Asam Basa besok jam 08.00!',
-      'Tugas kelompok harus selesai minggu ini.'
-    ];
-    document.querySelector('.notifications').innerHTML = '<h2>Notifikasi</h2>' + notifications.map(n => `<p>${n}</p>`).join('');
-  </script>
+    <div class="bg-circle circle1"></div>
+    <div class="bg-circle circle2"></div>
+
+    <header>
+        <h1>Lab Virtual</h1>
+        <div class="profile">
+            <img src="https://via.placeholder.com/32?text=B" alt="Profil">
+            <span>Budi (10A)</span>
+        </div>
+    </header>
+
+    <aside>
+        <h2>Pilih Topik</h2>
+        <select id="tingkat-kelas" onchange="updateMataPelajaran()">
+            <option value="10">Kelas 10</option>
+            <option value="11">Kelas 11</option>
+            <option value="12">Kelas 12</option>
+        </select>
+        <select id="mata-pelajaran" onchange="updateTopik()">
+            <option value="kimia">Kimia</option>
+            <option value="fisika">Fisika</option>
+        </select>
+        <select id="topik" onchange="changeTopic(this.value)">
+            <option value="asam-basa">Asam Basa</option>
+            <option value="redoks">Redoks</option>
+        </select>
+    </aside>
+
+    <main>
+        <div class="main-card">
+            <section class="topic-card">
+                <h2 id="topic-title">Topik: Asam Basa</h2>
+                <img id="topic-image" src="https://via.placeholder.com/300x100?text=Asam+Basa" alt="Asam Basa">
+                <p id="topic-desc">Belajar tentang pH dan reaksi kimia!</p>
+                <button onclick="alert('Memulai topik Asam Basa!')">Mulai</button>
+            </section>
+            <section class="progress">
+                <h2>Progress Belajar</h2>
+                <div class="progress-circle">75%</div>
+            </section>
+            <section class="notifications">
+                <h2>Notifikasi</h2>
+                <p>Quiz Asam Basa besok jam 08.00!</p>
+                <p>Tugas kelompok harus selesai minggu ini.</p>
+            </section>
+            <section class="quick-buttons">
+                <button onclick="alert('Menuju Pre-Lab!')"><span>📚</span> Pre-Lab</button>
+                <button onclick="alert('Menuju Quiz!')"><span>❓</span> Quiz</button>
+                <button onclick="alert('Menuju Praktikum!')"><span>🧪</span> Praktikum</button>
+                <button onclick="alert('Menuju Tugas Kelompok!')"><span>🤝</span> Tugas Kelompok</button>
+            </section>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Lab Virtual</p>
+    </footer>
+
+    <script>
+        // Simulasi data hierarki: Tingkat Kelas > Mata Pelajaran > Topik
+        const data = {
+            '10': {
+                'kimia': [
+                    { id: 'asam-basa', title: 'Asam Basa', image: 'https://via.placeholder.com/300x100?text=Asam+Basa', desc: 'Belajar tentang pH dan reaksi kimia!' },
+                    { id: 'redoks', title: 'Redoks', image: 'https://via.placeholder.com/300x100?text=Redoks', desc: 'Pelajari reaksi reduksi-oksidasi!' }
+                ],
+                'fisika': [
+                    { id: 'gerak', title: 'Gerak Lurus', image: 'https://via.placeholder.com/300x100?text=Gerak+Lurus', desc: 'Pelajari hukum Newton!' }
+                ]
+            },
+            '11': {
+                'kimia': [
+                    { id: 'stoikiometri', title: 'Stoikiometri', image: 'https://via.placeholder.com/300x100?text=Stoikiometri', desc: 'Kalkulasi jumlah zat!' }
+                ],
+                'fisika': [
+                    { id: 'energi', title: 'Energi', image: 'https://via.placeholder.com/300x100?text=Energi', desc: 'Pelajari energi kinetik!' }
+                ]
+            },
+            '12': {
+                'kimia': [
+                    { id: 'polimer', title: 'Polimer', image: 'https://via.placeholder.com/300x100?text=Polimer', desc: 'Pelajari bahan polimer!' }
+                ],
+                'fisika': [
+                    { id: 'listrik', title: 'Listrik', image: 'https://via.placeholder.com/300x100?text=Listrik', desc: 'Pelajari rangkaian listrik!' }
+                ]
+            }
+        };
+
+        // Simulasi notifikasi
+        const notifications = [
+            'Quiz Asam Basa besok jam 08.00!',
+            'Tugas kelompok harus selesai minggu ini.'
+        ];
+
+        // Update opsi Mata Pelajaran berdasarkan Tingkat Kelas
+        function updateMataPelajaran() {
+            const kelas = document.getElementById('tingkat-kelas').value;
+            const mataPelajaranSelect = document.getElementById('mata-pelajaran');
+            mataPelajaranSelect.innerHTML = Object.keys(data[kelas]).map(mp => `<option value="${mp}">${mp.charAt(0).toUpperCase() + mp.slice(1)}</option>`).join('');
+            updateTopik();
+        }
+
+        // Update opsi Topik berdasarkan Mata Pelajaran
+        function updateTopik() {
+            const kelas = document.getElementById('tingkat-kelas').value;
+            const mataPelajaran = document.getElementById('mata-pelajaran').value;
+            const topikSelect = document.getElementById('topik');
+            topikSelect.innerHTML = data[kelas][mataPelajaran].map(t => `<option value="${t.id}">${t.title}</option>`).join('');
+            changeTopic(topikSelect.value);
+        }
+
+        // Update konten topik
+        function changeTopic(topikId) {
+            const kelas = document.getElementById('tingkat-kelas').value;
+            const mataPelajaran = document.getElementById('mata-pelajaran').value;
+            const topik = data[kelas][mataPelajaran].find(t => t.id === topikId);
+            document.getElementById('topic-title').textContent = `Topik: ${topik.title}`;
+            document.getElementById('topic-image').src = topik.image;
+            document.getElementById('topic-desc').textContent = topik.desc;
+        }
+
+        // Render notifikasi
+        document.querySelector('.notifications').innerHTML = '<h2>Notifikasi</h2>' + notifications.map(n => `<p>${n}</p>`).join('');
+
+        // Inisialisasi dropdown
+        updateMataPelajaran();
+    </script>
 </body>
+
 </html>
