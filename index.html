@@ -210,19 +210,38 @@
         }
 
         aside .level {
-            margin-bottom: 0.5rem;
             font-weight: 700;
             padding: 0.5rem;
             border-radius: 4px;
             transition: background 0.2s;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         aside .level:hover {
             background: #f0f4f8;
         }
 
+        aside .level .arrow {
+            transition: transform 0.3s;
+            font-size: 0.9rem;
+        }
+
+        aside .level.open .arrow {
+            transform: rotate(90deg);
+        }
+
         aside .sub-level {
             padding-left: 1rem;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        aside .sub-level.show {
+            max-height: 500px;
         }
 
         aside .mata-pelajaran {
@@ -230,14 +249,34 @@
             padding: 0.5rem;
             border-radius: 4px;
             transition: background 0.2s;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         aside .mata-pelajaran:hover {
             background: #f0f4f8;
         }
 
+        aside .mata-pelajaran .arrow {
+            transition: transform 0.3s;
+            font-size: 0.9rem;
+        }
+
+        aside .mata-pelajaran.open .arrow {
+            transform: rotate(90deg);
+        }
+
         aside .topics {
             padding-left: 2rem;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        aside .topics.show {
+            max-height: 300px;
         }
 
         aside .topic {
@@ -275,28 +314,25 @@
             border-radius: 8px;
             padding: 1rem;
             margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .topic-card h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
         }
 
         .topic-card img {
             width: 100%;
             max-width: 300px;
             border-radius: 4px;
+            margin-bottom: 1rem;
         }
 
-        .topic-card button {
-            background: #1565c0;
-            color: white;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 4px;
-            cursor: pointer;
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 700;
-            transition: transform 0.2s;
-        }
-
-        .topic-card button:hover {
-            transform: scale(1.05);
+        .topic-card p {
+            font-size: 0.9rem;
+            line-height: 1.5;
         }
 
         .progress {
@@ -325,7 +361,6 @@
         }
 
         .quick-buttons button {
-            background: #1565c0;
             color: white;
             border: none;
             padding: 1rem;
@@ -337,10 +372,37 @@
             font-family: 'Montserrat', sans-serif;
             font-weight: 700;
             transition: transform 0.2s;
+            position: relative;
         }
 
         .quick-buttons button:hover {
             transform: scale(1.05);
+        }
+
+        .quick-buttons button .progress-text {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 0.8rem;
+        }
+
+        /* Progress bar styles for buttons */
+        .pre-lab {
+            background: linear-gradient(to right, #1565c0 70%, #ccc 70%);
+        }
+
+        .quiz {
+            background: linear-gradient(to right, #1565c0 50%, #ccc 50%);
+        }
+
+        .praktikum {
+            background: linear-gradient(to right, #1565c0 80%, #ccc 80%);
+        }
+
+        .tugas-kelompok {
+            background: linear-gradient(to right, #1565c0 30%, #ccc 30%);
         }
 
         footer {
@@ -391,42 +453,36 @@
             <h2>EduLab</h2>
         </div>
         <hr>
-        <div class="level">
-            Kelas 10
-        </div>
+        <div class="level" onclick="toggleSubLevel(this)"><span class="arrow">▶</span> Kelas 10</div>
         <div class="sub-level">
-            <div class="mata-pelajaran">Kimia</div>
+            <div class="mata-pelajaran" onclick="toggleTopic(this)"><span class="arrow">▶</span> Kimia</div>
             <div class="topics">
                 <div class="topic" onclick="changeTopic('asam-basa')">Asam Basa</div>
                 <div class="topic" onclick="changeTopic('redoks')">Redoks</div>
             </div>
-            <div class="mata-pelajaran">Fisika</div>
+            <div class="mata-pelajaran" onclick="toggleTopic(this)"><span class="arrow">▶</span> Fisika</div>
             <div class="topics">
                 <div class="topic" onclick="changeTopic('gerak')">Gerak Lurus</div>
             </div>
         </div>
-        <div class="level">
-            Kelas 11
-        </div>
+        <div class="level" onclick="toggleSubLevel(this)"><span class="arrow">▶</span> Kelas 11</div>
         <div class="sub-level">
-            <div class="mata-pelajaran">Kimia</div>
+            <div class="mata-pelajaran" onclick="toggleTopic(this)"><span class="arrow">▶</span> Kimia</div>
             <div class="topics">
                 <div class="topic" onclick="changeTopic('stoikiometri')">Stoikiometri</div>
             </div>
-            <div class="mata-pelajaran">Fisika</div>
+            <div class="mata-pelajaran" onclick="toggleTopic(this)"><span class="arrow">▶</span> Fisika</div>
             <div class="topics">
                 <div class="topic" onclick="changeTopic('energi')">Energi</div>
             </div>
         </div>
-        <div class="level">
-            Kelas 12
-        </div>
+        <div class="level" onclick="toggleSubLevel(this)"><span class="arrow">▶</span> Kelas 12</div>
         <div class="sub-level">
-            <div class="mata-pelajaran">Kimia</div>
+            <div class="mata-pelajaran" onclick="toggleTopic(this)"><span class="arrow">▶</span> Kimia</div>
             <div class="topics">
                 <div class="topic" onclick="changeTopic('polimer')">Polimer</div>
             </div>
-            <div class="mata-pelajaran">Fisika</div>
+            <div class="mata-pelajaran" onclick="toggleTopic(this)"><span class="arrow">▶</span> Fisika</div>
             <div class="topics">
                 <div class="topic" onclick="changeTopic('listrik')">Listrik</div>
             </div>
@@ -441,17 +497,17 @@
                 <p id="topic-desc">Belajar tentang pH dan reaksi kimia! Ini adalah topik dasar dalam kimia yang mencakup
                     konsep asam, basa, indikator, dan reaksi netralisasi. Siswa akan mempelajari skala pH, sifat
                     larutan, dan aplikasi dalam kehidupan sehari-hari seperti pengaturan pH tanah atau obat-obatan.</p>
-                <button onclick="alert('Memulai topik Asam Basa!')">Mulai</button>
             </section>
             <section class="progress">
                 <h2>Progress Belajar</h2>
                 <div class="progress-circle">75%</div>
             </section>
             <section class="quick-buttons">
-                <button onclick="alert('Menuju Pre-Lab!')"><span>📚</span> Pre-Lab</button>
-                <button onclick="alert('Menuju Quiz!')"><span>❓</span> Quiz</button>
-                <button onclick="alert('Menuju Praktikum!')"><span>🧪</span> Praktikum</button>
-                <button onclick="alert('Menuju Tugas Kelompok!')"><span>🤝</span> Tugas Kelompok</button>
+                <button class="pre-lab" onclick="alert('Menuju Pre-Lab!')"><span>📚</span> Pre-Lab</button>
+                <button class="quiz" onclick="alert('Menuju Quiz!')"><span>❓</span> Quiz</button>
+                <button class="praktikum" onclick="alert('Menuju Praktikum!')"><span>🧪</span> Praktikum</button>
+                <button class="tugas-kelompok" onclick="alert('Menuju Tugas Kelompok!')"><span>🤝</span> Tugas
+                    Kelompok</button>
             </section>
         </div>
     </main>
@@ -469,7 +525,7 @@
                     { id: 'redoks', title: 'Redoks', image: 'https://placehold.co/300x100?text=Redoks', desc: 'Pelajari reaksi reduksi-oksidasi! Topik ini menjelaskan transfer elektron, bilangan oksidasi, dan reaksi redoks dalam sel volta, korosi, dan proses biologis seperti respirasi.' }
                 ],
                 'fisika': [
-                    { id: 'gerak', title: 'Gerak Lurus', image: 'https://placehold.co/300x100?text=Gerak+Lurus', desc: 'Pelajari hukum Newton! Topik ini mencakup gerak lurus beraturan, berubah beraturan, gaya, massa, dan aplikasi seperti perhitungan kecepatan kendaraan atau gerak proyektil.' }
+                    { id: 'gerak', title: 'Gerak Lurus', image: 'https://placehold.co/300x100?text=Gerak+Lurus', desc: 'Pelajari hukum Newton! Topik ini mencakup gerak lurus beraturan, berubah beraturan, gaya, massa, dan aplikasi seperti perhitungan jumlah kecepatan kendaraan atau gerak proyektil.' }
                 ]
             },
             '11': {
@@ -496,10 +552,18 @@
             'Tugas kelompok harus selesai minggu ini.'
         ];
 
-        // Toggle notification dropdown
-        function toggleNotification() {
-            const dropdown = document.getElementById('notification-dropdown');
-            dropdown.classList.toggle('show');
+        // Toggle sub-level (Kelas)
+        function toggleSubLevel(element) {
+            element.classList.toggle('open');
+            const subLevel = element.nextElementSibling;
+            subLevel.classList.toggle('show');
+        }
+
+        // Toggle topics (Mata Pelajaran)
+        function toggleTopic(element) {
+            element.classList.toggle('open');
+            const topics = element.nextElementSibling;
+            topics.classList.toggle('show');
         }
 
         // Update konten topik
@@ -517,6 +581,11 @@
                 document.getElementById('topic-image').src = topik.image;
                 document.getElementById('topic-desc').textContent = topik.desc;
             }
+        }
+
+        // Toggle notification dropdown
+        function toggleNotification() {
+            document.getElementById('notification-dropdown').classList.toggle('show');
         }
 
         // Render notifikasi di dropdown
