@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Siswa - Lab Virtual</title>
+    <title>Dashboard Siswa - EduLab</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
     <style>
         * {
@@ -60,6 +60,17 @@
             z-index: 10;
         }
 
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .header-left img {
+            width: 2rem;
+            height: 2rem;
+        }
+
         header h1 {
             font-size: 1.5rem;
             font-weight: 700;
@@ -83,6 +94,67 @@
             background: rgba(255, 255, 255, 0.2);
         }
 
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .notification {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .notification-icon {
+            font-size: 1.5rem;
+            transition: transform 0.2s;
+        }
+
+        .notification-icon:hover {
+            transform: scale(1.1);
+        }
+
+        .notification-dropdown {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 2.5rem;
+            background: white;
+            color: black;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            width: 250px;
+            padding: 1rem;
+            z-index: 11;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: opacity 0.3s, transform 0.3s;
+        }
+
+        .notification-dropdown.show {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .notification-dropdown h3 {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .notification-dropdown p {
+            margin: 0.5rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .notification-dropdown p::before {
+            content: '🔔';
+        }
+
         .profile {
             display: flex;
             align-items: center;
@@ -96,61 +168,96 @@
         }
 
         aside {
-            width: 200px;
+            width: 250px;
             background: white;
             padding: 1rem;
             position: fixed;
             top: 4rem;
             bottom: 0;
-            box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
             z-index: 5;
+            border-top-right-radius: 12px;
+            transition: all 0.3s ease;
+            overflow-y: auto;
         }
 
-        aside h2 {
+        aside:hover {
+            box-shadow: 2px 0 12px rgba(0, 0, 0, 0.15);
+        }
+
+        aside .sidebar-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        aside .sidebar-header img {
+            width: 2rem;
+            height: 2rem;
+        }
+
+        aside .sidebar-header h2 {
             font-size: 1.2rem;
             font-weight: 700;
+        }
+
+        aside hr {
+            border: 0;
+            height: 1px;
+            background: #ccc;
             margin-bottom: 1rem;
-            cursor: pointer;
-        }
-
-        aside .collapsible-content {
-            display: none;
-        }
-
-        aside .collapsible-content.show {
-            display: block;
         }
 
         aside .level {
             margin-bottom: 0.5rem;
-            cursor: pointer;
             font-weight: 700;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+
+        aside .level:hover {
+            background: #f0f4f8;
         }
 
         aside .sub-level {
             padding-left: 1rem;
-            display: none;
         }
 
-        aside .sub-level.show {
-            display: block;
+        aside .mata-pelajaran {
+            font-weight: 600;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+
+        aside .mata-pelajaran:hover {
+            background: #f0f4f8;
+        }
+
+        aside .topics {
+            padding-left: 2rem;
         }
 
         aside .topic {
-            padding-left: 2rem;
+            padding: 0.5rem;
             cursor: pointer;
             font-size: 0.9rem;
+            border-radius: 4px;
+            transition: all 0.2s;
         }
 
         aside .topic:hover {
-            color: #1565c0;
+            background: #1565c0;
+            color: white;
         }
 
         main {
             flex: 1;
             display: flex;
             justify-content: center;
-            padding: 2rem 220px 2rem 220px;
+            padding: 2rem 270px 2rem 270px;
         }
 
         .main-card {
@@ -211,25 +318,6 @@
             margin: 0 auto;
         }
 
-        .notifications {
-            background: #f9f9f9;
-            border-radius: 8px;
-            padding: 1rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .notifications p {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin: 0.5rem 0;
-            font-size: 0.9rem;
-        }
-
-        .notifications p::before {
-            content: '🔔';
-        }
-
         .quick-buttons {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -271,55 +359,76 @@
     <div class="bg-circle circle2"></div>
 
     <header>
-        <h1>Lab Virtual</h1>
+        <div class="header-left">
+            <img src="https://placehold.co/32x32?text=E" alt="Logo EduLab">
+            <h1>EduLab</h1>
+        </div>
         <nav class="navbar">
             <a href="#" onclick="alert('Menuju Modul!')">Modul</a>
             <a href="#" onclick="alert('Menuju Quiz!')">Quiz</a>
             <a href="#" onclick="alert('Menuju Praktikum!')">Praktikum</a>
             <a href="#" onclick="alert('Menuju Tugas Kelompok!')">Tugas Kelompok</a>
         </nav>
-        <div class="profile">
-            <img src="https://placehold.co/32?text=B" alt="Profil">
-            <span>Budi (10A)</span>
+        <div class="header-right">
+            <div class="notification" onclick="toggleNotification()">
+                <span class="notification-icon">🔔</span>
+                <div class="notification-dropdown" id="notification-dropdown">
+                    <h3>Notifikasi</h3>
+                    <p>Quiz Asam Basa besok jam 08.00!</p>
+                    <p>Tugas kelompok harus selesai minggu ini.</p>
+                </div>
+            </div>
+            <div class="profile">
+                <img src="https://placehold.co/32?text=B" alt="Profil">
+                <span>Budi (10A)</span>
+            </div>
         </div>
     </header>
 
     <aside>
-        <h2 onclick="toggleCollapsible()">Pilih Topik &#9660;</h2>
-        <div class="collapsible-content" id="collapsible-content">
-            <div class="level" onclick="toggleSubLevel('level-10')">Kelas 10 &#9654;</div>
-            <div class="sub-level" id="level-10">
-                <div class="mata-pelajaran" onclick="toggleTopic('mp-kimia-10')">Kimia &#9654;</div>
-                <div class="topics" id="mp-kimia-10" style="display: none;">
-                    <div class="topic" onclick="changeTopic('asam-basa')">Asam Basa</div>
-                    <div class="topic" onclick="changeTopic('redoks')">Redoks</div>
-                </div>
-                <div class="mata-pelajaran" onclick="toggleTopic('mp-fisika-10')">Fisika &#9654;</div>
-                <div class="topics" id="mp-fisika-10" style="display: none;">
-                    <div class="topic" onclick="changeTopic('gerak')">Gerak Lurus</div>
-                </div>
+        <div class="sidebar-header">
+            <img src="https://placehold.co/32x32?text=E" alt="Logo EduLab">
+            <h2>EduLab</h2>
+        </div>
+        <hr>
+        <div class="level">
+            Kelas 10
+        </div>
+        <div class="sub-level">
+            <div class="mata-pelajaran">Kimia</div>
+            <div class="topics">
+                <div class="topic" onclick="changeTopic('asam-basa')">Asam Basa</div>
+                <div class="topic" onclick="changeTopic('redoks')">Redoks</div>
             </div>
-            <div class="level" onclick="toggleSubLevel('level-11')">Kelas 11 &#9654;</div>
-            <div class="sub-level" id="level-11">
-                <div class="mata-pelajaran" onclick="toggleTopic('mp-kimia-11')">Kimia &#9654;</div>
-                <div class="topics" id="mp-kimia-11" style="display: none;">
-                    <div class="topic" onclick="changeTopic('stoikiometri')">Stoikiometri</div>
-                </div>
-                <div class="mata-pelajaran" onclick="toggleTopic('mp-fisika-11')">Fisika &#9654;</div>
-                <div class="topics" id="mp-fisika-11" style="display: none;">
-                    <div class="topic" onclick="changeTopic('energi')">Energi</div>
-                </div>
+            <div class="mata-pelajaran">Fisika</div>
+            <div class="topics">
+                <div class="topic" onclick="changeTopic('gerak')">Gerak Lurus</div>
             </div>
-            <div class="level" onclick="toggleSubLevel('level-12')">Kelas 12 &#9654;</div>
-            <div class="sub-level" id="level-12">
-                <div class="mata-pelajaran" onclick="toggleTopic('mp-kimia-12')">Kimia &#9654;</div>
-                <div class="topics" id="mp-kimia-12" style="display: none;">
-                    <div class="topic" onclick="changeTopic('polimer')">Polimer</div>
-                </div>
-                <div class="mata-pelajaran" onclick="toggleTopic('mp-fisika-12')">Fisika &#9654;</div>
-                <div class="topics" id="mp-fisika-12" style="display: none;">
-                    <div class="topic" onclick="changeTopic('listrik')">Listrik</div>
-                </div>
+        </div>
+        <div class="level">
+            Kelas 11
+        </div>
+        <div class="sub-level">
+            <div class="mata-pelajaran">Kimia</div>
+            <div class="topics">
+                <div class="topic" onclick="changeTopic('stoikiometri')">Stoikiometri</div>
+            </div>
+            <div class="mata-pelajaran">Fisika</div>
+            <div class="topics">
+                <div class="topic" onclick="changeTopic('energi')">Energi</div>
+            </div>
+        </div>
+        <div class="level">
+            Kelas 12
+        </div>
+        <div class="sub-level">
+            <div class="mata-pelajaran">Kimia</div>
+            <div class="topics">
+                <div class="topic" onclick="changeTopic('polimer')">Polimer</div>
+            </div>
+            <div class="mata-pelajaran">Fisika</div>
+            <div class="topics">
+                <div class="topic" onclick="changeTopic('listrik')">Listrik</div>
             </div>
         </div>
     </aside>
@@ -329,17 +438,14 @@
             <section class="topic-card">
                 <h2 id="topic-title">Topik: Asam Basa</h2>
                 <img id="topic-image" src="https://placehold.co/300x100?text=Asam+Basa" alt="Asam Basa">
-                <p id="topic-desc">Belajar tentang pH dan reaksi kimia!</p>
+                <p id="topic-desc">Belajar tentang pH dan reaksi kimia! Ini adalah topik dasar dalam kimia yang mencakup
+                    konsep asam, basa, indikator, dan reaksi netralisasi. Siswa akan mempelajari skala pH, sifat
+                    larutan, dan aplikasi dalam kehidupan sehari-hari seperti pengaturan pH tanah atau obat-obatan.</p>
                 <button onclick="alert('Memulai topik Asam Basa!')">Mulai</button>
             </section>
             <section class="progress">
                 <h2>Progress Belajar</h2>
                 <div class="progress-circle">75%</div>
-            </section>
-            <section class="notifications">
-                <h2>Notifikasi</h2>
-                <p>Quiz Asam Basa besok jam 08.00!</p>
-                <p>Tugas kelompok harus selesai minggu ini.</p>
             </section>
             <section class="quick-buttons">
                 <button onclick="alert('Menuju Pre-Lab!')"><span>📚</span> Pre-Lab</button>
@@ -359,27 +465,27 @@
         const data = {
             '10': {
                 'kimia': [
-                    { id: 'asam-basa', title: 'Asam Basa', image: 'https://placehold.co/300x100?text=Asam+Basa', desc: 'Belajar tentang pH dan reaksi kimia!' },
-                    { id: 'redoks', title: 'Redoks', image: 'https://placehold.co/300x100?text=Redoks', desc: 'Pelajari reaksi reduksi-oksidasi!' }
+                    { id: 'asam-basa', title: 'Asam Basa', image: 'https://placehold.co/300x100?text=Asam+Basa', desc: 'Belajar tentang pH dan reaksi kimia! Ini adalah topik dasar dalam kimia yang mencakup konsep asam, basa, indikator, dan reaksi netralisasi. Siswa akan mempelajari skala pH, sifat larutan, dan aplikasi dalam kehidupan sehari-hari seperti pengaturan pH tanah atau obat-obatan.' },
+                    { id: 'redoks', title: 'Redoks', image: 'https://placehold.co/300x100?text=Redoks', desc: 'Pelajari reaksi reduksi-oksidasi! Topik ini menjelaskan transfer elektron, bilangan oksidasi, dan reaksi redoks dalam sel volta, korosi, dan proses biologis seperti respirasi.' }
                 ],
                 'fisika': [
-                    { id: 'gerak', title: 'Gerak Lurus', image: 'https://placehold.co/300x100?text=Gerak+Lurus', desc: 'Pelajari hukum Newton!' }
+                    { id: 'gerak', title: 'Gerak Lurus', image: 'https://placehold.co/300x100?text=Gerak+Lurus', desc: 'Pelajari hukum Newton! Topik ini mencakup gerak lurus beraturan, berubah beraturan, gaya, massa, dan aplikasi seperti perhitungan kecepatan kendaraan atau gerak proyektil.' }
                 ]
             },
             '11': {
                 'kimia': [
-                    { id: 'stoikiometri', title: 'Stoikiometri', image: 'https://placehold.co/300x100?text=Stoikiometri', desc: 'Kalkulasi jumlah zat!' }
+                    { id: 'stoikiometri', title: 'Stoikiometri', image: 'https://placehold.co/300x100?text=Stoikiometri', desc: 'Kalkulasi jumlah zat! Ini melibatkan mol, persamaan reaksi, yield, dan perhitungan stoichiometri dalam reaksi kimia industri atau laboratorium.' }
                 ],
                 'fisika': [
-                    { id: 'energi', title: 'Energi', image: 'https://placehold.co/300x100?text=Energi', desc: 'Pelajari energi kinetik!' }
+                    { id: 'energi', title: 'Energi', image: 'https://placehold.co/300x100?text=Energi', desc: 'Pelajari energi kinetik! Topik ini membahas energi potensial, konservasi energi, kerja, daya, dan aplikasi dalam mesin atau sistem fisika seperti pendulum.' }
                 ]
             },
             '12': {
                 'kimia': [
-                    { id: 'polimer', title: 'Polimer', image: 'https://placehold.co/300x100?text=Polimer', desc: 'Pelajari bahan polimer!' }
+                    { id: 'polimer', title: 'Polimer', image: 'https://placehold.co/300x100?text=Polimer', desc: 'Pelajari bahan polimer! Ini termasuk polimerisasi, jenis polimer seperti plastik, karet, dan aplikasi dalam industri, lingkungan, dan teknologi biomedis.' }
                 ],
                 'fisika': [
-                    { id: 'listrik', title: 'Listrik', image: 'https://placehold.co/300x100?text=Listrik', desc: 'Pelajari rangkaian listrik!' }
+                    { id: 'listrik', title: 'Listrik', image: 'https://placehold.co/300x100?text=Listrik', desc: 'Pelajari rangkaian listrik! Topik ini mencakup arus, tegangan, hambatan, hukum Ohm, Kirchhoff, dan aplikasi seperti sirkuit elektronik atau distribusi listrik.' }
                 ]
             }
         };
@@ -390,27 +496,14 @@
             'Tugas kelompok harus selesai minggu ini.'
         ];
 
-        // Toggle collapsible sidebar
-        function toggleCollapsible() {
-            const content = document.getElementById('collapsible-content');
-            content.classList.toggle('show');
-        }
-
-        // Toggle sub-level (Kelas)
-        function toggleSubLevel(id) {
-            const subLevel = document.getElementById(id);
-            subLevel.classList.toggle('show');
-        }
-
-        // Toggle topics (Mata Pelajaran)
-        function toggleTopic(id) {
-            const topics = document.getElementById(id);
-            topics.classList.toggle('show');
+        // Toggle notification dropdown
+        function toggleNotification() {
+            const dropdown = document.getElementById('notification-dropdown');
+            dropdown.classList.toggle('show');
         }
 
         // Update konten topik
         function changeTopic(topikId) {
-            // Cari data topik berdasarkan id (simplifikasi, asumsikan data flat untuk contoh)
             let topik = null;
             for (let kelas in data) {
                 for (let mp in data[kelas]) {
@@ -426,11 +519,8 @@
             }
         }
 
-        // Render notifikasi
-        document.querySelector('.notifications').innerHTML = '<h2>Notifikasi</h2>' + notifications.map(n => `<p>${n}</p>`).join('');
-
-        // Inisialisasi
-        toggleCollapsible(); // Mulai tertutup jika mau, atau hapus ini untuk terbuka default
+        // Render notifikasi di dropdown
+        document.getElementById('notification-dropdown').innerHTML = '<h3>Notifikasi</h3>' + notifications.map(n => `<p>${n}</p>`).join('');
     </script>
 </body>
 
