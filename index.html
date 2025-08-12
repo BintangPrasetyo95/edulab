@@ -65,6 +65,24 @@
             font-weight: 700;
         }
 
+        .navbar {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            font-weight: 700;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+
+        .navbar a:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
         .profile {
             display: flex;
             align-items: center;
@@ -92,14 +110,40 @@
             font-size: 1.2rem;
             font-weight: 700;
             margin-bottom: 1rem;
+            cursor: pointer;
         }
 
-        aside select {
-            width: 100%;
-            padding: 0.5rem;
-            border-radius: 4px;
-            font-family: 'Montserrat', sans-serif;
+        aside .collapsible-content {
+            display: none;
+        }
+
+        aside .collapsible-content.show {
+            display: block;
+        }
+
+        aside .level {
             margin-bottom: 0.5rem;
+            cursor: pointer;
+            font-weight: 700;
+        }
+
+        aside .sub-level {
+            padding-left: 1rem;
+            display: none;
+        }
+
+        aside .sub-level.show {
+            display: block;
+        }
+
+        aside .topic {
+            padding-left: 2rem;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        aside .topic:hover {
+            color: #1565c0;
         }
 
         main {
@@ -228,34 +272,63 @@
 
     <header>
         <h1>Lab Virtual</h1>
+        <nav class="navbar">
+            <a href="#" onclick="alert('Menuju Modul!')">Modul</a>
+            <a href="#" onclick="alert('Menuju Quiz!')">Quiz</a>
+            <a href="#" onclick="alert('Menuju Praktikum!')">Praktikum</a>
+            <a href="#" onclick="alert('Menuju Tugas Kelompok!')">Tugas Kelompok</a>
+        </nav>
         <div class="profile">
-            <img src="https://via.placeholder.com/32?text=B" alt="Profil">
+            <img src="https://placehold.co/32?text=B" alt="Profil">
             <span>Budi (10A)</span>
         </div>
     </header>
 
     <aside>
-        <h2>Pilih Topik</h2>
-        <select id="tingkat-kelas" onchange="updateMataPelajaran()">
-            <option value="10">Kelas 10</option>
-            <option value="11">Kelas 11</option>
-            <option value="12">Kelas 12</option>
-        </select>
-        <select id="mata-pelajaran" onchange="updateTopik()">
-            <option value="kimia">Kimia</option>
-            <option value="fisika">Fisika</option>
-        </select>
-        <select id="topik" onchange="changeTopic(this.value)">
-            <option value="asam-basa">Asam Basa</option>
-            <option value="redoks">Redoks</option>
-        </select>
+        <h2 onclick="toggleCollapsible()">Pilih Topik &#9660;</h2>
+        <div class="collapsible-content" id="collapsible-content">
+            <div class="level" onclick="toggleSubLevel('level-10')">Kelas 10 &#9654;</div>
+            <div class="sub-level" id="level-10">
+                <div class="mata-pelajaran" onclick="toggleTopic('mp-kimia-10')">Kimia &#9654;</div>
+                <div class="topics" id="mp-kimia-10" style="display: none;">
+                    <div class="topic" onclick="changeTopic('asam-basa')">Asam Basa</div>
+                    <div class="topic" onclick="changeTopic('redoks')">Redoks</div>
+                </div>
+                <div class="mata-pelajaran" onclick="toggleTopic('mp-fisika-10')">Fisika &#9654;</div>
+                <div class="topics" id="mp-fisika-10" style="display: none;">
+                    <div class="topic" onclick="changeTopic('gerak')">Gerak Lurus</div>
+                </div>
+            </div>
+            <div class="level" onclick="toggleSubLevel('level-11')">Kelas 11 &#9654;</div>
+            <div class="sub-level" id="level-11">
+                <div class="mata-pelajaran" onclick="toggleTopic('mp-kimia-11')">Kimia &#9654;</div>
+                <div class="topics" id="mp-kimia-11" style="display: none;">
+                    <div class="topic" onclick="changeTopic('stoikiometri')">Stoikiometri</div>
+                </div>
+                <div class="mata-pelajaran" onclick="toggleTopic('mp-fisika-11')">Fisika &#9654;</div>
+                <div class="topics" id="mp-fisika-11" style="display: none;">
+                    <div class="topic" onclick="changeTopic('energi')">Energi</div>
+                </div>
+            </div>
+            <div class="level" onclick="toggleSubLevel('level-12')">Kelas 12 &#9654;</div>
+            <div class="sub-level" id="level-12">
+                <div class="mata-pelajaran" onclick="toggleTopic('mp-kimia-12')">Kimia &#9654;</div>
+                <div class="topics" id="mp-kimia-12" style="display: none;">
+                    <div class="topic" onclick="changeTopic('polimer')">Polimer</div>
+                </div>
+                <div class="mata-pelajaran" onclick="toggleTopic('mp-fisika-12')">Fisika &#9654;</div>
+                <div class="topics" id="mp-fisika-12" style="display: none;">
+                    <div class="topic" onclick="changeTopic('listrik')">Listrik</div>
+                </div>
+            </div>
+        </div>
     </aside>
 
     <main>
         <div class="main-card">
             <section class="topic-card">
                 <h2 id="topic-title">Topik: Asam Basa</h2>
-                <img id="topic-image" src="https://via.placeholder.com/300x100?text=Asam+Basa" alt="Asam Basa">
+                <img id="topic-image" src="https://placehold.co/300x100?text=Asam+Basa" alt="Asam Basa">
                 <p id="topic-desc">Belajar tentang pH dan reaksi kimia!</p>
                 <button onclick="alert('Memulai topik Asam Basa!')">Mulai</button>
             </section>
@@ -278,7 +351,7 @@
     </main>
 
     <footer>
-        <p>&copy; 2025 Lab Virtual</p>
+        <p>©2025 EduLab</p>
     </footer>
 
     <script>
@@ -286,27 +359,27 @@
         const data = {
             '10': {
                 'kimia': [
-                    { id: 'asam-basa', title: 'Asam Basa', image: 'https://via.placeholder.com/300x100?text=Asam+Basa', desc: 'Belajar tentang pH dan reaksi kimia!' },
-                    { id: 'redoks', title: 'Redoks', image: 'https://via.placeholder.com/300x100?text=Redoks', desc: 'Pelajari reaksi reduksi-oksidasi!' }
+                    { id: 'asam-basa', title: 'Asam Basa', image: 'https://placehold.co/300x100?text=Asam+Basa', desc: 'Belajar tentang pH dan reaksi kimia!' },
+                    { id: 'redoks', title: 'Redoks', image: 'https://placehold.co/300x100?text=Redoks', desc: 'Pelajari reaksi reduksi-oksidasi!' }
                 ],
                 'fisika': [
-                    { id: 'gerak', title: 'Gerak Lurus', image: 'https://via.placeholder.com/300x100?text=Gerak+Lurus', desc: 'Pelajari hukum Newton!' }
+                    { id: 'gerak', title: 'Gerak Lurus', image: 'https://placehold.co/300x100?text=Gerak+Lurus', desc: 'Pelajari hukum Newton!' }
                 ]
             },
             '11': {
                 'kimia': [
-                    { id: 'stoikiometri', title: 'Stoikiometri', image: 'https://via.placeholder.com/300x100?text=Stoikiometri', desc: 'Kalkulasi jumlah zat!' }
+                    { id: 'stoikiometri', title: 'Stoikiometri', image: 'https://placehold.co/300x100?text=Stoikiometri', desc: 'Kalkulasi jumlah zat!' }
                 ],
                 'fisika': [
-                    { id: 'energi', title: 'Energi', image: 'https://via.placeholder.com/300x100?text=Energi', desc: 'Pelajari energi kinetik!' }
+                    { id: 'energi', title: 'Energi', image: 'https://placehold.co/300x100?text=Energi', desc: 'Pelajari energi kinetik!' }
                 ]
             },
             '12': {
                 'kimia': [
-                    { id: 'polimer', title: 'Polimer', image: 'https://via.placeholder.com/300x100?text=Polimer', desc: 'Pelajari bahan polimer!' }
+                    { id: 'polimer', title: 'Polimer', image: 'https://placehold.co/300x100?text=Polimer', desc: 'Pelajari bahan polimer!' }
                 ],
                 'fisika': [
-                    { id: 'listrik', title: 'Listrik', image: 'https://via.placeholder.com/300x100?text=Listrik', desc: 'Pelajari rangkaian listrik!' }
+                    { id: 'listrik', title: 'Listrik', image: 'https://placehold.co/300x100?text=Listrik', desc: 'Pelajari rangkaian listrik!' }
                 ]
             }
         };
@@ -317,38 +390,47 @@
             'Tugas kelompok harus selesai minggu ini.'
         ];
 
-        // Update opsi Mata Pelajaran berdasarkan Tingkat Kelas
-        function updateMataPelajaran() {
-            const kelas = document.getElementById('tingkat-kelas').value;
-            const mataPelajaranSelect = document.getElementById('mata-pelajaran');
-            mataPelajaranSelect.innerHTML = Object.keys(data[kelas]).map(mp => `<option value="${mp}">${mp.charAt(0).toUpperCase() + mp.slice(1)}</option>`).join('');
-            updateTopik();
+        // Toggle collapsible sidebar
+        function toggleCollapsible() {
+            const content = document.getElementById('collapsible-content');
+            content.classList.toggle('show');
         }
 
-        // Update opsi Topik berdasarkan Mata Pelajaran
-        function updateTopik() {
-            const kelas = document.getElementById('tingkat-kelas').value;
-            const mataPelajaran = document.getElementById('mata-pelajaran').value;
-            const topikSelect = document.getElementById('topik');
-            topikSelect.innerHTML = data[kelas][mataPelajaran].map(t => `<option value="${t.id}">${t.title}</option>`).join('');
-            changeTopic(topikSelect.value);
+        // Toggle sub-level (Kelas)
+        function toggleSubLevel(id) {
+            const subLevel = document.getElementById(id);
+            subLevel.classList.toggle('show');
+        }
+
+        // Toggle topics (Mata Pelajaran)
+        function toggleTopic(id) {
+            const topics = document.getElementById(id);
+            topics.classList.toggle('show');
         }
 
         // Update konten topik
         function changeTopic(topikId) {
-            const kelas = document.getElementById('tingkat-kelas').value;
-            const mataPelajaran = document.getElementById('mata-pelajaran').value;
-            const topik = data[kelas][mataPelajaran].find(t => t.id === topikId);
-            document.getElementById('topic-title').textContent = `Topik: ${topik.title}`;
-            document.getElementById('topic-image').src = topik.image;
-            document.getElementById('topic-desc').textContent = topik.desc;
+            // Cari data topik berdasarkan id (simplifikasi, asumsikan data flat untuk contoh)
+            let topik = null;
+            for (let kelas in data) {
+                for (let mp in data[kelas]) {
+                    topik = data[kelas][mp].find(t => t.id === topikId);
+                    if (topik) break;
+                }
+                if (topik) break;
+            }
+            if (topik) {
+                document.getElementById('topic-title').textContent = `Topik: ${topik.title}`;
+                document.getElementById('topic-image').src = topik.image;
+                document.getElementById('topic-desc').textContent = topik.desc;
+            }
         }
 
         // Render notifikasi
         document.querySelector('.notifications').innerHTML = '<h2>Notifikasi</h2>' + notifications.map(n => `<p>${n}</p>`).join('');
 
-        // Inisialisasi dropdown
-        updateMataPelajaran();
+        // Inisialisasi
+        toggleCollapsible(); // Mulai tertutup jika mau, atau hapus ini untuk terbuka default
     </script>
 </body>
 
