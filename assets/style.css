@@ -14,6 +14,7 @@ body {
     overflow-x: hidden;
 }
 
+/* Background lingkaran blur di belakang */
 .bg-circle {
     position: absolute;
     border-radius: 50%;
@@ -357,6 +358,7 @@ main {
     width: 6rem;
     height: 6rem;
     border-radius: 50%;
+    background: conic-gradient(#2e7d32 75%, #ccc 25%);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -404,16 +406,6 @@ main {
 
 .tugas-kelompok {
     background: linear-gradient(to right, #1565c0 30%, #ccc 30%);
-}
-
-.coming-soon {
-    text-align: center;
-    padding: 1rem;
-    background: #f0f4f8;
-    color: #1565c0;
-    font-weight: 700;
-    font-size: 1rem;
-    border-radius: 4px;
 }
 
 footer {
