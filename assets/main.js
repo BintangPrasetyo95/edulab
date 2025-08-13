@@ -49,11 +49,22 @@ function toggleTopic(element) {
 
 // Update konten topik (for topik.html)
 function changeTopic(topikId) {
+    window.location.href = `./topik.html?topic=${topikId}`;
+}
+
+// Render topic content for topik.html
+function renderTopicContent() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const topicId = urlParams.get('topic') || 'asam-basa';
     let topik = null;
+    let category = '';
     for (let kelas in data) {
         for (let mp in data[kelas]) {
-            topik = data[kelas][mp].find(t => t.id === topikId);
-            if (topik) break;
+            topik = data[kelas][mp].find(t => t.id === topicId);
+            if (topik) {
+                category = mp;
+                break;
+            }
         }
         if (topik) break;
     }
@@ -99,7 +110,7 @@ function changeTopic(topikId) {
             console.error('Quick buttons not found');
         }
     } else {
-        console.error(`Topic with ID ${topikId} not found`);
+        console.error(`Topic with ID ${topicId} not found`);
     }
 }
 
@@ -189,7 +200,7 @@ function renderProgress() {
 // Render profile page content (for profile.html)
 function renderProfile() {
     const completedTopics = document.getElementById('completed-topics');
-    const inProgressTopics = document.getElementById('inprogress-topics');
+    const inProgressTopics = document.getElementById('inprogress-topics-container');
     if (completedTopics && inProgressTopics) {
         const completed = [];
         const inProgress = [];
@@ -199,9 +210,9 @@ function renderProfile() {
             for (let mp in data[kelas]) {
                 data[kelas][mp].forEach(topic => {
                     if (topic.progress === 100) {
-                        completed.push(topic);
+                        completed.push({ ...topic, category: mp });
                     } else if (topic.progress > 0 && topic.progress < 100) {
-                        inProgress.push(topic);
+                        inProgress.push({ ...topic, category: mp });
                     }
                 });
             }
@@ -211,24 +222,48 @@ function renderProfile() {
         if (completed.length === 0) {
             completedTopics.textContent = 'Belum ada topik yang selesai.';
         } else {
-            completedTopics.innerHTML = '<ul>' + completed.map(topic => `
-                <li>
-                    ${topic.title}
-                    <div class="progress-circle" style="background: conic-gradient(#2e7d32 ${topic.progress}%, #ccc ${topic.progress}% 100%)">${topic.progress}%</div>
-                </li>
-            `).join('') + '</ul>';
+            completedTopics.innerHTML = '';
+            completed.forEach(topic => {
+                const topicCard = document.createElement('div');
+                topicCard.className = 'topic-card';
+                topicCard.setAttribute('onclick', `window.location.href = './topik.html?topic=${topic.id}'`);
+                topicCard.innerHTML = `
+                    <img src="${topic.image}" alt="${topic.title}">
+                    <h3>${topic.title}</h3>
+                    <div class="category">${topic.category.charAt(0).toUpperCase() + topic.category.slice(1)}</div>
+                    <p class="short-desc">${truncateText(topic.desc, 100)}</p>
+                    <div class="progress-circle" id="progress-${topic.id}">${topic.progress}%</div>
+                `;
+                completedTopics.appendChild(topicCard);
+                const progressCircle = document.getElementById(`progress-${topic.id}`);
+                if (progressCircle) {
+                    progressCircle.style.background = `conic-gradient(#2e7d32 ${topic.progress}%, #ccc ${topic.progress}% 100%)`;
+                }
+            });
         }
 
         // Render in-progress topics
         if (inProgress.length === 0) {
             inProgressTopics.textContent = 'Belum ada topik yang sedang dijalani.';
         } else {
-            inProgressTopics.innerHTML = '<ul>' + inProgress.map(topic => `
-                <li>
-                    ${topic.title}
-                    <div class="progress-circle" style="background: conic-gradient(#2e7d32 ${topic.progress}%, #ccc ${topic.progress}% 100%)">${topic.progress}%</div>
-                </li>
-            `).join('') + '</ul>';
+            inProgressTopics.innerHTML = '';
+            inProgress.forEach(topic => {
+                const topicCard = document.createElement('div');
+                topicCard.className = 'topic-card';
+                topicCard.setAttribute('onclick', `window.location.href = './topik.html?topic=${topic.id}'`);
+                topicCard.innerHTML = `
+                    <img src="${topic.image}" alt="${topic.title}">
+                    <h3>${topic.title}</h3>
+                    <div class="category">${topic.category.charAt(0).toUpperCase() + topic.category.slice(1)}</div>
+                    <p class="short-desc">${truncateText(topic.desc, 100)}</p>
+                    <div class="progress-circle" id="progress-${topic.id}">${topic.progress}%</div>
+                `;
+                inProgressTopics.appendChild(topicCard);
+                const progressCircle = document.getElementById(`progress-${topic.id}`);
+                if (progressCircle) {
+                    progressCircle.style.background = `conic-gradient(#2e7d32 ${topic.progress}%, #ccc ${topic.progress}% 100%)`;
+                }
+            });
         }
     } else {
         console.error('Completed or in-progress topics elements not found');
@@ -270,9 +305,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (window.location.pathname.includes('index.html') || window.location.pathname === '/') {
         renderProgress();
     } else if (window.location.pathname.includes('topik.html')) {
-        const urlParams = new URLSearchParams(window.location.search);
-        const topicId = urlParams.get('topic') || 'asam-basa';
-        changeTopic(topicId);
+        renderTopicContent();
     } else if (window.location.pathname.includes('profile.html')) {
         renderProfile();
     }

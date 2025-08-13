@@ -16,7 +16,7 @@
     <header>
         <div class="header-left">
             <img src="https://placehold.co/32x32?text=E" alt="Logo EduLab">
-            <h1>EduLab</h1>
+            <h1 onclick="window.location.href='./index.html'">EduLab</h1>
         </div>
         <div class="header-right">
             <div class="notification" onclick="toggleNotification()">
@@ -31,8 +31,8 @@
                 <img src="https://placehold.co/32?text=B" alt="Profil">
                 <span class="profile-icon">Budi (10A)</span>
                 <div class="profile-dropdown" id="profile-dropdown">
-                    <p>Profil</p>
-                    <p>Topik Praktikum</p>
+                    <p onclick="window.location.href='./profile.html'">Profil</p>
+                    <p onclick="window.location.href='./profile.html#inprogress-topics'">Topik Praktikum</p>
                     <p>Pengaturan</p>
                     <p class="logout">Log Out</p>
                 </div>
@@ -50,34 +50,34 @@
         <div class="sub-level">
             <div class="mata-pelajaran" onclick="toggleTopic(this)"><span class="arrow">▶</span> Kimia</div>
             <div class="topics">
-                <div class="topic" onclick="changeTopic('asam-basa')">Asam Basa</div>
-                <div class="topic" onclick="changeTopic('redoks')">Redoks</div>
+                <div class="topic" onclick="window.location.href='./topik.html?topic=asam-basa'">Asam Basa</div>
+                <div class="topic" onclick="window.location.href='./topik.html?topic=redoks'">Redoks</div>
             </div>
             <div class="mata-pelajaran" onclick="toggleTopic(this)"><span class="arrow">▶</span> Fisika</div>
             <div class="topics">
-                <div class="topic" onclick="changeTopic('gerak')">Gerak Lurus</div>
+                <div class="topic" onclick="window.location.href='./topik.html?topic=gerak'">Gerak Lurus</div>
             </div>
         </div>
         <div class="level" onclick="toggleLevel(this)"><span class="arrow">▶</span> Kelas 11</div>
         <div class="sub-level">
             <div class="mata-pelajaran" onclick="toggleTopic(this)"><span class="arrow">▶</span> Kimia</div>
             <div class="topics">
-                <div class="topic" onclick="changeTopic('stoikiometri')">Stoikiometri</div>
+                <div class="topic" onclick="window.location.href='./topik.html?topic=stoikiometri'">Stoikiometri</div>
             </div>
             <div class="mata-pelajaran" onclick="toggleTopic(this)"><span class="arrow">▶</span> Fisika</div>
             <div class="topics">
-                <div class="topic" onclick="changeTopic('energi')">Energi</div>
+                <div class="topic" onclick="window.location.href='./topik.html?topic=energi'">Energi</div>
             </div>
         </div>
         <div class="level" onclick="toggleLevel(this)"><span class="arrow">▶</span> Kelas 12</div>
         <div class="sub-level">
             <div class="mata-pelajaran" onclick="toggleTopic(this)"><span class="arrow">▶</span> Kimia</div>
             <div class="topics">
-                <div class="topic" onclick="changeTopic('polimer')">Polimer</div>
+                <div class="topic" onclick="window.location.href='./topik.html?topic=polimer'">Polimer</div>
             </div>
             <div class="mata-pelajaran" onclick="toggleTopic(this)"><span class="arrow">▶</span> Fisika</div>
             <div class="topics">
-                <div class="topic" onclick="changeTopic('listrik')">Listrik</div>
+                <div class="topic" onclick="window.location.href='./topik.html?topic=listrik'">Listrik</div>
             </div>
         </div>
     </aside>

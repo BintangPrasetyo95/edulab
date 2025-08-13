@@ -65,6 +65,12 @@ header {
 header h1 {
     font-size: 1.5rem;
     font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+header h1:hover {
+    transform: scale(1.05);
 }
 
 .navbar {
@@ -172,6 +178,7 @@ header h1 {
     padding: 0.5rem;
     border-radius: 4px;
     transition: background 0.2s;
+    cursor: pointer;
 }
 
 .profile-dropdown p:hover:not(.logout) {
@@ -180,6 +187,7 @@ header h1 {
 
 .profile-dropdown p.logout {
     color: #d32f2f;
+    cursor: pointer;
 }
 
 .profile {
@@ -413,28 +421,15 @@ main {
     margin-bottom: 0.5rem;
 }
 
-.status-section div {
+.status-section .grid-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+}
+
+.status-section div:not(.grid-container) {
     font-size: 0.9rem;
     color: #666;
-}
-
-.status-section ul {
-    list-style: none;
-    padding: 0;
-}
-
-.status-section li {
-    font-size: 0.9rem;
-    padding: 0.5rem 0;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.status-section li .progress-circle {
-    width: 3rem;
-    height: 3rem;
-    font-size: 0.9rem;
 }
 
 .topic-card {
