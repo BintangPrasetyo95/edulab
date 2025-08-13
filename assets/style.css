@@ -14,7 +14,6 @@ body {
     overflow-x: hidden;
 }
 
-/* Background lingkaran blur di belakang */
 .bg-circle {
     position: absolute;
     border-radius: 50%;
@@ -78,11 +77,25 @@ header h1 {
     font-weight: 700;
     padding: 0.5rem 1rem;
     border-radius: 4px;
-    transition: background 0.2s;
+    transition: background 0.2s, transform 0.2s;
 }
 
-.navbar a:hover {
+.navbar a:hover:not(.disabled) {
     background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.05);
+}
+
+.navbar a.active {
+    background: rgba(255, 255, 255, 0.3);
+    font-weight: 800;
+    transform: scale(1.05);
+}
+
+.navbar a.disabled {
+    background: #555;
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
 }
 
 .header-right {
@@ -388,8 +401,15 @@ main {
     transition: transform 0.2s;
 }
 
-.quick-buttons button:hover {
+.quick-buttons button:hover:not(.disabled) {
     transform: scale(1.05);
+}
+
+.quick-buttons button.disabled {
+    background: #555 !important;
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
 }
 
 .pre-lab {
@@ -406,6 +426,17 @@ main {
 
 .tugas-kelompok {
     background: linear-gradient(to right, #1565c0 30%, #ccc 30%);
+}
+
+.coming-soon {
+    text-align: center;
+    padding: 1rem;
+    background: #f0f4f8;
+    color: #1565c0;
+    font-weight: 700;
+    font-size: 1rem;
+    border-radius: 4px;
+    grid-column: span 2;
 }
 
 footer {
