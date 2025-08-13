@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil - EduLab</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./assets/style.css">
+</head>
+
+<body>
+    <div class="bg-circle circle1"></div>
+    <div class="bg-circle circle2"></div>
+
+    <header>
+        <div class="header-left">
+            <img src="https://placehold.co/32x32?text=E" alt="Logo EduLab">
+            <h1>EduLab</h1>
+        </div>
+        <div class="header-right">
+            <div class="notification" onclick="toggleNotification()">
+                <span class="notification-icon">🔔</span>
+                <div class="notification-dropdown" id="notification-dropdown">
+                    <h3>Notifikasi</h3>
+                    <p>Quiz Asam Basa besok jam 08.00!</p>
+                    <p>Tugas kelompok harus selesai minggu ini.</p>
+                </div>
+            </div>
+            <div class="profile" onclick="toggleProfile()">
+                <img src="https://placehold.co/32?text=B" alt="Profil">
+                <span class="profile-icon">Budi (10A)</span>
+                <div class="profile-dropdown" id="profile-dropdown">
+                    <p>Profil</p>
+                    <p>Topik Praktikum</p>
+                    <p>Pengaturan</p>
+                    <p class="logout">Log Out</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <aside>
+        <div class="sidebar-header">
+            <img src="https://placehold.co/32x32?text=E" alt="Logo EduLab">
+            <h2>EduLab</h2>
+        </div>
+        <hr>
+        <div class="level" onclick="toggleLevel(this)"><span class="arrow">▶</span> Kelas 10</div>
+        <div class="sub-level">
+            <div class="mata-pelajaran" onclick="toggleTopic(this)"><span class="arrow">▶</span> Kimia</div>
+            <div class="topics">
+                <div class="topic" onclick="changeTopic('asam-basa')">Asam Basa</div>
+                <div class="topic" onclick="changeTopic('redoks')">Redoks</div>
+            </div>
+            <div class="mata-pelajaran" onclick="toggleTopic(this)"><span class="arrow">▶</span> Fisika</div>
+            <div class="topics">
+                <div class="topic" onclick="changeTopic('gerak')">Gerak Lurus</div>
+            </div>
+        </div>
+        <div class="level" onclick="toggleLevel(this)"><span class="arrow">▶</span> Kelas 11</div>
+        <div class="sub-level">
+            <div class="mata-pelajaran" onclick="toggleTopic(this)"><span class="arrow">▶</span> Kimia</div>
+            <div class="topics">
+                <div class="topic" onclick="changeTopic('stoikiometri')">Stoikiometri</div>
+            </div>
+            <div class="mata-pelajaran" onclick="toggleTopic(this)"><span class="arrow">▶</span> Fisika</div>
+            <div class="topics">
+                <div class="topic" onclick="changeTopic('energi')">Energi</div>
+            </div>
+        </div>
+        <div class="level" onclick="toggleLevel(this)"><span class="arrow">▶</span> Kelas 12</div>
+        <div class="sub-level">
+            <div class="mata-pelajaran" onclick="toggleTopic(this)"><span class="arrow">▶</span> Kimia</div>
+            <div class="topics">
+                <div class="topic" onclick="changeTopic('polimer')">Polimer</div>
+            </div>
+            <div class="mata-pelajaran" onclick="toggleTopic(this)"><span class="arrow">▶</span> Fisika</div>
+            <div class="topics">
+                <div class="topic" onclick="changeTopic('listrik')">Listrik</div>
+            </div>
+        </div>
+    </aside>
+
+    <main>
+        <div class="main-card">
+            <section class="profile-card">
+                <div class="profile-avatar">
+                    <img src="https://placehold.co/32?text=B" alt="Profil">
+                </div>
+                <div class="profile-info">
+                    <h2>Budi Santoso</h2>
+                    <p>Kelas 10A</p>
+                </div>
+            </section>
+            <section class="school-info">
+                <h2>Informasi Sekolah</h2>
+                <div class="info-grid">
+                    <div class="info-item"><strong>NIS:</strong> 123456</div>
+                    <div class="info-item"><strong>NISN:</strong> 9988776655</div>
+                    <div class="info-item"><strong>Nama:</strong> Budi Santoso</div>
+                    <div class="info-item"><strong>Kelas:</strong> 10A</div>
+                    <div class="info-item"><strong>Jenis Kelamin:</strong> Laki-laki</div>
+                    <div class="info-item"><strong>Tempat Lahir:</strong> Jakarta</div>
+                    <div class="info-item"><strong>Tanggal Lahir:</strong> 15 Mei 2009</div>
+                    <div class="info-item"><strong>Alamat:</strong> Jl. Merdeka No. 10, Jakarta</div>
+                    <div class="info-item"><strong>Nomor Telepon:</strong> +62 812-3456-7890</div>
+                </div>
+            </section>
+            <section class="topics-status">
+                <h2>Status Topik Praktikum</h2>
+                <div class="status-section">
+                    <h3>Topik Selesai</h3>
+                    <div id="completed-topics">Belum ada topik yang selesai.</div>
+                </div>
+                <div class="status-section">
+                    <h3>Topik Sedang Dijalani</h3>
+                    <div id="inprogress-topics"></div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer>
+        <p>©2025 EduLab</p>
+    </footer>
+
+    <script src="./assets/main.js"></script>
+</body>
+
+</html>

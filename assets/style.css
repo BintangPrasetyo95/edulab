@@ -336,6 +336,107 @@ main {
     z-index: 1;
 }
 
+.profile-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: #f9f9f9;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.profile-avatar img {
+    width: 4rem;
+    height: 4rem;
+    border-radius: 50%;
+}
+
+.profile-info h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.3rem;
+}
+
+.profile-info p {
+    font-size: 1rem;
+    color: #666;
+}
+
+.school-info {
+    background: #f9f9f9;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.school-info h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+}
+
+.info-item {
+    font-size: 0.9rem;
+}
+
+.info-item strong {
+    font-weight: 700;
+    margin-right: 0.5rem;
+}
+
+.topics-status {
+    background: #f9f9f9;
+    border-radius: 8px;
+    padding: 1rem;
+}
+
+.topics-status h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.status-section {
+    margin-bottom: 1rem;
+}
+
+.status-section h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.status-section div {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.status-section ul {
+    list-style: none;
+    padding: 0;
+}
+
+.status-section li {
+    font-size: 0.9rem;
+    padding: 0.5rem 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.status-section li .progress-circle {
+    width: 3rem;
+    height: 3rem;
+    font-size: 0.9rem;
+}
+
 .topic-card {
     background: #f9f9f9;
     border-radius: 8px;

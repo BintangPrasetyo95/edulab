@@ -186,6 +186,55 @@ function renderProgress() {
     }
 }
 
+// Render profile page content (for profile.html)
+function renderProfile() {
+    const completedTopics = document.getElementById('completed-topics');
+    const inProgressTopics = document.getElementById('inprogress-topics');
+    if (completedTopics && inProgressTopics) {
+        const completed = [];
+        const inProgress = [];
+
+        // Collect topics based on progress
+        for (let kelas in data) {
+            for (let mp in data[kelas]) {
+                data[kelas][mp].forEach(topic => {
+                    if (topic.progress === 100) {
+                        completed.push(topic);
+                    } else if (topic.progress > 0 && topic.progress < 100) {
+                        inProgress.push(topic);
+                    }
+                });
+            }
+        }
+
+        // Render completed topics
+        if (completed.length === 0) {
+            completedTopics.textContent = 'Belum ada topik yang selesai.';
+        } else {
+            completedTopics.innerHTML = '<ul>' + completed.map(topic => `
+                <li>
+                    ${topic.title}
+                    <div class="progress-circle" style="background: conic-gradient(#2e7d32 ${topic.progress}%, #ccc ${topic.progress}% 100%)">${topic.progress}%</div>
+                </li>
+            `).join('') + '</ul>';
+        }
+
+        // Render in-progress topics
+        if (inProgress.length === 0) {
+            inProgressTopics.textContent = 'Belum ada topik yang sedang dijalani.';
+        } else {
+            inProgressTopics.innerHTML = '<ul>' + inProgress.map(topic => `
+                <li>
+                    ${topic.title}
+                    <div class="progress-circle" style="background: conic-gradient(#2e7d32 ${topic.progress}%, #ccc ${topic.progress}% 100%)">${topic.progress}%</div>
+                </li>
+            `).join('') + '</ul>';
+        }
+    } else {
+        console.error('Completed or in-progress topics elements not found');
+    }
+}
+
 // Toggle notification dropdown
 function toggleNotification() {
     const dropdown = document.getElementById('notification-dropdown');
@@ -224,5 +273,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const urlParams = new URLSearchParams(window.location.search);
         const topicId = urlParams.get('topic') || 'asam-basa';
         changeTopic(topicId);
+    } else if (window.location.pathname.includes('profile.html')) {
+        renderProfile();
     }
 });
