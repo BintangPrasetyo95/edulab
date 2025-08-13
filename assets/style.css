@@ -441,6 +441,76 @@ main {
     grid-column: span 2;
 }
 
+.progress-overview {
+    margin-bottom: 2rem;
+}
+
+.progress-overview h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.progress-container {
+    display: flex;
+    justify-content: space-around;
+    gap: 1rem;
+}
+
+.progress-item {
+    text-align: center;
+}
+
+.progress-item h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.subject-grid {
+    margin-bottom: 1.5rem;
+}
+
+.subject-grid h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+}
+
+.subject-card {
+    background: #f9f9f9;
+    border-radius: 8px;
+    padding: 1rem;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.subject-card:hover {
+    transform: scale(1.05);
+}
+
+.subject-card img {
+    width: 100%;
+    max-width: 300px;
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+}
+
+.subject-card h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
 footer {
     text-align: center;
     padding: 1rem;

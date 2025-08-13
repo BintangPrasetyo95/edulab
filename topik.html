@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Beranda - EduLab</title>
+    <title>Topik - EduLab</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./assets/style.css">
 </head>
@@ -19,8 +19,8 @@
             <h1>EduLab</h1>
         </div>
         <nav class="navbar">
-            <a href="#" class="active">Beranda</a>
-            <a href="topik.html" class="normal">Topik</a>
+            <a href="index.html" class="normal">Beranda</a>
+            <a href="#" class="active">Topik</a>
             <a href="#" class="normal">Pre-Lab</a>
             <a href="#" class="normal">Quiz</a>
             <a href="#" class="normal">Praktikum</a>
@@ -92,37 +92,22 @@
 
     <main>
         <div class="main-card">
-            <section class="progress-overview">
-                <h2>Progress Kelas Praktikum</h2>
-                <div class="progress-container">
-                    <div class="progress-item">
-                        <h3>Kelas 10</h3>
-                        <div class="progress-circle" id="progress-kelas-10">0%</div>
-                    </div>
-                    <div class="progress-item">
-                        <h3>Kelas 11</h3>
-                        <div class="progress-circle" id="progress-kelas-11">0%</div>
-                    </div>
-                    <div class="progress-item">
-                        <h3>Kelas 12</h3>
-                        <div class="progress-circle" id="progress-kelas-12">0%</div>
-                    </div>
-                </div>
+            <section class="topic-card">
+                <h2 id="topic-title">Topik: Asam Basa</h2>
+                <img id="topic-image" src="https://placehold.co/300x100?text=Asam+Basa" alt="Asam Basa">
+                <p id="topic-desc">Belajar tentang pH dan reaksi kimia! Ini adalah topik dasar dalam kimia yang mencakup
+                    konsep asam, basa, indikator, dan reaksi netralisasi. Siswa akan mempelajari skala pH, sifat
+                    larutan, dan aplikasi dalam kehidupan sehari-hari seperti pengaturan pH tanah atau obat-obatan.</p>
             </section>
-            <section class="subject-grid">
-                <h2>Mata Pelajaran Praktikum</h2>
-                <div class="grid-container">
-                    <div class="subject-card" onclick="filterSubject('kimia')">
-                        <img src="https://placehold.co/300x100?text=Kimia" alt="Kimia">
-                        <h3>Kimia</h3>
-                        <div class="progress-circle" id="progress-kimia">0%</div>
-                    </div>
-                    <div class="subject-card" onclick="filterSubject('fisika')">
-                        <img src="https://placehold.co/300x100?text=Fisika" alt="Fisika">
-                        <h3>Fisika</h3>
-                        <div class="progress-circle" id="progress-fisika">0%</div>
-                    </div>
-                </div>
+            <section class="progress">
+                <h2>Progress Belajar</h2>
+                <div class="progress-circle" id="progress-circle">75%</div>
+            </section>
+            <section class="quick-buttons" id="quick-buttons">
+                <button class="pre-lab normal"><span>📚</span> Pre-Lab</button>
+                <button class="quiz normal"><span>❓</span> Quiz</button>
+                <button class="praktikum normal"><span>🧪</span> Praktikum</button>
+                <button class="tugas-kelompok disabled"><span>🤝</span> Tugas Kelompok</button>
             </section>
         </div>
     </main>

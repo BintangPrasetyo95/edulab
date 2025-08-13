@@ -47,7 +47,7 @@ function toggleTopic(element) {
     if (topics) topics.classList.toggle('show');
 }
 
-// Update konten topik
+// Update konten topik (for topik.html)
 function changeTopic(topikId) {
     let topik = null;
     for (let kelas in data) {
@@ -103,6 +103,80 @@ function changeTopic(topikId) {
     }
 }
 
+// Filter sidebar by subject (for index.html)
+function filterSubject(subject) {
+    const levels = document.querySelectorAll('.level');
+    levels.forEach(level => {
+        const subLevel = level.nextElementSibling;
+        const mataPelajaran = subLevel.querySelectorAll('.mata-pelajaran');
+        mataPelajaran.forEach(mp => {
+            const mpText = mp.textContent.toLowerCase().trim();
+            if (mpText === subject) {
+                mp.classList.add('open');
+                const topics = mp.nextElementSibling;
+                if (topics) topics.classList.add('show');
+                level.classList.add('open');
+                if (subLevel) subLevel.classList.add('show');
+            } else {
+                mp.classList.remove('open');
+                const topics = mp.nextElementSibling;
+                if (topics) topics.classList.remove('show');
+            }
+        });
+    });
+}
+
+// Calculate and render progress (for index.html)
+function renderProgress() {
+    // Calculate class progress
+    const classProgress = {};
+    for (let kelas in data) {
+        let totalProgress = 0;
+        let topicCount = 0;
+        for (let mp in data[kelas]) {
+            data[kelas][mp].forEach(topic => {
+                totalProgress += topic.progress;
+                topicCount++;
+            });
+        }
+        classProgress[kelas] = topicCount > 0 ? Math.round(totalProgress / topicCount) : 0;
+    }
+
+    // Calculate subject progress
+    const subjectProgress = {
+        'kimia': { total: 0, count: 0 },
+        'fisika': { total: 0, count: 0 }
+    };
+    for (let kelas in data) {
+        for (let mp in data[kelas]) {
+            data[kelas][mp].forEach(topic => {
+                subjectProgress[mp].total += topic.progress;
+                subjectProgress[mp].count++;
+            });
+        }
+    }
+
+    // Render class progress
+    ['10', '11', '12'].forEach(kelas => {
+        const progressCircle = document.getElementById(`progress-kelas-${kelas}`);
+        if (progressCircle) {
+            const progress = classProgress[kelas] || 0;
+            progressCircle.style.background = `conic-gradient(#2e7d32 ${progress}%, #ccc ${progress}% 100%)`;
+            progressCircle.textContent = `${progress}%`;
+        }
+    });
+
+    // Render subject progress
+    ['kimia', 'fisika'].forEach(subject => {
+        const progressCircle = document.getElementById(`progress-${subject}`);
+        if (progressCircle) {
+            const progress = subjectProgress[subject].count > 0 ? Math.round(subjectProgress[subject].total / subjectProgress[subject].count) : 0;
+            progressCircle.style.background = `conic-gradient(#2e7d32 ${progress}%, #ccc ${progress}% 100%)`;
+            progressCircle.textContent = `${progress}%`;
+        }
+    });
+}
+
 // Toggle notification dropdown
 function toggleNotification() {
     const dropdown = document.getElementById('notification-dropdown');
@@ -132,3 +206,12 @@ const notificationDropdown = document.getElementById('notification-dropdown');
 if (notificationDropdown) {
     notificationDropdown.innerHTML = '<h3>Notifikasi</h3>' + notifications.map(n => `<p>${n}</p>`).join('');
 }
+
+// Initialize page-specific functionality
+document.addEventListener('DOMContentLoaded', () => {
+    if (window.location.pathname.includes('index.html') || window.location.pathname === '/') {
+        renderProgress();
+    } else if (window.location.pathname.includes('topik.html')) {
+        changeTopic('asam-basa'); // Initialize with Asam Basa
+    }
+});
