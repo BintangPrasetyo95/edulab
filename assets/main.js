@@ -33,6 +33,14 @@ const notifications = [
     'Tugas kelompok harus selesai minggu ini.'
 ];
 
+// Hide loader when page is fully loaded
+window.onload = function () {
+    const loader = document.querySelector('.loader');
+    if (loader) {
+        loader.style.display = 'none';
+    }
+};
+
 // Toggle level (Kelas)
 function toggleLevel(element) {
     element.classList.toggle('open');

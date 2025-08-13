@@ -14,6 +14,46 @@ body {
     overflow-x: hidden;
 }
 
+.loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.9);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 5px solid #1565c0;
+    border-top: 5px solid transparent;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+.loader p {
+    margin-top: 1rem;
+    font-size: 1.2rem;
+    color: #1565c0;
+    font-weight: 700;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
 .bg-circle {
     position: absolute;
     border-radius: 50%;
@@ -60,6 +100,12 @@ header {
 .header-left img {
     width: 2rem;
     height: 2rem;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.header-left img:hover {
+    transform: scale(1.05);
 }
 
 header h1 {
@@ -230,6 +276,12 @@ aside .sidebar-header {
 aside .sidebar-header img {
     width: 2rem;
     height: 2rem;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+aside .sidebar-header img:hover {
+    transform: scale(1.05);
 }
 
 aside .sidebar-header h2 {
@@ -628,4 +680,4 @@ footer {
     color: white;
     font-size: 0.9rem;
     z-index: 1;
-}
+} 

@@ -10,12 +10,17 @@
 </head>
 
 <body>
+    <div class="loader">
+        <div class="spinner"></div>
+        <p>Loading...</p>
+    </div>
     <div class="bg-circle circle1"></div>
     <div class="bg-circle circle2"></div>
 
     <header>
         <div class="header-left">
-            <img src="https://placehold.co/32x32?text=E" alt="Logo EduLab">
+            <img src="https://placehold.co/32x32?text=E" alt="Logo EduLab"
+                onclick="window.location.href='./index.html'">
             <h1 onclick="window.location.href='./index.html'">EduLab</h1>
         </div>
         <div class="header-right">
@@ -42,7 +47,8 @@
 
     <aside>
         <div class="sidebar-header">
-            <img src="https://placehold.co/32x32?text=E" alt="Logo EduLab">
+            <img src="https://placehold.co/32x32?text=E" alt="Logo EduLab"
+                onclick="window.location.href='./index.html'">
             <h2>EduLab</h2>
         </div>
         <hr>
@@ -51,7 +57,7 @@
             <div class="mata-pelajaran" onclick="toggleTopic(this)"><span class="arrow">▶</span> Kimia</div>
             <div class="topics">
                 <div class="topic" onclick="window.location.href='./topik.html?topic=asam-basa'">Asam Basa</div>
-                <div class="topic" onclick="window.location.href='./topik.html,axis:0px; display: block;'">Redoks</div>
+                <div class="topic" onclick="window.location.href='./topik.html?topic=redoks'">Redoks</div>
             </div>
             <div class="mata-pelajaran" onclick="toggleTopic(this)"><span class="arrow">▶</span> Fisika</div>
             <div class="topics">
