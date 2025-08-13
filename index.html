@@ -20,11 +20,10 @@
         </div>
         <nav class="navbar">
             <a href="#" class="active">Beranda</a>
-            <a href="topik.html" class="normal">Topik</a>
-            <a href="#" class="normal">Pre-Lab</a>
-            <a href="#" class="normal">Quiz</a>
-            <a href="#" class="normal">Praktikum</a>
-            <a href="#" class="disabled">Tugas Kelompok</a>
+            <a href="./topik.html" class="normal">Topik</a>
+            <a href="./modul.html" class="normal">Modul</a>
+            <a href="./praktikum.html" class="normal">Praktikum</a>
+            <a href="./kelompok.html" class="disabled">Tugas Kelompok</a>
         </nav>
         <div class="header-right">
             <div class="notification" onclick="toggleNotification()">
@@ -109,20 +108,9 @@
                     </div>
                 </div>
             </section>
-            <section class="subject-grid">
-                <h2>Mata Pelajaran Praktikum</h2>
-                <div class="grid-container">
-                    <div class="subject-card" onclick="filterSubject('kimia')">
-                        <img src="https://placehold.co/300x100?text=Kimia" alt="Kimia">
-                        <h3>Kimia</h3>
-                        <div class="progress-circle" id="progress-kimia">0%</div>
-                    </div>
-                    <div class="subject-card" onclick="filterSubject('fisika')">
-                        <img src="https://placehold.co/300x100?text=Fisika" alt="Fisika">
-                        <h3>Fisika</h3>
-                        <div class="progress-circle" id="progress-fisika">0%</div>
-                    </div>
-                </div>
+            <section class="topic-grid">
+                <h2>Topik Praktikum</h2>
+                <div class="grid-container" id="topic-grid-container"></div>
             </section>
         </div>
     </main>

@@ -468,11 +468,11 @@ main {
     margin-bottom: 0.5rem;
 }
 
-.subject-grid {
+.topic-grid {
     margin-bottom: 1.5rem;
 }
 
-.subject-grid h2 {
+.topic-grid h2 {
     font-size: 1.5rem;
     font-weight: 700;
     margin-bottom: 1rem;
@@ -485,7 +485,7 @@ main {
     gap: 1rem;
 }
 
-.subject-card {
+.topic-card {
     background: #f9f9f9;
     border-radius: 8px;
     padding: 1rem;
@@ -494,20 +494,34 @@ main {
     transition: transform 0.2s;
 }
 
-.subject-card:hover {
+.topic-card:hover {
     transform: scale(1.05);
 }
 
-.subject-card img {
+.topic-card img {
     width: 100%;
     max-width: 300px;
     border-radius: 4px;
     margin-bottom: 0.5rem;
 }
 
-.subject-card h3 {
+.topic-card h3 {
     font-size: 1.2rem;
     font-weight: 700;
+    margin-bottom: 0.3rem;
+}
+
+.topic-card .category {
+    font-size: 0.9rem;
+    font-weight: 400;
+    color: #1565c0;
+    margin-bottom: 0.3rem;
+}
+
+.topic-card .short-desc {
+    font-size: 0.8rem;
+    color: #666;
+    line-height: 1.4;
     margin-bottom: 0.5rem;
 }
 

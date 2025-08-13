@@ -126,7 +126,13 @@ function filterSubject(subject) {
     });
 }
 
-// Calculate and render progress (for index.html)
+// Truncate text for short descriptions
+function truncateText(text, maxLength) {
+    if (text.length <= maxLength) return text;
+    return text.substring(0, maxLength).trim() + '...';
+}
+
+// Render progress and topic grid (for index.html)
 function renderProgress() {
     // Calculate class progress
     const classProgress = {};
@@ -142,20 +148,6 @@ function renderProgress() {
         classProgress[kelas] = topicCount > 0 ? Math.round(totalProgress / topicCount) : 0;
     }
 
-    // Calculate subject progress
-    const subjectProgress = {
-        'kimia': { total: 0, count: 0 },
-        'fisika': { total: 0, count: 0 }
-    };
-    for (let kelas in data) {
-        for (let mp in data[kelas]) {
-            data[kelas][mp].forEach(topic => {
-                subjectProgress[mp].total += topic.progress;
-                subjectProgress[mp].count++;
-            });
-        }
-    }
-
     // Render class progress
     ['10', '11', '12'].forEach(kelas => {
         const progressCircle = document.getElementById(`progress-kelas-${kelas}`);
@@ -166,15 +158,32 @@ function renderProgress() {
         }
     });
 
-    // Render subject progress
-    ['kimia', 'fisika'].forEach(subject => {
-        const progressCircle = document.getElementById(`progress-${subject}`);
-        if (progressCircle) {
-            const progress = subjectProgress[subject].count > 0 ? Math.round(subjectProgress[subject].total / subjectProgress[subject].count) : 0;
-            progressCircle.style.background = `conic-gradient(#2e7d32 ${progress}%, #ccc ${progress}% 100%)`;
-            progressCircle.textContent = `${progress}%`;
+    // Render topic grid
+    const topicGridContainer = document.getElementById('topic-grid-container');
+    if (topicGridContainer) {
+        topicGridContainer.innerHTML = '';
+        for (let kelas in data) {
+            for (let mp in data[kelas]) {
+                data[kelas][mp].forEach(topic => {
+                    const topicCard = document.createElement('div');
+                    topicCard.className = 'topic-card';
+                    topicCard.setAttribute('onclick', `filterSubject('${mp}')`);
+                    topicCard.innerHTML = `
+                        <img src="${topic.image}" alt="${topic.title}">
+                        <h3>${topic.title}</h3>
+                        <div class="category">${mp.charAt(0).toUpperCase() + mp.slice(1)}</div>
+                        <p class="short-desc">${truncateText(topic.desc, 100)}</p>
+                        <div class="progress-circle" id="progress-${topic.id}">${topic.progress}%</div>
+                    `;
+                    topicGridContainer.appendChild(topicCard);
+                    const progressCircle = document.getElementById(`progress-${topic.id}`);
+                    if (progressCircle) {
+                        progressCircle.style.background = `conic-gradient(#2e7d32 ${topic.progress}%, #ccc ${topic.progress}% 100%)`;
+                    }
+                });
+            }
         }
-    });
+    }
 }
 
 // Toggle notification dropdown
