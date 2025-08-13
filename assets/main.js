@@ -167,7 +167,7 @@ function renderProgress() {
                 data[kelas][mp].forEach(topic => {
                     const topicCard = document.createElement('div');
                     topicCard.className = 'topic-card';
-                    topicCard.setAttribute('onclick', `filterSubject('${mp}')`);
+                    topicCard.setAttribute('onclick', `window.location.href = './topik.html?topic=${topic.id}'`);
                     topicCard.innerHTML = `
                         <img src="${topic.image}" alt="${topic.title}">
                         <h3>${topic.title}</h3>
@@ -221,6 +221,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (window.location.pathname.includes('index.html') || window.location.pathname === '/') {
         renderProgress();
     } else if (window.location.pathname.includes('topik.html')) {
-        changeTopic('asam-basa'); // Initialize with Asam Basa
+        const urlParams = new URLSearchParams(window.location.search);
+        const topicId = urlParams.get('topic') || 'asam-basa';
+        changeTopic(topicId);
     }
 });
