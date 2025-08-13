@@ -371,7 +371,6 @@ main {
     width: 6rem;
     height: 6rem;
     border-radius: 50%;
-    background: conic-gradient(#2e7d32 75%, #ccc 25%);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -379,6 +378,9 @@ main {
     font-size: 1.2rem;
     font-weight: 700;
     margin: 0 auto;
+    visibility: visible;
+    opacity: 1;
+    z-index: 1;
 }
 
 .quick-buttons {
