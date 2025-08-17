@@ -737,6 +737,51 @@ footer {
     transform: scale(1.05);
 }
 
+.header-boxes {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.header-box {
+    flex: 1;
+    background: #1565c0;
+    color: white;
+    padding: 1.5rem;
+    text-align: center;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.header-box:hover {
+    background: #1976d2;
+    transform: scale(1.05);
+}
+
+.header-box h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.content-card {
+    background: #f9f9f9;
+    border-radius: 8px;
+    padding: 1.5rem;
+    min-height: 600px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.content-card embed,
+.content-card video {
+    width: 100%;
+    border-radius: 8px;
+}
+
 @media (max-width: 768px) {
     main {
         padding: 2rem 1rem;
@@ -757,5 +802,18 @@ footer {
     .praktikum-start button {
         width: 100%;
         justify-content: center;
+    }
+
+    .header-boxes {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .header-box {
+        padding: 1rem;
+    }
+
+    .content-card {
+        min-height: 400px;
     }
 }

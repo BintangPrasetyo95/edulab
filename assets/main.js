@@ -1,4 +1,3 @@
-// Simulasi data hierarki: Tingkat Kelas > Mata Pelajaran > Topik
 const data = {
     '10': {
         'kimia': [
@@ -27,13 +26,11 @@ const data = {
     }
 };
 
-// Simulasi notifikasi
 const notifications = [
     'Quiz Asam Basa besok jam 08.00!',
     'Tugas kelompok harus selesai minggu ini.'
 ];
 
-// Hide loader when page is fully loaded
 window.onload = function () {
     const loader = document.querySelector('.loader');
     if (loader) {
@@ -41,26 +38,27 @@ window.onload = function () {
     }
 };
 
-// Toggle level (Kelas)
 function toggleLevel(element) {
     element.classList.toggle('open');
     const subLevel = element.nextElementSibling;
     if (subLevel) subLevel.classList.toggle('show');
 }
 
-// Toggle topics (Mata Pelajaran)
 function toggleTopic(element) {
     element.classList.toggle('open');
     const topics = element.nextElementSibling;
     if (topics) topics.classList.toggle('show');
 }
 
-// Update konten topik (for topik.html)
 function changeTopic(topikId) {
-    window.location.href = `./topik.html?topic=${topikId}`;
+    const currentPath = window.location.pathname;
+    if (currentPath.includes('modul.html')) {
+        window.location.href = `./modul.html?topic=${topikId}`;
+    } else {
+        window.location.href = `./topik.html?topic=${topikId}`;
+    }
 }
 
-// Render topic content for topik.html or praktikum content for start-praktikum.html
 function renderTopicContent() {
     const urlParams = new URLSearchParams(window.location.search);
     const topicId = urlParams.get('topic') || 'asam-basa';
@@ -79,9 +77,7 @@ function renderTopicContent() {
         if (topik) break;
     }
 
-    // Update sidebar for topik.html and start-praktikum.html
-    if (window.location.pathname.includes('topik.html') || window.location.pathname.includes('start-praktikum.html')) {
-        // Reset all sidebar sections to collapsed state
+    if (window.location.pathname.includes('topik.html') || window.location.pathname.includes('start-praktikum.html') || window.location.pathname.includes('modul.html')) {
         const levels = document.querySelectorAll('.level');
         levels.forEach(level => {
             level.classList.remove('open');
@@ -103,7 +99,6 @@ function renderTopicContent() {
             }
         });
 
-        // Expand relevant sections and highlight current topic
         if (topik) {
             levels.forEach(level => {
                 const levelText = level.textContent.replace(/▶\s*/, '').trim().toLowerCase();
@@ -137,10 +132,8 @@ function renderTopicContent() {
         }
     }
 
-    // Handle topik.html content
     if (window.location.pathname.includes('topik.html')) {
         if (topik) {
-            // Update topic card
             const topicTitle = document.getElementById('topic-title');
             const topicImage = document.getElementById('topic-image');
             const topicDesc = document.getElementById('topic-desc');
@@ -152,7 +145,6 @@ function renderTopicContent() {
                 console.error('Topic elements not found');
             }
 
-            // Update progress
             const progressCircle = document.getElementById('progress-circle');
             if (progressCircle) {
                 progressCircle.style.background = `conic-gradient(#2e7d32 ${topik.progress}%, #ccc ${topik.progress}% 100%)`;
@@ -164,7 +156,6 @@ function renderTopicContent() {
                 console.error('Progress circle not found');
             }
 
-            // Update quick buttons
             const quickButtons = document.getElementById('quick-buttons');
             if (quickButtons) {
                 if (topik.id === 'asam-basa') {
@@ -186,7 +177,6 @@ function renderTopicContent() {
     }
 }
 
-// Filter sidebar by subject (for index.html)
 function filterSubject(subject) {
     const levels = document.querySelectorAll('.level');
     levels.forEach(level => {
@@ -209,15 +199,12 @@ function filterSubject(subject) {
     });
 }
 
-// Truncate text for short descriptions
 function truncateText(text, maxLength) {
     if (text.length <= maxLength) return text;
     return text.substring(0, maxLength).trim() + '...';
 }
 
-// Render progress and topic grid (for index.html)
 function renderProgress() {
-    // Calculate class progress
     const classProgress = {};
     for (let kelas in data) {
         let totalProgress = 0;
@@ -231,7 +218,6 @@ function renderProgress() {
         classProgress[kelas] = topicCount > 0 ? Math.round(totalProgress / topicCount) : 0;
     }
 
-    // Render class progress
     ['10', '11', '12'].forEach(kelas => {
         const progressCircle = document.getElementById(`progress-kelas-${kelas}`);
         if (progressCircle) {
@@ -241,7 +227,6 @@ function renderProgress() {
         }
     });
 
-    // Render topic grid
     const topicGridContainer = document.getElementById('topic-grid-container');
     if (topicGridContainer) {
         topicGridContainer.innerHTML = '';
@@ -269,7 +254,6 @@ function renderProgress() {
     }
 }
 
-// Render profile page content (for profile.html)
 function renderProfile() {
     const completedTopics = document.getElementById('completed-topics');
     const inProgressTopics = document.getElementById('inprogress-topics-container');
@@ -277,7 +261,6 @@ function renderProfile() {
         const completed = [];
         const inProgress = [];
 
-        // Collect topics based on progress
         for (let kelas in data) {
             for (let mp in data[kelas]) {
                 data[kelas][mp].forEach(topic => {
@@ -290,7 +273,6 @@ function renderProfile() {
             }
         }
 
-        // Render completed topics
         if (completed.length === 0) {
             completedTopics.textContent = 'Belum ada topik yang selesai.';
         } else {
@@ -314,7 +296,6 @@ function renderProfile() {
             });
         }
 
-        // Render in-progress topics
         if (inProgress.length === 0) {
             inProgressTopics.textContent = 'Belum ada topik yang sedang dijalani.';
         } else {
@@ -342,7 +323,6 @@ function renderProfile() {
     }
 }
 
-// Toggle notification dropdown
 function toggleNotification() {
     const dropdown = document.getElementById('notification-dropdown');
     if (dropdown) {
@@ -354,7 +334,6 @@ function toggleNotification() {
     }
 }
 
-// Toggle profile dropdown
 function toggleProfile() {
     const dropdown = document.getElementById('profile-dropdown');
     if (dropdown) {
@@ -366,7 +345,6 @@ function toggleProfile() {
     }
 }
 
-// Highlight active nav link
 function highlightActiveNav() {
     const navLinks = document.querySelectorAll('.navbar a');
     const currentPath = window.location.pathname.toLowerCase();
@@ -385,18 +363,36 @@ function highlightActiveNav() {
     });
 }
 
-// Render notifikasi di dropdown
+function renderModulContent(type) {
+    const contentCard = document.getElementById('content-card');
+    if (!contentCard) {
+        console.error('Content card not found');
+        return;
+    }
+    if (type === 'modul') {
+        contentCard.innerHTML = `
+            <embed src="./data/MODUL ASAM BASA_merged.pdf" type="application/pdf" width="100%" height="600px">
+        `;
+    } else if (type === 'video') {
+        contentCard.innerHTML = `
+            <video controls width="100%" height="400px">
+                <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        `;
+    }
+}
+
 const notificationDropdown = document.getElementById('notification-dropdown');
 if (notificationDropdown) {
     notificationDropdown.innerHTML = '<h3>Notifikasi</h3>' + notifications.map(n => `<p>${n}</p>`).join('');
 }
 
-// Initialize page-specific functionality
 document.addEventListener('DOMContentLoaded', () => {
     highlightActiveNav();
     if (window.location.pathname.includes('index.html') || window.location.pathname === '/') {
         renderProgress();
-    } else if (window.location.pathname.includes('topik.html') || window.location.pathname.includes('start-praktikum.html')) {
+    } else if (window.location.pathname.includes('topik.html') || window.location.pathname.includes('start-praktikum.html') || window.location.pathname.includes('modul.html')) {
         renderTopicContent();
     } else if (window.location.pathname.includes('profile.html')) {
         renderProfile();
