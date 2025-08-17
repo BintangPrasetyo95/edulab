@@ -170,8 +170,12 @@ header h1:hover {
     transition: transform 0.2s;
 }
 
-.notification-icon:hover,
-.profile-icon:hover {
+.notification-icon:hover {
+    transform: scale(1.1);
+}
+
+.profile:hover img,
+.profile:hover .profile-icon {
     transform: scale(1.1);
 }
 
@@ -246,6 +250,7 @@ header h1:hover {
     width: 2rem;
     height: 2rem;
     border-radius: 50%;
+    transition: transform 0.2s;
 }
 
 aside {
@@ -287,6 +292,12 @@ aside .sidebar-header img:hover {
 aside .sidebar-header h2 {
     font-size: 1.2rem;
     font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+aside .sidebar-header h2:hover {
+    transform: scale(1.05);
 }
 
 aside hr {
@@ -375,6 +386,11 @@ aside .topic {
 }
 
 aside .topic:hover {
+    background: #1565c0;
+    color: white;
+}
+
+aside .topic.active {
     background: #1565c0;
     color: white;
 }
@@ -571,7 +587,7 @@ main {
 }
 
 .praktikum {
-    background: linear-gradient(to right, #1565c0 80%, #ccc 80%);
+    background: #1565c0;
 }
 
 .tugas-kelompok {
@@ -680,4 +696,66 @@ footer {
     color: white;
     font-size: 0.9rem;
     z-index: 1;
-} 
+}
+
+.praktikum-start {
+    background: #f9f9f9;
+    border-radius: 8px;
+    padding: 1.5rem;
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.praktikum-start h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.praktikum-start p {
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin-bottom: 1rem;
+}
+
+.praktikum-start button {
+    color: white;
+    border: none;
+    padding: 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    transition: transform 0.2s;
+    margin: 0 auto;
+}
+
+.praktikum-start button:hover:not(.disabled) {
+    transform: scale(1.05);
+}
+
+@media (max-width: 768px) {
+    main {
+        padding: 2rem 1rem;
+    }
+
+    aside {
+        width: 200px;
+    }
+
+    .main-card {
+        padding: 1rem;
+    }
+
+    .quick-buttons {
+        grid-template-columns: 1fr;
+    }
+
+    .praktikum-start button {
+        width: 100%;
+        justify-content: center;
+    }
+}

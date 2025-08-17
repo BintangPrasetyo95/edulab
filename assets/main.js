@@ -60,65 +60,129 @@ function changeTopic(topikId) {
     window.location.href = `./topik.html?topic=${topikId}`;
 }
 
-// Render topic content for topik.html
+// Render topic content for topik.html or praktikum content for start-praktikum.html
 function renderTopicContent() {
     const urlParams = new URLSearchParams(window.location.search);
     const topicId = urlParams.get('topic') || 'asam-basa';
     let topik = null;
     let category = '';
-    for (let kelas in data) {
-        for (let mp in data[kelas]) {
-            topik = data[kelas][mp].find(t => t.id === topicId);
+    let kelas = '';
+    for (let k in data) {
+        for (let mp in data[k]) {
+            topik = data[k][mp].find(t => t.id === topicId);
             if (topik) {
                 category = mp;
+                kelas = k;
                 break;
             }
         }
         if (topik) break;
     }
-    if (topik) {
-        // Update topic card
-        const topicTitle = document.getElementById('topic-title');
-        const topicImage = document.getElementById('topic-image');
-        const topicDesc = document.getElementById('topic-desc');
-        if (topicTitle && topicImage && topicDesc) {
-            topicTitle.textContent = `Topik: ${topik.title}`;
-            topicImage.src = topik.image;
-            topicDesc.textContent = topik.desc;
-        } else {
-            console.error('Topic elements not found');
-        }
 
-        // Update progress
-        const progressCircle = document.getElementById('progress-circle');
-        if (progressCircle) {
-            progressCircle.style.background = `conic-gradient(#2e7d32 ${topik.progress}%, #ccc ${topik.progress}% 100%)`;
-            progressCircle.textContent = `${topik.progress}%`;
-            progressCircle.style.display = 'flex';
-            progressCircle.style.visibility = 'visible';
-            progressCircle.style.opacity = '1';
-        } else {
-            console.error('Progress circle not found');
-        }
+    // Update sidebar for topik.html and start-praktikum.html
+    if (window.location.pathname.includes('topik.html') || window.location.pathname.includes('start-praktikum.html')) {
+        // Reset all sidebar sections to collapsed state
+        const levels = document.querySelectorAll('.level');
+        levels.forEach(level => {
+            level.classList.remove('open');
+            const subLevel = level.nextElementSibling;
+            if (subLevel) {
+                subLevel.classList.remove('show');
+                const mataPelajaran = subLevel.querySelectorAll('.mata-pelajaran');
+                mataPelajaran.forEach(mp => {
+                    mp.classList.remove('open');
+                    const topics = mp.nextElementSibling;
+                    if (topics) {
+                        topics.classList.remove('show');
+                        const topicElements = topics.querySelectorAll('.topic');
+                        topicElements.forEach(topic => {
+                            topic.classList.remove('active');
+                        });
+                    }
+                });
+            }
+        });
 
-        // Update quick buttons
-        const quickButtons = document.getElementById('quick-buttons');
-        if (quickButtons) {
-            if (topik.id === 'asam-basa') {
-                quickButtons.innerHTML = `
-                    <button class="pre-lab normal"><span>📚</span> Pre-Lab</button>
-                    <button class="quiz normal"><span>❓</span> Quiz</button>
-                    <button class="praktikum normal"><span>🧪</span> Praktikum</button>
-                    <button class="tugas-kelompok disabled"><span>🤝</span> Tugas Kelompok</button>
-                `;
+        // Expand relevant sections and highlight current topic
+        if (topik) {
+            levels.forEach(level => {
+                const levelText = level.textContent.replace(/▶\s*/, '').trim().toLowerCase();
+                const targetLevel = `kelas ${kelas}`.toLowerCase();
+                if (levelText === targetLevel) {
+                    level.classList.add('open');
+                    const subLevel = level.nextElementSibling;
+                    if (subLevel) {
+                        subLevel.classList.add('show');
+                        const mataPelajaran = subLevel.querySelectorAll('.mata-pelajaran');
+                        mataPelajaran.forEach(mp => {
+                            const mpText = mp.textContent.replace(/▶\s*/, '').trim().toLowerCase();
+                            if (mpText === category.toLowerCase()) {
+                                mp.classList.add('open');
+                                const topics = mp.nextElementSibling;
+                                if (topics) {
+                                    topics.classList.add('show');
+                                    const topicElements = topics.querySelectorAll('.topic');
+                                    topicElements.forEach(topic => {
+                                        const topicText = topic.textContent.trim().toLowerCase();
+                                        if (topicText === topik.title.toLowerCase()) {
+                                            topic.classList.add('active');
+                                        }
+                                    });
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+        }
+    }
+
+    // Handle topik.html content
+    if (window.location.pathname.includes('topik.html')) {
+        if (topik) {
+            // Update topic card
+            const topicTitle = document.getElementById('topic-title');
+            const topicImage = document.getElementById('topic-image');
+            const topicDesc = document.getElementById('topic-desc');
+            if (topicTitle && topicImage && topicDesc) {
+                topicTitle.textContent = `Topik: ${topik.title}`;
+                topicImage.src = topik.image;
+                topicDesc.textContent = topik.desc;
             } else {
-                quickButtons.innerHTML = '<div class="coming-soon">COMING SOON</div>';
+                console.error('Topic elements not found');
+            }
+
+            // Update progress
+            const progressCircle = document.getElementById('progress-circle');
+            if (progressCircle) {
+                progressCircle.style.background = `conic-gradient(#2e7d32 ${topik.progress}%, #ccc ${topik.progress}% 100%)`;
+                progressCircle.textContent = `${topik.progress}%`;
+                progressCircle.style.display = 'flex';
+                progressCircle.style.visibility = 'visible';
+                progressCircle.style.opacity = '1';
+            } else {
+                console.error('Progress circle not found');
+            }
+
+            // Update quick buttons
+            const quickButtons = document.getElementById('quick-buttons');
+            if (quickButtons) {
+                if (topik.id === 'asam-basa') {
+                    quickButtons.innerHTML = `
+                        <button class="pre-lab normal"><span>📚</span> Pre-Lab</button>
+                        <button class="quiz normal"><span>❓</span> Quiz</button>
+                        <button class="praktikum normal" onclick="window.location.href='./start-praktikum.html'"><span>🧪</span> Praktikum</button>
+                        <button class="tugas-kelompok disabled"><span>🤝</span> Tugas Kelompok</button>
+                    `;
+                } else {
+                    quickButtons.innerHTML = '<div class="coming-soon">COMING SOON</div>';
+                }
+            } else {
+                console.error('Quick buttons not found');
             }
         } else {
-            console.error('Quick buttons not found');
+            console.error(`Topic with ID ${topicId} not found`);
         }
-    } else {
-        console.error(`Topic with ID ${topicId} not found`);
     }
 }
 
@@ -129,7 +193,7 @@ function filterSubject(subject) {
         const subLevel = level.nextElementSibling;
         const mataPelajaran = subLevel.querySelectorAll('.mata-pelajaran');
         mataPelajaran.forEach(mp => {
-            const mpText = mp.textContent.toLowerCase().trim();
+            const mpText = mp.textContent.replace(/▶\s*/, '').trim().toLowerCase();
             if (mpText === subject) {
                 mp.classList.add('open');
                 const topics = mp.nextElementSibling;
@@ -302,6 +366,25 @@ function toggleProfile() {
     }
 }
 
+// Highlight active nav link
+function highlightActiveNav() {
+    const navLinks = document.querySelectorAll('.navbar a');
+    const currentPath = window.location.pathname.toLowerCase();
+    navLinks.forEach(link => {
+        link.classList.remove('active');
+        const href = link.getAttribute('href').toLowerCase().replace(/^\.\//, '');
+        if (currentPath.includes('start-praktikum.html') || currentPath.includes('praktikum.html')) {
+            if (href === 'start-praktikum.html') {
+                link.classList.add('active');
+            }
+        } else if (currentPath.includes('topik.html') && href === 'topik.html') {
+            link.classList.add('active');
+        } else if (currentPath.includes(href)) {
+            link.classList.add('active');
+        }
+    });
+}
+
 // Render notifikasi di dropdown
 const notificationDropdown = document.getElementById('notification-dropdown');
 if (notificationDropdown) {
@@ -310,9 +393,10 @@ if (notificationDropdown) {
 
 // Initialize page-specific functionality
 document.addEventListener('DOMContentLoaded', () => {
+    highlightActiveNav();
     if (window.location.pathname.includes('index.html') || window.location.pathname === '/') {
         renderProgress();
-    } else if (window.location.pathname.includes('topik.html')) {
+    } else if (window.location.pathname.includes('topik.html') || window.location.pathname.includes('start-praktikum.html')) {
         renderTopicContent();
     } else if (window.location.pathname.includes('profile.html')) {
         renderProfile();
