@@ -21,6 +21,18 @@ function summonTool(type) {
             <div class="beaker-spout"></div>
             <div class="tool-name">Beaker</div>
         `;
+    } else if (type === 'Pipette') {
+        tool.classList.add('pipette');
+        tool.innerHTML = `
+            <div class="pipette-body"></div>
+            <div class="tool-name">Pipet</div>
+        `;
+    } else if (type === 'Litmus Paper') {
+        tool.classList.add('litmus-paper');
+        tool.innerHTML = `
+            <div class="litmus-body"></div>
+            <div class="tool-name">Kertas Lakmus</div>
+        `;
     } else {
         tool.classList.add('bottle');
         const labelText = type.includes('Acid') ? 'HCl\npH 2' :

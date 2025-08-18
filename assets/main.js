@@ -39,12 +39,14 @@ window.onload = function () {
 };
 
 function toggleLevel(element) {
+    console.log('Toggling level:', element.textContent);
     element.classList.toggle('open');
     const subLevel = element.nextElementSibling;
     if (subLevel) subLevel.classList.toggle('show');
 }
 
 function toggleTopic(element) {
+    console.log('Toggling topic:', element.textContent);
     element.classList.toggle('open');
     const topics = element.nextElementSibling;
     if (topics) topics.classList.toggle('show');
@@ -52,6 +54,7 @@ function toggleTopic(element) {
 
 function changeTopic(topikId) {
     const currentPath = window.location.pathname;
+    console.log('Changing topic to:', topikId, 'from:', currentPath);
     if (currentPath.includes('modul.html')) {
         window.location.href = `./modul.html?topic=${topikId}`;
     } else {
@@ -60,6 +63,7 @@ function changeTopic(topikId) {
 }
 
 function renderTopicContent() {
+    console.log('renderTopicContent running for:', window.location.pathname);
     const urlParams = new URLSearchParams(window.location.search);
     const topicId = urlParams.get('topic') || 'asam-basa';
     let topik = null;
@@ -291,7 +295,7 @@ function renderProfile() {
                 completedTopics.appendChild(topicCard);
                 const progressCircle = document.getElementById(`progress-${topic.id}`);
                 if (progressCircle) {
-                    progressCircle.style.background = `conic-gradient(#2e7d32 ${topic.progress}%, #ccc ${topic.progress}% 100%)`;
+                    progressCircle.style.background = `conic-gradient(#2e7d32 ${topik.progress}%, #ccc ${topik.progress}% 100%)`;
                 }
             });
         }
@@ -314,7 +318,7 @@ function renderProfile() {
                 inProgressTopics.appendChild(topicCard);
                 const progressCircle = document.getElementById(`progress-${topic.id}`);
                 if (progressCircle) {
-                    progressCircle.style.background = `conic-gradient(#2e7d32 ${topic.progress}%, #ccc ${topic.progress}% 100%)`;
+                    progressCircle.style.background = `conic-gradient(#2e7d32 ${topik.progress}%, #ccc ${topik.progress}% 100%)`;
                 }
             });
         }
@@ -346,33 +350,59 @@ function toggleProfile() {
 }
 
 function highlightActiveNav() {
+    console.log('highlightActiveNav running, currentPath:', window.location.pathname);
     const navLinks = document.querySelectorAll('.navbar a');
+    const urlParams = new URLSearchParams(window.location.search);
+    const topicId = urlParams.get('topic') || 'asam-basa';
     const currentPath = window.location.pathname.toLowerCase();
+
     navLinks.forEach(link => {
-        link.classList.remove('active');
+        link.classList.remove('active', 'disabled');
         const href = link.getAttribute('href').toLowerCase().replace(/^\.\//, '');
-        if (currentPath.includes('start-praktikum.html') || currentPath.includes('praktikum.html')) {
-            if (href === 'start-praktikum.html') {
-                link.classList.add('active');
+        if (href !== 'index.html') {
+            if (topicId !== 'asam-basa') {
+                link.classList.add('disabled');
+            } else {
+                if (currentPath.includes('start-praktikum.html') || currentPath.includes('praktikum.html')) {
+                    if (href === 'start-praktikum.html') {
+                        link.classList.add('active');
+                    }
+                } else if (currentPath.includes('topik.html') && href === 'topik.html') {
+                    link.classList.add('active');
+                } else if (currentPath.includes('modul.html') && href === 'modul.html') {
+                    link.classList.add('active');
+                }
             }
-        } else if (currentPath.includes('topik.html') && href === 'topik.html') {
-            link.classList.add('active');
-        } else if (currentPath.includes(href)) {
-            link.classList.add('active');
         }
     });
 }
 
 function renderModulContent(type) {
+    console.log('renderModulContent running, type:', type);
     const contentCard = document.getElementById('content-card');
     if (!contentCard) {
         console.error('Content card not found');
         return;
     }
+    const headerBoxes = document.querySelectorAll('.header-box');
+    headerBoxes.forEach(box => box.classList.remove('active'));
+    const clickedBox = document.querySelector(`.header-box.${type}`);
+    if (clickedBox) {
+        clickedBox.classList.add('active');
+    }
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const topicId = urlParams.get('topic') || 'asam-basa';
     if (type === 'modul') {
-        contentCard.innerHTML = `
-            <embed src="./data/MODUL ASAM BASA_merged.pdf" type="application/pdf" width="100%" height="600px">
-        `;
+        if (topicId === 'asam-basa') {
+            contentCard.innerHTML = `
+                <embed src="./data/MODUL ASAM BASA_merged.pdf" type="application/pdf" width="100%" height="600px">
+            `;
+        } else {
+            contentCard.innerHTML = `
+                <p>Modul untuk topik ini belum tersedia. Silakan pilih topik lain.</p>
+            `;
+        }
     } else if (type === 'video') {
         contentCard.innerHTML = `
             <video controls width="100%" height="400px">
@@ -394,6 +424,9 @@ document.addEventListener('DOMContentLoaded', () => {
         renderProgress();
     } else if (window.location.pathname.includes('topik.html') || window.location.pathname.includes('start-praktikum.html') || window.location.pathname.includes('modul.html')) {
         renderTopicContent();
+        if (window.location.pathname.includes('modul.html')) {
+            renderModulContent('modul');
+        }
     } else if (window.location.pathname.includes('profile.html')) {
         renderProfile();
     }

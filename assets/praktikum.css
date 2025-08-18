@@ -1,6 +1,7 @@
 body {
     font-family: 'Roboto', Arial, sans-serif;
-    background: #e0f7fa; /* Matches EduLab background */
+    background: #e0f7fa;
+    /* Matches EduLab background */
     margin: 0;
     padding: 20px;
 }
@@ -30,7 +31,8 @@ body {
     width: 800px;
     height: 600px;
     border: 3px solid #2c3e50;
-    background: #f5f6f5; /* Matches EduLab card background */
+    background: #f5f6f5;
+    /* Matches EduLab card background */
     position: relative;
     margin: 20px auto;
     overflow: hidden;
@@ -47,7 +49,8 @@ body {
 }
 
 .tool:hover {
-    transform: scale(1.05); /* Matches EduLab hover */
+    transform: scale(1.05);
+    /* Matches EduLab hover */
 }
 
 .beaker {
@@ -59,7 +62,8 @@ body {
 .beaker-body {
     width: 80px;
     height: 100px;
-    background: linear-gradient(45deg, rgba(255, 255, 255, 0.95), rgba(224, 247, 250, 0.9)); /* Adjusted to EduLab palette */
+    background: linear-gradient(45deg, rgba(255, 255, 255, 0.95), rgba(224, 247, 250, 0.9));
+    /* Adjusted to EduLab palette */
     border: 2px solid #2c3e50;
     border-radius: 0 0 40px 40px;
     position: relative;
@@ -189,10 +193,13 @@ body {
 }
 
 @keyframes gentle-ripple {
-    0%, 100% {
+
+    0%,
+    100% {
         transform: scaleX(1);
         opacity: 0.4;
     }
+
     50% {
         transform: scaleX(1.1);
         opacity: 0.6;
@@ -233,17 +240,49 @@ body {
 }
 
 @keyframes shake {
-    0% { transform: translate(0, 0) rotate(0deg); }
-    10% { transform: translate(-2px, -1px) rotate(-2deg); }
-    20% { transform: translate(2px, 1px) rotate(2deg); }
-    30% { transform: translate(-2px, 1px) rotate(-2deg); }
-    40% { transform: translate(2px, -1px) rotate(2deg); }
-    50% { transform: translate(-2px, -1px) rotate(-2deg); }
-    60% { transform: translate(2px, 1px) rotate(2deg); }
-    70% { transform: translate(-2px, 1px) rotate(-2deg); }
-    80% { transform: translate(2px, -1px) rotate(2deg); }
-    90% { transform: translate(-2px, -1px) rotate(-2deg); }
-    100% { transform: translate(0, 0) rotate(0deg); }
+    0% {
+        transform: translate(0, 0) rotate(0deg);
+    }
+
+    10% {
+        transform: translate(-2px, -1px) rotate(-2deg);
+    }
+
+    20% {
+        transform: translate(2px, 1px) rotate(2deg);
+    }
+
+    30% {
+        transform: translate(-2px, 1px) rotate(-2deg);
+    }
+
+    40% {
+        transform: translate(2px, -1px) rotate(2deg);
+    }
+
+    50% {
+        transform: translate(-2px, -1px) rotate(-2deg);
+    }
+
+    60% {
+        transform: translate(2px, 1px) rotate(2deg);
+    }
+
+    70% {
+        transform: translate(-2px, 1px) rotate(-2deg);
+    }
+
+    80% {
+        transform: translate(2px, -1px) rotate(2deg);
+    }
+
+    90% {
+        transform: translate(-2px, -1px) rotate(-2deg);
+    }
+
+    100% {
+        transform: translate(0, 0) rotate(0deg);
+    }
 }
 
 .shaking {
@@ -251,10 +290,21 @@ body {
 }
 
 @keyframes pour {
-    0% { transform: rotate(0deg); }
-    30% { transform: rotate(-25deg); }
-    70% { transform: rotate(-25deg); }
-    100% { transform: rotate(0deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+
+    30% {
+        transform: rotate(-25deg);
+    }
+
+    70% {
+        transform: rotate(-25deg);
+    }
+
+    100% {
+        transform: rotate(0deg);
+    }
 }
 
 .pouring {
@@ -302,4 +352,29 @@ h1 {
     color: #34495e;
     margin-bottom: 20px;
     font-style: italic;
+}
+
+.pipette {
+    width: 20px;
+    height: 100px;
+    position: relative;
+    background: linear-gradient(to bottom, #fff, #e0f7fa);
+    border: 2px solid #2c3e50;
+    border-radius: 10px;
+}
+
+.litmus-paper {
+    width: 30px;
+    height: 80px;
+    position: relative;
+    background: #fff;
+    border: 2px solid #2c3e50;
+    border-radius: 5px;
+}
+
+.litmus-paper .litmus-body {
+    width: 100%;
+    height: 100%;
+    background: white;
+    transition: background-color 0.3s ease;
 }

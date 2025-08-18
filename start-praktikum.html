@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Praktikum - EduLab</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="./assets/style.css?v=1">
+    <link rel="stylesheet" href="./assets/style.css">
 </head>
 
 <body>
@@ -16,7 +16,6 @@
     </div>
     <div class="bg-circle circle1"></div>
     <div class="bg-circle circle2"></div>
-
     <header>
         <div class="header-left">
             <img src="https://placehold.co/32x32?text=E" alt="Logo EduLab"
@@ -25,19 +24,15 @@
         </div>
         <nav class="navbar">
             <a href="./index.html" class="normal">Beranda</a>
-            <a href="./topik.html?topic=asam-basa" class="normal">Topik</a>
+            <a href="./topik.html" class="normal">Topik</a>
             <a href="./modul.html" class="normal">Modul</a>
-            <a href="./start-praktikum.html" class="active">Praktikum</a>
+            <a href="./start-praktikum.html" class="normal">Praktikum</a>
             <a href="./kelompok.html" class="disabled">Tugas Kelompok</a>
         </nav>
         <div class="header-right">
             <div class="notification" onclick="toggleNotification()">
                 <span class="notification-icon">🔔</span>
-                <div class="notification-dropdown" id="notification-dropdown">
-                    <h3>Notifikasi</h3>
-                    <p>Quiz Asam Basa besok jam 08.00!</p>
-                    <p>Tugas kelompok harus selesai minggu ini.</p>
-                </div>
+                <div class="notification-dropdown" id="notification-dropdown"></div>
             </div>
             <div class="profile" onclick="toggleProfile()">
                 <img src="https://placehold.co/32?text=B" alt="Profil">
@@ -51,7 +46,6 @@
             </div>
         </div>
     </header>
-
     <aside>
         <div class="sidebar-header">
             <img src="https://placehold.co/32x32?text=E" alt="Logo EduLab"
@@ -63,54 +57,86 @@
         <div class="sub-level">
             <div class="mata-pelajaran" onclick="toggleTopic(this)"><span class="arrow">▶</span> Kimia</div>
             <div class="topics">
-                <div class="topic" onclick="window.location.href='./topik.html?topic=asam-basa'">Asam Basa</div>
-                <div class="topic" onclick="window.location.href='./topik.html?topic=redoks'">Redoks</div>
+                <div class="topic" onclick="changeTopic('asam-basa')">Asam Basa</div>
+                <div class="topic" onclick="changeTopic('redoks')">Redoks</div>
             </div>
             <div class="mata-pelajaran" onclick="toggleTopic(this)"><span class="arrow">▶</span> Fisika</div>
             <div class="topics">
-                <div class="topic" onclick="window.location.href='./topik.html?topic=gerak'">Gerak Lurus</div>
+                <div class="topic" onclick="changeTopic('gerak')">Gerak Lurus</div>
             </div>
         </div>
         <div class="level" onclick="toggleLevel(this)"><span class="arrow">▶</span> Kelas 11</div>
         <div class="sub-level">
             <div class="mata-pelajaran" onclick="toggleTopic(this)"><span class="arrow">▶</span> Kimia</div>
             <div class="topics">
-                <div class="topic" onclick="window.location.href='./topik.html?topic=stoikiometri'">Stoikiometri</div>
+                <div class="topic" onclick="changeTopic('stoikiometri')">Stoikiometri</div>
             </div>
             <div class="mata-pelajaran" onclick="toggleTopic(this)"><span class="arrow">▶</span> Fisika</div>
             <div class="topics">
-                <div class="topic" onclick="window.location.href='./topik.html?topic=energi'">Energi</div>
+                <div class="topic" onclick="changeTopic('energi')">Energi</div>
             </div>
         </div>
         <div class="level" onclick="toggleLevel(this)"><span class="arrow">▶</span> Kelas 12</div>
         <div class="sub-level">
             <div class="mata-pelajaran" onclick="toggleTopic(this)"><span class="arrow">▶</span> Kimia</div>
             <div class="topics">
-                <div class="topic" onclick="window.location.href='./topik.html?topic=polimer'">Polimer</div>
+                <div class="topic" onclick="changeTopic('polimer')">Polimer</div>
             </div>
             <div class="mata-pelajaran" onclick="toggleTopic(this)"><span class="arrow">▶</span> Fisika</div>
             <div class="topics">
-                <div class="topic" onclick="window.location.href='./topik.html?topic=listrik'">Listrik</div>
+                <div class="topic" onclick="changeTopic('listrik')">Listrik</div>
             </div>
         </div>
     </aside>
-
     <main>
         <div class="main-card">
-            <section class="praktikum-start">
-                <h2>Mulai Praktikum?</h2>
-                <p>Persiapkan diri Anda untuk menjelajahi eksperimen asam-basa secara interaktif!</p>
-                <button class="praktikum normal" onclick="window.location.href='./praktikum.html'"><span>🧪</span> Mulai
-                    Sekarang</button>
-            </section>
+            <div class="questions-section">
+                <h2>Persiapan Praktikum</h2>
+                <div class="question">
+                    <label>1. Apa yang kamu ketahui mengenai teori yang ada di materi Asam Basa?</label>
+                    <textarea placeholder="Masukkan jawabanmu..."></textarea>
+                </div>
+                <div class="question">
+                    <label>2. Apa yang kamu ketahui terkait indikator Asam Basa?</label>
+                    <textarea placeholder="Masukkan jawabanmu..."></textarea>
+                </div>
+                <div class="question">
+                    <label>3. Apa yang kamu ketahui terkait titrasi Asam Basa?</label>
+                    <textarea placeholder="Masukkan jawabanmu..."></textarea>
+                </div>
+                <div class="question">
+                    <label>4. Tuliskan reaksi netralisasi antara HCl dan NaOH</label>
+                    <textarea placeholder="Masukkan jawabanmu..."></textarea>
+                </div>
+                <div class="question">
+                    <label>5. Hitung pH larutan yang terbentuk jika 50 mL HCl 0,1 M dititrasi dengan 25 mL NaOH 0,1
+                        M</label>
+                    <textarea placeholder="Masukkan jawabanmu..."></textarea>
+                </div>
+                <p class="note">Kerjakan Soal-Soal ini sebelum melakukan praktikum!</p>
+            </div>
+            <button onclick="window.location.href='./praktikum.html'" class="praktikum normal">
+                <span>🧪</span> Mulai Praktikum
+            </button>
+            <div class="feedback-section">
+                <h2>Feedback dari Guru</h2>
+                <div class="feedback">
+                    <p class="teacher">Guru Kimia: Ibu Ani</p>
+                    <p>Perhatikan langkah-langkah titrasi dengan cermat untuk hasil yang akurat.</p>
+                    <p class="date">15 Agustus 2025</p>
+                </div>
+                <div class="feedback">
+                    <p class="teacher">Guru Kimia: Pak Budi</p>
+                    <p>Pastikan memahami konsep pH sebelum praktikum untuk mempermudah analisis.</p>
+                    <p class="date">16 Agustus 2025</p>
+                </div>
+            </div>
         </div>
     </main>
-
     <footer>
-        <p>©2025 EduLab</p>
+        <p>&copy; 2025 EduLab. All rights reserved.</p>
     </footer>
-
-    <script src="./assets/main.js?v=1"></script>
+    <script src="./assets/main.js"></script>
 </body>
 
 </html>
