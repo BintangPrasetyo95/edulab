@@ -1,56 +1,147 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+* {
+    box-sizing: border-box;
+}
+
 body {
-    font-family: 'Roboto', Arial, sans-serif;
-    background: #e0f7fa;
-    /* Matches EduLab background */
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     margin: 0;
     padding: 20px;
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* Simplified background */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.2) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255, 118, 117, 0.2) 0%, transparent 50%);
+    z-index: -1;
 }
 
 .back-button {
     position: absolute;
-    top: 10px;
-    left: 10px;
-    padding: 8px 16px;
-    background: linear-gradient(to bottom, #1565c0, #0d47a1);
+    top: 20px;
+    left: 20px;
+    padding: 12px 20px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
     color: white;
-    border: none;
-    border-radius: 5px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
     cursor: pointer;
     font-size: 14px;
-    transition: all 0.3s ease;
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+    font-weight: 500;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
 }
 
 .back-button:hover {
-    background: linear-gradient(to bottom, #1976d2, #1565c0);
+    background: rgba(255, 255, 255, 0.2);
     transform: translateY(-2px);
-    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+}
+
+h1 {
+    text-align: center;
+    color: white;
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin: 60px 0 10px 0;
+    text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    letter-spacing: -0.02em;
+}
+
+.instructions {
+    text-align: center;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 30px;
+    font-size: 1.1rem;
+    font-weight: 400;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+#summon-buttons {
+    text-align: center;
+    margin-bottom: 30px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+}
+
+#summon-buttons button {
+    padding: 15px 25px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(15px);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    cursor: pointer;
+    border-radius: 16px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+#summon-buttons button::before {
+    display: none;
+    /* Removed shimmer effect */
+}
+
+#summon-buttons button:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.2);
 }
 
 #lab-table {
-    width: 800px;
+    width: 900px;
     height: 600px;
-    border: 3px solid #2c3e50;
-    background: #f5f6f5;
-    /* Matches EduLab card background */
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
     position: relative;
-    margin: 20px auto;
-    overflow: hidden;
-    border-radius: 10px;
-    box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.1);
+    margin: 0 auto;
+    overflow: visible;
+    border-radius: 24px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
+}
+
+#lab-table::before {
+    display: none;
+    /* Removed animated border */
 }
 
 .tool {
     position: absolute;
-    cursor: move;
+    cursor: grab;
     user-select: none;
-    filter: drop-shadow(4px 4px 8px rgba(0, 0, 0, 0.3));
-    transition: transform 0.1s ease;
+    filter: drop-shadow(0 8px 25px rgba(0, 0, 0, 0.15));
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 10;
 }
 
 .tool:hover {
-    transform: scale(1.05);
-    /* Matches EduLab hover */
+    transform: scale(1.05) translateY(-5px);
+    filter: drop-shadow(0 15px 35px rgba(0, 0, 0, 0.25));
+    z-index: 20;
+}
+
+.tool:active {
+    cursor: grabbing;
+    transform: scale(0.98);
 }
 
 .beaker {
@@ -62,30 +153,31 @@ body {
 .beaker-body {
     width: 80px;
     height: 100px;
-    background: linear-gradient(45deg, rgba(255, 255, 255, 0.95), rgba(224, 247, 250, 0.9));
-    /* Adjusted to EduLab palette */
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.95), rgba(240, 248, 255, 0.9));
     border: 2px solid #2c3e50;
     border-radius: 0 0 40px 40px;
     position: relative;
     overflow: hidden;
+    box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .beaker-rim {
     width: 84px;
     height: 8px;
-    background: linear-gradient(to bottom, #e0f7fa, #b2ebf2);
+    background: linear-gradient(145deg, #e3f2fd, #bbdefb);
     border: 2px solid #2c3e50;
     border-radius: 4px;
     position: absolute;
     top: -2px;
     left: -4px;
     z-index: 5;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .beaker-spout {
     width: 15px;
     height: 15px;
-    background: linear-gradient(45deg, rgba(255, 255, 255, 0.9), rgba(224, 247, 250, 0.8));
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.9), rgba(240, 248, 255, 0.8));
     border: 2px solid #2c3e50;
     border-radius: 0 8px 8px 0;
     position: absolute;
@@ -103,17 +195,18 @@ body {
 .bottle-body {
     width: 60px;
     height: 100px;
-    background: linear-gradient(45deg, rgba(255, 255, 255, 0.95), rgba(224, 247, 250, 0.9));
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.95), rgba(240, 248, 255, 0.9));
     border: 2px solid #2c3e50;
     border-radius: 8px;
     position: relative;
     overflow: hidden;
+    box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .bottle-neck {
     width: 20px;
     height: 25px;
-    background: linear-gradient(to bottom, #e0f7fa, #b2ebf2);
+    background: linear-gradient(145deg, #e3f2fd, #bbdefb);
     border: 2px solid #2c3e50;
     border-bottom: none;
     border-radius: 4px 4px 0 0;
@@ -125,21 +218,21 @@ body {
 .bottle-cap {
     width: 24px;
     height: 12px;
-    background: linear-gradient(to bottom, #2c3e50, #34495e);
+    background: linear-gradient(145deg, #34495e, #2c3e50);
     border: 2px solid #1a252f;
     border-radius: 6px 6px 2px 2px;
     position: absolute;
     top: -35px;
     left: 16px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
 }
 
 .bottle-label {
     width: 45px;
     height: 60px;
-    background: rgba(255, 255, 255, 0.9);
-    border: 1px solid #b2ebf2;
-    border-radius: 3px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid #e3f2fd;
+    border-radius: 4px;
     position: absolute;
     top: 15px;
     left: 6px;
@@ -149,20 +242,21 @@ body {
     font-size: 8px;
     text-align: center;
     padding: 2px;
-    box-sizing: border-box;
     color: #2c3e50;
+    font-weight: 600;
 }
 
 .tool-name {
     text-align: center;
-    font-weight: bold;
+    font-weight: 600;
     font-size: 10px;
     color: #2c3e50;
-    margin-top: 5px;
-    text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.8);
-    background: rgba(255, 255, 255, 0.7);
-    padding: 2px 4px;
-    border-radius: 3px;
+    margin-top: 8px;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 4px 8px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(5px);
 }
 
 .liquid {
@@ -170,14 +264,14 @@ body {
     position: absolute;
     bottom: 2px;
     left: 2px;
-    transition: height 0.3s ease, background-color 0.3s ease;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     border-radius: 0 0 36px 36px;
     background: linear-gradient(to bottom, transparent 0%, currentColor 20%, currentColor 100%);
+    opacity: 0.9;
 }
 
 .bottle .liquid {
     border-radius: 0 0 6px 6px;
-    width: calc(100% - 4px);
 }
 
 .liquid::before {
@@ -186,98 +280,96 @@ body {
     top: 0;
     left: 10%;
     right: 10%;
-    height: 3px;
-    background: rgba(255, 255, 255, 0.4);
+    height: 4px;
+    background: rgba(255, 255, 255, 0.6);
     border-radius: 50%;
-    animation: gentle-ripple 3s ease-in-out infinite;
-}
-
-@keyframes gentle-ripple {
-
-    0%,
-    100% {
-        transform: scaleX(1);
-        opacity: 0.4;
-    }
-
-    50% {
-        transform: scaleX(1.1);
-        opacity: 0.6;
-    }
 }
 
 .tool-buttons {
     position: absolute;
-    bottom: -35px;
-    left: -10px;
-    right: -10px;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-top: 15px;
     display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 3px;
+    flex-direction: column;
+    gap: 8px;
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 30;
+}
+
+.tool:hover .tool-buttons {
+    opacity: 1;
+    transform: translateX(-50%) translateY(5px);
 }
 
 .tool-buttons button {
-    font-size: 9px;
-    padding: 3px 6px;
-    background: linear-gradient(to bottom, #1565c0, #0d47a1);
-    color: white;
-    border: 1px solid #0d47a1;
-    border-radius: 4px;
+    font-size: 10px;
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+    color: #2c3e50;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
     cursor: pointer;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    transition: all 0.2s ease;
+    font-weight: 500;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    white-space: nowrap;
+    min-width: 80px;
 }
 
 .tool-buttons button:hover {
-    background: linear-gradient(to bottom, #1976d2, #1565c0);
-    transform: translateY(-1px);
+    background: rgba(255, 255, 255, 1);
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    color: #1565c0;
 }
 
 .tool-buttons button:active {
-    transform: translateY(1px);
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    transform: translateY(0) scale(0.98);
 }
 
-@keyframes shake {
+@keyframes enhanced-shake {
     0% {
         transform: translate(0, 0) rotate(0deg);
     }
 
     10% {
-        transform: translate(-2px, -1px) rotate(-2deg);
+        transform: translate(-3px, -2px) rotate(-3deg);
     }
 
     20% {
-        transform: translate(2px, 1px) rotate(2deg);
+        transform: translate(3px, 2px) rotate(3deg);
     }
 
     30% {
-        transform: translate(-2px, 1px) rotate(-2deg);
+        transform: translate(-3px, 2px) rotate(-3deg);
     }
 
     40% {
-        transform: translate(2px, -1px) rotate(2deg);
+        transform: translate(3px, -2px) rotate(3deg);
     }
 
     50% {
-        transform: translate(-2px, -1px) rotate(-2deg);
+        transform: translate(-3px, -2px) rotate(-3deg);
     }
 
     60% {
-        transform: translate(2px, 1px) rotate(2deg);
+        transform: translate(3px, 2px) rotate(3deg);
     }
 
     70% {
-        transform: translate(-2px, 1px) rotate(-2deg);
+        transform: translate(-3px, 2px) rotate(-3deg);
     }
 
     80% {
-        transform: translate(2px, -1px) rotate(2deg);
+        transform: translate(3px, -2px) rotate(3deg);
     }
 
     90% {
-        transform: translate(-2px, -1px) rotate(-2deg);
+        transform: translate(-3px, -2px) rotate(-3deg);
     }
 
     100% {
@@ -286,20 +378,20 @@ body {
 }
 
 .shaking {
-    animation: shake 0.8s ease-in-out;
+    animation: enhanced-shake 1s ease-in-out;
 }
 
-@keyframes pour {
+@keyframes enhanced-pour {
     0% {
         transform: rotate(0deg);
     }
 
-    30% {
-        transform: rotate(-25deg);
+    20% {
+        transform: rotate(-30deg) scale(1.05);
     }
 
-    70% {
-        transform: rotate(-25deg);
+    80% {
+        transform: rotate(-30deg) scale(1.05);
     }
 
     100% {
@@ -308,73 +400,92 @@ body {
 }
 
 .pouring {
-    animation: pour 1.2s ease-in-out;
+    animation: enhanced-pour 1.5s ease-in-out;
 }
 
 .selected {
-    filter: drop-shadow(0 0 12px #ef5350) drop-shadow(4px 4px 8px rgba(0, 0, 0, 0.3));
-    transform: scale(1.05);
-}
-
-#summon-buttons {
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-#summon-buttons button {
-    margin: 5px;
-    padding: 10px 15px;
-    background: linear-gradient(to bottom, #2e7d32, #1b5e20);
-    color: white;
-    border: 1px solid #1b5e20;
-    cursor: pointer;
-    border-radius: 5px;
-    font-weight: bold;
-    transition: all 0.3s ease;
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
-}
-
-#summon-buttons button:hover {
-    background: linear-gradient(to bottom, #4caf50, #2e7d32);
-    transform: translateY(-2px);
-    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
-}
-
-h1 {
-    text-align: center;
-    color: #2c3e50;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-    margin-bottom: 10px;
-}
-
-.instructions {
-    text-align: center;
-    color: #34495e;
-    margin-bottom: 20px;
-    font-style: italic;
+    filter: drop-shadow(0 0 20px #4CAF50) drop-shadow(0 8px 25px rgba(0, 0, 0, 0.15));
+    transform: scale(1.1);
+    z-index: 25;
 }
 
 .pipette {
     width: 20px;
     height: 100px;
     position: relative;
-    background: linear-gradient(to bottom, #fff, #e0f7fa);
+    background: linear-gradient(145deg, #fff, #f0f8ff);
     border: 2px solid #2c3e50;
-    border-radius: 10px;
+    border-radius: 12px;
+    box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .litmus-paper {
     width: 30px;
     height: 80px;
     position: relative;
-    background: #fff;
+    background: linear-gradient(145deg, #fff, #f8f9fa);
     border: 2px solid #2c3e50;
-    border-radius: 5px;
+    border-radius: 6px;
+    box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.05);
 }
 
 .litmus-paper .litmus-body {
     width: 100%;
     height: 100%;
     background: white;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.4s ease;
+    border-radius: 4px;
+}
+
+/* Success/Error message styling */
+.message-toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 15px 20px;
+    border-radius: 12px;
+    color: white;
+    font-weight: 500;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    backdrop-filter: blur(10px);
+    transform: translateX(100%);
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1000;
+}
+
+.message-toast.success {
+    background: rgba(76, 175, 80, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.message-toast.error {
+    background: rgba(244, 67, 54, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.message-toast.show {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+/* Responsive design */
+@media (max-width: 1000px) {
+    #lab-table {
+        width: 95%;
+        max-width: 800px;
+    }
+
+    h1 {
+        font-size: 2rem;
+    }
+
+    #summon-buttons {
+        gap: 10px;
+    }
+
+    #summon-buttons button {
+        padding: 12px 20px;
+        font-size: 0.9rem;
+    }
 }
