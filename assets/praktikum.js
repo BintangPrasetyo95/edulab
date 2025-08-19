@@ -26,12 +26,19 @@ function showToast(message, type = 'success') {
 function summonTool(type) {
     const tool = document.createElement('div');
     tool.className = 'tool';
-    tool.id = 'tool-' + toolCount++;
-    tool.style.left = Math.random() * 700 + 'px';
-    tool.style.top = Math.random() * 450 + 'px';
+    tool.id = 'tool-' + toolCount;
+
+    // Normal random spawning without any Y adjustment
+    const randomLeft = Math.random() * 700;
+    const randomTop = Math.random() * 450;
+
+    tool.style.left = randomLeft + 'px';
+    tool.style.top = randomTop + 'px';
     tool.dataset.type = type;
     tool.dataset.ph = getInitialPh(type);
     tool.dataset.volume = getInitialVolume(type);
+
+    toolCount++; // Increment after using
 
     if (type === 'Beaker') {
         tool.classList.add('beaker');
@@ -46,13 +53,20 @@ function summonTool(type) {
     } else if (type === 'Pipette') {
         tool.classList.add('pipette');
         tool.innerHTML = `
-                    <div class="pipette-body"></div>
+                    <div class="pipette-body">
+                        <div class="pipette-bulb"></div>
+                        <div class="pipette-tube"></div>
+                        <div class="pipette-tip"></div>
+                    </div>
                     <div class="tool-name">Pipet</div>
                 `;
     } else if (type === 'Litmus Paper') {
         tool.classList.add('litmus-paper');
         tool.innerHTML = `
-                    <div class="litmus-body"></div>
+                    <div class="litmus-handle"></div>
+                    <div class="litmus-body">
+                        <div class="litmus-strip"></div>
+                    </div>
                     <div class="tool-name">Kertas Lakmus</div>
                 `;
     } else {
@@ -78,8 +92,16 @@ function summonTool(type) {
                 <button onclick="emptyTool(event)">🗑️ Empty</button>
                 <button onclick="selectTarget(event)">🎯 Select</button>
                 <button onclick="pourIntoTarget(event)">💧 Pour</button>
+                <button onclick="toggleButtons(event)">❌ Hide</button>
             `;
     tool.appendChild(buttons);
+
+    // Add click event to toggle buttons
+    tool.addEventListener('click', function (e) {
+        if (e.target.closest('.tool-buttons')) return; // Don't toggle if clicking buttons
+        e.stopPropagation();
+        tool.classList.toggle('show-buttons');
+    });
 
     tool.draggable = true;
     tool.ondragstart = (e) => {
@@ -138,6 +160,12 @@ function applyIndicator(beaker) {
     } else {
         liquid.style.backgroundColor = 'transparent';
     }
+}
+
+function toggleButtons(event) {
+    event.stopPropagation();
+    const tool = event.target.closest('.tool');
+    tool.classList.remove('show-buttons');
 }
 
 function shakeTool(event) {
@@ -230,8 +258,17 @@ labTable.ondrop = (e) => {
     const id = e.dataTransfer.getData('text/plain');
     const tool = document.getElementById(id);
     const rect = labTable.getBoundingClientRect();
-    tool.style.left = Math.max(0, Math.min(820, e.clientX - rect.left - 40)) + 'px';
-    tool.style.top = Math.max(0, Math.min(480, e.clientY - rect.top - 60)) + 'px';
+
+    // Extract tool number from ID (e.g., "tool-2" -> 2)
+    const toolNumber = parseInt(id.split('-')[1]);
+
+    // Calculate position with progressive Y adjustment based on tool ID
+    const newLeft = e.clientX - rect.left - 40;
+    const baseTop = e.clientY - rect.top - 60;
+    const adjustedTop = baseTop - (toolNumber * 100); // Apply -100px per tool number
+
+    tool.style.left = newLeft + 'px';
+    tool.style.top = adjustedTop + 'px';
 
     // Add drop animation
     tool.style.transform = 'scale(1.1)';
@@ -271,3 +308,6 @@ style.textContent = `
             }
         `;
 document.head.appendChild(style);
+
+// Remove particle system for performance
+// setInterval(createParticle, 800);
