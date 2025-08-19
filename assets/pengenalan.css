@@ -1,0 +1,570 @@
+/* ===== GLOBAL STYLES ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+}
+
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.2) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255, 118, 117, 0.2) 0%, transparent 50%);
+    z-index: -1;
+}
+
+/* ===== HEADER STYLES ===== */
+.header {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    padding: 1rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.header-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.back-btn {
+    padding: 12px 20px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.back-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+.logo {
+    color: white;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+/* ===== MAIN CONTENT STYLES ===== */
+.main-content {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 2rem;
+}
+
+.page-title {
+    text-align: center;
+    color: white;
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.page-subtitle {
+    text-align: center;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1.1rem;
+    margin-bottom: 3rem;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* ===== CARD GRID STYLES ===== */
+.tools-grid,
+.symbols-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 2rem;
+    margin-bottom: 3rem;
+}
+
+.symbols-grid {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+.tool-card,
+.symbol-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    position: relative;
+}
+
+.tool-card:hover,
+.symbol-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 25px 80px rgba(0, 0, 0, 0.2);
+}
+
+.tool-visual,
+.symbol-visual {
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+    position: relative;
+}
+
+.symbol-visual {
+    height: 120px;
+}
+
+.tool-title,
+.symbol-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.tool-description,
+.symbol-description {
+    color: #555;
+    line-height: 1.6;
+    margin-bottom: 1rem;
+}
+
+.tool-specs,
+.symbol-specs {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 1rem;
+}
+
+.tool-specs h4,
+.symbol-specs h4 {
+    color: #2c3e50;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.tool-specs ul,
+.symbol-specs ul {
+    list-style: none;
+    padding: 0;
+}
+
+.tool-specs li,
+.symbol-specs li {
+    color: #666;
+    margin-bottom: 0.3rem;
+    padding-left: 1rem;
+    position: relative;
+}
+
+.tool-specs li:before,
+.symbol-specs li:before {
+    content: "•";
+    color: #667eea;
+    position: absolute;
+    left: 0;
+}
+
+/* ===== LABORATORY TOOL STYLES ===== */
+.beaker {
+    width: 80px;
+    height: 120px;
+    position: relative;
+    margin: 0 auto;
+}
+
+.beaker-body {
+    width: 80px;
+    height: 100px;
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.95), rgba(240, 248, 255, 0.9));
+    border: 2px solid #2c3e50;
+    border-radius: 0 0 40px 40px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.beaker-rim {
+    width: 84px;
+    height: 8px;
+    background: linear-gradient(145deg, #e3f2fd, #bbdefb);
+    border: 2px solid #2c3e50;
+    border-radius: 4px;
+    position: absolute;
+    top: -2px;
+    left: -4px;
+    z-index: 5;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.beaker-spout {
+    width: 15px;
+    height: 15px;
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.9), rgba(240, 248, 255, 0.8));
+    border: 2px solid #2c3e50;
+    border-radius: 0 8px 8px 0;
+    position: absolute;
+    top: 8px;
+    right: -8px;
+    z-index: 4;
+}
+
+.bottle {
+    width: 60px;
+    height: 140px;
+    position: relative;
+    margin: 0 auto;
+}
+
+.bottle-body {
+    width: 60px;
+    height: 100px;
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.95), rgba(240, 248, 255, 0.9));
+    border: 2px solid #2c3e50;
+    border-radius: 8px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.bottle-neck {
+    width: 20px;
+    height: 25px;
+    background: linear-gradient(145deg, #e3f2fd, #bbdefb);
+    border: 2px solid #2c3e50;
+    border-bottom: none;
+    border-radius: 4px 4px 0 0;
+    position: absolute;
+    top: -25px;
+    left: 18px;
+}
+
+.bottle-cap {
+    width: 24px;
+    height: 12px;
+    background: linear-gradient(145deg, #34495e, #2c3e50);
+    border: 2px solid #1a252f;
+    border-radius: 6px 6px 2px 2px;
+    position: absolute;
+    top: -35px;
+    left: 16px;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+}
+
+.bottle-label {
+    width: 45px;
+    height: 60px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid #e3f2fd;
+    border-radius: 4px;
+    position: absolute;
+    top: 15px;
+    left: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 8px;
+    text-align: center;
+    padding: 2px;
+    color: #2c3e50;
+    font-weight: 600;
+}
+
+.pipette {
+    width: 15px;
+    height: 120px;
+    position: relative;
+    margin: 0 auto;
+    transform: scale(1.5);
+}
+
+.pipette-bulb {
+    width: 15px;
+    height: 20px;
+    background: linear-gradient(145deg, #ff6b6b, #ee5a52);
+    border: 2px solid #2c3e50;
+    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.pipette-tube {
+    width: 6px;
+    height: 80px;
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.95), rgba(240, 248, 255, 0.9));
+    border: 1px solid #2c3e50;
+    border-radius: 3px;
+    position: absolute;
+    top: 18px;
+    left: 4px;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.pipette-tip {
+    width: 4px;
+    height: 15px;
+    background: linear-gradient(145deg, #fff, #f0f8ff);
+    border: 1px solid #2c3e50;
+    border-radius: 0 0 2px 2px;
+    position: absolute;
+    top: 98px;
+    left: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.litmus-paper {
+    width: 40px;
+    height: 120px;
+    position: relative;
+    margin: 0 auto;
+}
+
+.litmus-handle {
+    width: 12px;
+    height: 30px;
+    background: linear-gradient(145deg, #8d6e63, #6d4c41);
+    border: 1px solid #5d4037;
+    border-radius: 6px 6px 2px 2px;
+    position: absolute;
+    top: 0;
+    left: 14px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.litmus-body {
+    width: 25px;
+    height: 80px;
+    background: linear-gradient(to right,
+            #ff4444 0%,
+            #ff6644 14%,
+            #ff8844 28%,
+            #ffaa44 42%,
+            #ffcc44 57%,
+            #88cc44 71%,
+            #44aa88 85%,
+            #4488cc 100%);
+    border: 2px solid #333;
+    border-radius: 3px;
+    position: absolute;
+    top: 25px;
+    left: 7px;
+    transition: background 0.4s ease;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+}
+
+.litmus-body::before {
+    content: 'pH 0-14';
+    position: absolute;
+    top: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 6px;
+    color: white;
+    font-weight: bold;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.litmus-body::after {
+    content: '';
+    position: absolute;
+    bottom: 5px;
+    left: 2px;
+    right: 2px;
+    height: 20px;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 2px;
+}
+
+.liquid {
+    width: calc(100% - 4px);
+    position: absolute;
+    bottom: 2px;
+    left: 2px;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 0 0 36px 36px;
+    background: linear-gradient(to bottom, transparent 0%, currentColor 20%, currentColor 100%);
+    opacity: 0.9;
+}
+
+.bottle .liquid {
+    border-radius: 0 0 6px 6px;
+}
+
+.demo-liquid {
+    height: 40%;
+    color: #2196F3;
+}
+
+/* ===== HAZARD SYMBOL STYLES ===== */
+.hazard-symbol {
+    width: 100px;
+    height: 100px;
+    position: relative;
+    transform: rotate(45deg);
+    border: 4px solid #000;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.symbol-content {
+    transform: rotate(-45deg);
+    width: 70px;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    font-weight: bold;
+}
+
+.toxic .symbol-content::before {
+    content: '☠';
+    color: #000;
+}
+
+.flammable .symbol-content::before {
+    content: '🔥';
+}
+
+.corrosive .symbol-content::before {
+    content: '⚗';
+    color: #000;
+}
+
+.explosive .symbol-content::before {
+    content: '💥';
+}
+
+.environmental .symbol-content::before {
+    content: '🌱';
+}
+
+.oxidizing .symbol-content::before {
+    content: '🔥';
+    color: #ff4444;
+}
+
+.irritant .symbol-content::before {
+    content: '⚠';
+    color: #ff9800;
+}
+
+.danger-level {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    font-size: 0.8rem;
+}
+
+.high-danger {
+    background: #ff4444;
+}
+
+.medium-danger {
+    background: #ff9800;
+}
+
+.low-danger {
+    background: #2196f3;
+}
+
+/* Enhanced hazard symbols with better visual design */
+.toxic {
+    border-color: #4a148c;
+    background: linear-gradient(135deg, #fff 0%, #f3e5f5 100%);
+}
+
+.flammable {
+    border-color: #d32f2f;
+    background: linear-gradient(135deg, #fff 0%, #ffebee 100%);
+}
+
+.corrosive {
+    border-color: #ff6f00;
+    background: linear-gradient(135deg, #fff 0%, #fff3e0 100%);
+}
+
+.explosive {
+    border-color: #b71c1c;
+    background: linear-gradient(135deg, #fff 0%, #ffebee 100%);
+}
+
+.environmental {
+    border-color: #1b5e20;
+    background: linear-gradient(135deg, #fff 0%, #e8f5e8 100%);
+}
+
+.oxidizing {
+    border-color: #e65100;
+    background: linear-gradient(135deg, #fff 0%, #fff3e0 100%);
+}
+
+.irritant {
+    border-color: #f57c00;
+    background: linear-gradient(135deg, #fff 0%, #fff8e1 100%);
+}
+
+/* ===== RESPONSIVE STYLES ===== */
+@media (max-width: 768px) {
+
+    .tools-grid,
+    .symbols-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .page-title {
+        font-size: 2rem;
+    }
+
+    .main-content {
+        padding: 0 1rem;
+    }
+
+    .hazard-symbol {
+        width: 80px;
+        height: 80px;
+    }
+
+    .symbol-content {
+        width: 60px;
+        height: 60px;
+        font-size: 2rem;
+    }
+}
