@@ -50,6 +50,100 @@ body::before {
     box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
 }
 
+/* Language toggle button */
+.language-toggle {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    padding: 12px 20px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.language-toggle:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+}
+
+/* Improved Litmus Paper Design */
+.litmus-paper {
+    width: 40px;
+    height: 120px;
+    position: relative;
+}
+
+.litmus-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.litmus-package {
+    width: 35px;
+    height: 45px;
+    background: linear-gradient(145deg, #f3e5f5, #e1bee7);
+    border: 2px solid #8e24aa;
+    border-radius: 4px;
+    position: absolute;
+    top: 0;
+    left: 2px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+}
+
+.package-text {
+    font-size: 6px;
+    font-weight: bold;
+    color: #4a148c;
+    text-align: center;
+    line-height: 1.1;
+}
+
+.ph-scale {
+    width: 30px;
+    height: 8px;
+    background: linear-gradient(to right, 
+        #ff0000 0%, 
+        #ff6600 14%, 
+        #ffcc00 28%, 
+        #ccff00 42%, 
+        #66ff00 57%, 
+        #00ff66 71%, 
+        #00ccff 85%, 
+        #0066ff 100%);
+    border: 1px solid #333;
+    border-radius: 2px;
+    margin: 2px 0;
+}
+
+.litmus-strip-1, .litmus-strip-2, .litmus-strip-3 {
+    width: 5px;
+    height: 50px;
+    background: linear-gradient(to bottom, #8d6e63 0%, #8d6e63 20%, #ffeb3b 20%, #ffeb3b 100%);
+    border: 1px solid #5d4037;
+    border-radius: 2px;
+    position: absolute;
+    top: 50px;
+    transition: all 0.4s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.litmus-strip-1 { left: 5px; }
+.litmus-strip-2 { left: 15px; }
+.litmus-strip-3 { left: 25px; }
+
 h1 {
     text-align: center;
     color: white;
@@ -461,47 +555,66 @@ h1 {
 }
 
 .litmus-paper {
-    width: 35px;
-    height: 100px;
+    width: 40px;
+    height: 120px;
     position: relative;
 }
 
 .litmus-handle {
-    width: 8px;
-    height: 25px;
+    width: 12px;
+    height: 30px;
     background: linear-gradient(145deg, #8d6e63, #6d4c41);
     border: 1px solid #5d4037;
-    border-radius: 4px 4px 0 0;
+    border-radius: 6px 6px 2px 2px;
     position: absolute;
     top: 0;
-    left: 13px;
+    left: 14px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .litmus-paper .litmus-body {
-    width: 35px;
-    height: 75px;
-    background: linear-gradient(145deg, #fff, #f8f9fa);
-    border: 2px solid #2c3e50;
-    border-radius: 6px;
+    width: 25px;
+    height: 80px;
+    background: linear-gradient(to right, 
+        #ff4444 0%, 
+        #ff6644 14%, 
+        #ff8844 28%, 
+        #ffaa44 42%, 
+        #ffcc44 57%, 
+        #88cc44 71%, 
+        #44aa88 85%, 
+        #4488cc 100%);
+    border: 2px solid #333;
+    border-radius: 3px;
     position: absolute;
-    top: 20px;
-    left: 0;
-    transition: background-color 0.4s ease;
+    top: 25px;
+    left: 7px;
+    transition: background 0.4s ease;
     box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
 }
 
-.litmus-strip {
-    width: 25px;
-    height: 50px;
-    background: #ffeb3b;
-    border: 1px solid #f57f17;
-    border-radius: 3px;
+.litmus-paper .litmus-body::before {
+    content: 'pH 0-14';
     position: absolute;
-    top: 10px;
-    left: 5px;
-    transition: background-color 0.4s ease;
-    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    top: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 6px;
+    color: white;
+    font-weight: bold;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+}
+
+.litmus-paper .litmus-body::after {
+    content: '';
+    position: absolute;
+    bottom: 5px;
+    left: 2px;
+    right: 2px;
+    height: 20px;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 2px;
 }
 
 /* Success/Error message styling */

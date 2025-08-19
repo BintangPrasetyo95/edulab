@@ -10,9 +10,11 @@
 
 <body>
     <button class="back-button" onclick="window.location.href='./start-praktikum.html'">⬅ Kembali</button>
+    <button class="language-toggle" onclick="toggleLanguage()">🌐 Language</button>
     <h1>🧪 Chemistry Lab Simulator</h1>
-    <p class="instructions">Summon realistic lab tools, drag them around, and perform experiments. Select a target then use "Pour Into" on the source tool.</p>
-    
+    <p class="instructions">Summon realistic lab tools, drag them around, and perform experiments. Select a target then
+        use "Pour Into" on the source tool.</p>
+
     <div id="summon-buttons">
         <button onclick="summonTool('Beaker')">🥛 Summon Beaker</button>
         <button onclick="summonTool('Acid Bottle')">🔴 Summon Acid (pH 2)</button>
@@ -21,7 +23,7 @@
         <button onclick="summonTool('Pipette')">🧪 Summon Pipet</button>
         <button onclick="summonTool('Litmus Paper')">📄 Summon Kertas Lakmus</button>
     </div>
-    
+
     <div id="lab-table"></div>
 
     <script src="./assets/praktikum.js"></script>
