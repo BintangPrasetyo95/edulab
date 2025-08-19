@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tugas Kelompok - EduLab</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./assets/style.css">
+</head>
+
+<body>
+    <div class="loader">
+        <div class="spinner"></div>
+        <p>Loading...</p>
+    </div>
+    <div class="bg-circle circle1"></div>
+    <div class="bg-circle circle2"></div>
+
+    <header>
+        <div class="header-left">
+            <img src="https://placehold.co/32x32?text=E" alt="Logo EduLab"
+                onclick="window.location.href='./index.html'">
+            <h1 onclick="window.location.href='./index.html'">EduLab</h1>
+        </div>
+        <nav class="navbar">
+            <a href="./index.html" class="normal">Beranda</a>
+            <a href="./topik.html" class="normal">Topik</a>
+            <a href="./modul.html" class="normal">Modul</a>
+            <a href="./start-praktikum.html" class="normal">Praktikum</a>
+            <a href="./kelompok.html" class="active">Tugas Kelompok</a>
+        </nav>
+        <div class="header-right">
+            <div class="notification" onclick="toggleNotification()">
+                <span class="notification-icon">🔔</span>
+                <div class="notification-dropdown" id="notification-dropdown">
+                    <h3>Notifikasi</h3>
+                    <p>Quiz Asam Basa besok jam 08.00!</p>
+                    <p>Tugas kelompok harus selesai minggu ini.</p>
+                </div>
+            </div>
+            <div class="profile" onclick="toggleProfile()">
+                <img src="https://placehold.co/32?text=B" alt="Profil">
+                <span class="profile-icon">Budi (10A)</span>
+                <div class="profile-dropdown" id="profile-dropdown">
+                    <p onclick="window.location.href='./profile.html'">Profil</p>
+                    <p onclick="window.location.href='./profile.html#inprogress-topics'">Topik Praktikum</p>
+                    <p>Pengaturan</p>
+                    <p class="logout">Log Out</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <aside>
+        <div class="sidebar-header">
+            <img src="https://placehold.co/32x32?text=E" alt="Logo EduLab"
+                onclick="window.location.href='./index.html'">
+            <h2 onclick="window.location.href='./index.html'">EduLab</h2>
+        </div>
+        <hr>
+        <div class="level" onclick="toggleLevel(this)"><span class="arrow">▶</span> Pengenalan</div>
+        <div class="sub-level">
+            <div class="topic" onclick="window.location.href='./pengenalan.html?section=alat-laboratorium'">Alat
+                Laboratorium</div>
+            <div class="topic" onclick="window.location.href='./pengenalan.html#keselamatan-dasar'">Keselamatan
+                Dasar</div>
+        </div>
+
+        <div class="level" onclick="toggleLevel(this)"><span class="arrow">▶</span> Simbol Bahaya</div>
+        <div class="sub-level">
+            <div class="topic" onclick="window.location.href='./simbol-bahaya.html'">Simbol-Simbol Bahaya</div>
+            <div class="topic" onclick="window.location.href='./simbol-bahaya.html#panduan-keselamatan'">Panduan Umum
+                Keselamatan</div>
+        </div>
+
+        <hr>
+        <div class="level" onclick="toggleLevel(this)"><span class="arrow">▶</span> Kelas 10</div>
+        <div class="sub-level">
+            <div class="mata-pelajaran" onclick="toggleTopic(this)"><span class="arrow">▶</span> Kimia</div>
+            <div class="topics">
+                <div class="topic" onclick="window.location.href='./topik.html?topic=asam-basa'">Asam Basa</div>
+                <div class="topic" onclick="window.location.href='./topik.html?topic=redoks'">Redoks</div>
+            </div>
+            <div class="mata-pelajaran" onclick="toggleTopic(this)"><span class="arrow">▶</span> Fisika</div>
+            <div class="topics">
+                <div class="topic" onclick="window.location.href='./topik.html?topic=gerak'">Gerak Lurus</div>
+            </div>
+        </div>
+        <div class="level" onclick="toggleLevel(this)"><span class="arrow">▶</span> Kelas 11</div>
+        <div class="sub-level">
+            <div class="mata-pelajaran" onclick="toggleTopic(this)"><span class="arrow">▶</span> Kimia</div>
+            <div class="topics">
+                <div class="topic" onclick="window.location.href='./topik.html?topic=stoikiometri'">Stoikiometri</div>
+            </div>
+            <div class="mata-pelajaran" onclick="toggleTopic(this)"><span class="arrow">▶</span> Fisika</div>
+            <div class="topics">
+                <div class="topic" onclick="window.location.href='./topik.html?topic=energi'">Energi</div>
+            </div>
+        </div>
+        <div class="level" onclick="toggleLevel(this)"><span class="arrow">▶</span> Kelas 12</div>
+        <div class="sub-level">
+            <div class="mata-pelajaran" onclick="toggleTopic(this)"><span class="arrow">▶</span> Kimia</div>
+            <div class="topics">
+                <div class="topic" onclick="window.location.href='./topik.html?topic=polimer'">Polimer</div>
+            </div>
+            <div class="mata-pelajaran" onclick="toggleTopic(this)"><span class="arrow">▶</span> Fisika</div>
+            <div class="topics">
+                <div class="topic" onclick="window.location.href='./topik.html?topic=listrik'">Listrik</div>
+            </div>
+        </div>
+    </aside>
+
+    <main>
+        <div class="main-card">
+            <!-- Kelompok Info Section -->
+            <div class="kelompok-info">
+                <h2>Tugas Kelompok - Indikator Asam Basa</h2>
+                <div class="kelompok-card">
+                    <h3>🤝 Kelompok 3</h3>
+                    <div class="anggota-list">
+                        <div class="anggota">
+                            <img src="https://placehold.co/32?text=B" alt="Budi">
+                            <span>Budi Santoso (10A) - Ketua</span>
+                        </div>
+                        <div class="anggota">
+                            <img src="https://placehold.co/32?text=A" alt="Ani">
+                            <span>Ani Putri (10A)</span>
+                        </div>
+                        <div class="anggota">
+                            <img src="https://placehold.co/32?text=C" alt="Citra">
+                            <span>Citra Dewi (10A)</span>
+                        </div>
+                        <div class="anggota">
+                            <img src="https://placehold.co/32?text=D" alt="Doni">
+                            <span>Doni Rahman (10A)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Studi Kasus Section -->
+            <div class="studi-kasus-section">
+                <h2>📋 Studi Kasus</h2>
+                
+                <div class="kasus-content">
+                    <div class="pertanyaan-kasus">
+                        <h3>Pertanyaan Studi Kasus:</h3>
+                        <ol>
+                            <li>Apa perubahan warna yang terjadi pada indikator alami saat kontak dengan larutan asam basa?</li>
+                            <li>Bagaimana cara membandingkan hasil pengukuran pH menggunakan indikator alami dan indikator buatan?</li>
+                            <li>Apakah ada faktor-faktor tertentu yang memengaruhi akurasi pengukuran pH dengan indikator alami?</li>
+                            <li>Apa pelajaran penting yang kalian dapatkan dari kegiatan ini mengenai pengukuran pH dan penggunaan indikator?</li>
+                        </ol>
+                    </div>
+
+                    <div class="alat-bahan">
+                        <div class="alat-section">
+                            <h3>🔬 Alat:</h3>
+                            <ul>
+                                <li>Palet tetes</li>
+                                <li>Pipet tetes</li>
+                                <li>Kertas lakmus merah dan biru</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="bahan-section">
+                            <h3>🧪 Bahan:</h3>
+                            <ul>
+                                <li>Larutan detergen</li>
+                                <li>Minuman berkarbonasi</li>
+                                <li>Larutan pasta gigi</li>
+                                <li>Larutan garam dapur</li>
+                                <li>Larutan cuka</li>
+                                <li>Air mineral</li>
+                                <li>Air jeruk</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="prosedur-section">
+                        <h3>📝 Prosedur Kerja:</h3>
+                        <ol>
+                            <li>Teteskan masing-masing larutan ke dalam palet tetes.</li>
+                            <li>Beri label untuk membedakan tiap larutan.</li>
+                            <li>Celupkan kertas lakmus merah ke dalam masing-masing palet.</li>
+                            <li>Amati perubahan warna kertas lakmus.</li>
+                            <li>Catat hasilnya ke dalam tabel yang disediakan.</li>
+                            <li>Ulangi percobaan untuk kertas lakmus biru.</li>
+                        </ol>
+                    </div>
+
+                    <div class="tabel-section">
+                        <h3>📊 Tabel Pengamatan:</h3>
+                        <div class="table-container">
+                            <table class="pengamatan-table">
+                                <thead>
+                                    <tr>
+                                        <th>No.</th>
+                                        <th>Nama Larutan</th>
+                                        <th colspan="2">Perubahan pada</th>
+                                        <th>Sifat Larutan</th>
+                                    </tr>
+                                    <tr>
+                                        <th></th>
+                                        <th></th>
+                                        <th>Lakmus Merah</th>
+                                        <th>Lakmus Biru</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>Air Jeruk</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td>2</td>
+                                        <td>Minuman berkarbonasi</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td>3</td>
+                                        <td>Larutan detergen</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td>4</td>
+                                        <td>Larutan garam dapur</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td>5</td>
+                                        <td>Larutan cuka</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td>6</td>
+                                        <td>Air mineral</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td>7</td>
+                                        <td>Larutan pasta gigi</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Kolom Nilai Section -->
+            <div class="nilai-section">
+                <h2>📊 Penilaian Kelompok</h2>
+                <div class="nilai-container">
+                    <div class="nilai-card">
+                        <h3>Nilai Akhir</h3>
+                        <div class="nilai-display">
+                            <span class="nilai-angka">85</span>
+                            <span class="nilai-grade">B+</span>
+                        </div>
+                        <div class="nilai-breakdown">
+                            <div class="nilai-item">
+                                <span>Kerjasama Tim:</span>
+                                <span class="nilai">90</span>
+                            </div>
+                            <div class="nilai-item">
+                                <span>Analisis Data:</span>
+                                <span class="nilai">80</span>
+                            </div>
+                            <div class="nilai-item">
+                                <span>Presentasi:</span>
+                                <span class="nilai">85</span>
+                            </div>
+                            <div class="nilai-item">
+                                <span>Laporan:</span>
+                                <span class="nilai">85</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Feedback Section -->
+            <div class="feedback-section">
+                <h2>💬 Feedback dari Guru</h2>
+                <div class="feedback">
+                    <p class="teacher">Guru Kimia: Ibu Ani</p>
+                    <p>Kelompok ini menunjukkan kerjasama yang baik dalam melakukan percobaan indikator asam basa. Analisis data cukup mendalam, namun perlu lebih detail dalam menjelaskan faktor-faktor yang mempengaruhi akurasi pengukuran pH.</p>
+                    <p class="date">18 Agustus 2025</p>
+                </div>
+                <div class="feedback">
+                    <p class="teacher">Asisten Lab: Pak Budi</p>
+                    <p>Presentasi kelompok sangat baik dengan visual yang menarik. Saran untuk ke depan: lebih focus pada perbandingan hasil antara indikator alami dan buatan untuk analisis yang lebih komprehensif.</p>
+                    <p class="date">19 Agustus 2025</p>
+                </div>
+                <div class="feedback">
+                    <p class="teacher">Guru Kimia: Ibu Ani</p>
+                    <p>Overall, ini adalah salah satu tugas kelompok terbaik untuk topik indikator asam basa. Keep up the good work!</p>
+                    <p class="date">20 Agustus 2025</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 EduLab. All rights reserved.</p>
+    </footer>
+
+    <script src="./assets/main.js"></script>
+</body>
+
+</html>

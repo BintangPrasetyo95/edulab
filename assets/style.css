@@ -1139,6 +1139,277 @@ footer {
     background: linear-gradient(135deg, #5a6fd8, #6a5b93);
 }
 
+/* Kelompok Page Styling */
+.kelompok-info {
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    border: 1px solid rgba(102, 126, 234, 0.1);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.kelompok-info h2 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    color: #2c3e50;
+    text-align: center;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.kelompok-card {
+    background: rgba(102, 126, 234, 0.05);
+    border-radius: 12px;
+    padding: 1.5rem;
+    border: 1px solid rgba(102, 126, 234, 0.1);
+}
+
+.kelompok-card h3 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #667eea;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.anggota-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.anggota {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    background: rgba(255, 255, 255, 0.7);
+    padding: 0.8rem;
+    border-radius: 8px;
+    border: 1px solid rgba(102, 126, 234, 0.1);
+    transition: all 0.3s ease;
+}
+
+.anggota:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.anggota img {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    border: 2px solid rgba(102, 126, 234, 0.3);
+}
+
+.anggota span {
+    font-weight: 600;
+    color: #2c3e50;
+    font-size: 0.9rem;
+}
+
+.studi-kasus-section {
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    border: 1px solid rgba(102, 126, 234, 0.1);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.studi-kasus-section h2 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    color: #2c3e50;
+    text-align: center;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.kasus-content > div {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: rgba(102, 126, 234, 0.05);
+    border-radius: 12px;
+    border: 1px solid rgba(102, 126, 234, 0.1);
+}
+
+.kasus-content h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #667eea;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.pertanyaan-kasus ol {
+    list-style: none;
+    counter-reset: question-counter;
+    padding-left: 0;
+}
+
+.pertanyaan-kasus li {
+    counter-increment: question-counter;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 8px;
+    position: relative;
+    padding-left: 3rem;
+    line-height: 1.5;
+}
+
+.pertanyaan-kasus li::before {
+    content: counter(question-counter, lower-alpha) ")";
+    position: absolute;
+    left: 1rem;
+    font-weight: 700;
+    color: #667eea;
+}
+
+.alat-bahan {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+.alat-section, .bahan-section {
+    background: rgba(255, 255, 255, 0.7);
+    padding: 1.5rem;
+    border-radius: 12px;
+    border: 1px solid rgba(102, 126, 234, 0.1);
+}
+
+.alat-section ul, .bahan-section ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.alat-section li, .bahan-section li {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid rgba(102, 126, 234, 0.1);
+    position: relative;
+    padding-left: 1.5rem;
+}
+
+.alat-section li:last-child, .bahan-section li:last-child {
+    border-bottom: none;
+}
+
+.alat-section li::before {
+    content: "🔬";
+    position: absolute;
+    left: 0;
+}
+
+.bahan-section li::before {
+    content: "🧪";
+    position: absolute;
+    left: 0;
+}
+
+.prosedur-section ol {
+    list-style: none;
+    counter-reset: step-counter;
+    padding-left: 0;
+}
+
+.prosedur-section li {
+    counter-increment: step-counter;
+    margin-bottom: 0.8rem;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 8px;
+    position: relative;
+    padding-left: 3rem;
+    line-height: 1.5;
+}
+
+.prosedur-section li::before {
+    content: counter(step-counter) ".";
+    position: absolute;
+    left: 1rem;
+    font-weight: 700;
+    color: #667eea;
+}
+
+.table-container {
+    overflow-x: auto;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 12px;
+    padding: 1rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.pengamatan-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 700px;
+}
+
+.pengamatan-table th,
+.pengamatan-table td {
+    padding: 0.8rem;
+    text-align: center;
+    border: 1px solid rgba(102, 126, 234, 0.2);
+}
+
+.pengamatan-table th {
+    background: rgba(102, 126, 234, 0.1);
+    font-weight: 700;
+    color: #2c3e50;
+}
+
+.pengamatan-table td {
+    background: rgba(255, 255, 255, 0.8);
+}
+
+.nilai-section {
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    border: 1px solid rgba(102, 126, 234, 0.1);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.nilai-section h2 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    color: #2c3e50;
+    text-align: center;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.nilai-container {
+    display: flex;
+    justify-content: center;
+}
+
+.nilai-card {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+    border-radius: 16px;
+    padding: 2rem;
+    text-align: center;
+    border: 1px solid rgba(102, 126, 234, 0.2);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    width: 100%;
+}
+
+.nilai-card h3 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 1.5rem;
+}
+
 /* Enhanced responsive design */
 @media (max-width: 1024px) {
     main {
