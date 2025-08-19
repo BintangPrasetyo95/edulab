@@ -577,20 +577,20 @@ main {
     pointer-events: none;
 }
 
-.pre-lab {
-    background: linear-gradient(to right, #1565c0 70%, #ccc 70%);
+.modul {
+    background: linear-gradient(to right, #1565c0 10%, #ccc 10%);
 }
 
-.quiz {
-    background: linear-gradient(to right, #1565c0 50%, #ccc 50%);
+.pre-lab {
+    background: linear-gradient(to right, #1565c0 10%, #ccc 10%);
 }
 
 .praktikum {
-    background: #1565c0;
+    background: linear-gradient(to right, #1565c0 10%, #ccc 10%);
 }
 
 .tugas-kelompok {
-    background: linear-gradient(to right, #1565c0 30%, #ccc 30%);
+    background: linear-gradient(to right, #1565c0 10%, #ccc 10%);
 }
 
 .coming-soon {
@@ -655,10 +655,6 @@ main {
     text-align: center;
     cursor: pointer;
     transition: transform 0.2s;
-}
-
-.topic-card:hover {
-    transform: scale(1.05);
 }
 
 .topic-card img {
