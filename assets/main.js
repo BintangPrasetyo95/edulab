@@ -167,7 +167,7 @@ function renderTopicContent() {
                         <button class="modul normal" onclick="window.location.href='./modul.html'"><span>📖</span> Modul</button>
                         <button class="pre-lab normal" onclick="window.location.href='./start-praktikum.html'"><span>📚</span> Pre-Lab</button>
                         <button class="praktikum normal" onclick="window.location.href='./start-praktikum.html'"><span>🧪</span> Praktikum</button>
-                        <button class="tugas-kelompok normal"><span>🤝</span> Tugas Kelompok</button>
+                        <button class="tugas-kelompok normal" onclick="window.location.href='./kelompok.html'"><span>🤝</span> Tugas Kelompok</button>
                     `;
                 } else {
                     quickButtons.innerHTML = '<div class="coming-soon">COMING SOON</div>';
@@ -429,5 +429,24 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     } else if (window.location.pathname.includes('profile.html')) {
         renderProfile();
+    }
+});
+
+// Add to your main.js file
+function toggleMobileMenu() {
+    const aside = document.querySelector('aside');
+    aside.classList.toggle('show');
+}
+
+// Add click handler to close menu when clicking outside
+document.addEventListener('click', function(event) {
+    const aside = document.querySelector('aside');
+    const menuToggle = document.querySelector('.mobile-menu-toggle');
+    
+    if (window.innerWidth <= 768 && 
+        !aside.contains(event.target) && 
+        !menuToggle.contains(event.target) && 
+        aside.classList.contains('show')) {
+        aside.classList.remove('show');
     }
 });
