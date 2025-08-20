@@ -351,6 +351,8 @@ function toggleProfile() {
 
 function highlightActiveNav() {
     console.log('highlightActiveNav running, currentPath:', window.location.pathname);
+
+    // Handle desktop navbar
     const navLinks = document.querySelectorAll('.navbar a');
     const urlParams = new URLSearchParams(window.location.search);
     const topicId = urlParams.get('topic') || 'asam-basa';
@@ -372,6 +374,44 @@ function highlightActiveNav() {
                 } else if (currentPath.includes('modul.html') && href === 'modul.html') {
                     link.classList.add('active');
                 }
+            }
+        }
+    });
+
+    // Handle mobile sidebar navigation
+    const mobileNavItems = document.querySelectorAll('.mobile-nav .nav-item');
+    mobileNavItems.forEach(item => {
+        item.classList.remove('active', 'disabled');
+
+        // Check which page we're on and set active accordingly
+        if (currentPath.includes('index.html') || currentPath === '/' || currentPath.endsWith('/')) {
+            if (item.textContent.trim().includes('Beranda')) {
+                item.classList.add('active');
+            }
+        } else if (currentPath.includes('topik.html')) {
+            if (item.textContent.trim().includes('Topik')) {
+                item.classList.add('active');
+            }
+        } else if (currentPath.includes('modul.html')) {
+            if (item.textContent.trim().includes('Modul')) {
+                item.classList.add('active');
+            }
+        } else if (currentPath.includes('start-praktikum.html') || currentPath.includes('praktikum.html')) {
+            if (item.textContent.trim().includes('Praktikum')) {
+                item.classList.add('active');
+            }
+        } else if (currentPath.includes('kelompok.html')) {
+            if (item.textContent.trim().includes('Tugas Kelompok')) {
+                item.classList.add('active');
+            }
+        }
+
+        // Handle disabled states
+        if (topicId !== 'asam-basa') {
+            if (item.textContent.trim().includes('Modul') ||
+                item.textContent.trim().includes('Praktikum') ||
+                item.textContent.trim().includes('Tugas Kelompok')) {
+                item.classList.add('disabled');
             }
         }
     });
@@ -439,13 +479,13 @@ function toggleMobileMenu() {
 }
 
 // Add click handler to close menu when clicking outside
-document.addEventListener('click', function(event) {
+document.addEventListener('click', function (event) {
     const aside = document.querySelector('aside');
     const menuToggle = document.querySelector('.mobile-menu-toggle');
-    
-    if (window.innerWidth <= 768 && 
-        !aside.contains(event.target) && 
-        !menuToggle.contains(event.target) && 
+
+    if (window.innerWidth <= 768 &&
+        !aside.contains(event.target) &&
+        !menuToggle.contains(event.target) &&
         aside.classList.contains('show')) {
         aside.classList.remove('show');
     }

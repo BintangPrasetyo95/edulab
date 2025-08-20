@@ -59,13 +59,34 @@
                 onclick="window.location.href='./index.html'">
             <h2 onclick="window.location.href='./index.html'">EduLab</h2>
         </div>
+
+        <!-- Mobile Navigation Menu -->
+        <div class="mobile-nav">
+            <div class="nav-item" onclick="window.location.href='./index.html'">
+                🏠 Beranda
+            </div>
+            <div class="nav-item active" onclick="window.location.href='./topik.html'">
+                📚 Topik
+            </div>
+            <div class="nav-item" onclick="window.location.href='./modul.html'">
+                📖 Modul
+            </div>
+            <div class="nav-item" onclick="window.location.href='./start-praktikum.html'">
+                🧪 Praktikum
+            </div>
+            <div class="nav-item disabled" onclick="window.location.href='./kelompok.html'">
+                🤝 Tugas Kelompok
+            </div>
+        </div>
+
         <hr>
+
         <div class="level" onclick="toggleLevel(this)"><span class="arrow">▶</span> Pengenalan</div>
         <div class="sub-level">
             <div class="topic" onclick="window.location.href='./pengenalan.html?section=alat-laboratorium'">Alat
                 Laboratorium</div>
-            <div class="topic" onclick="window.location.href='./pengenalan.html#keselamatan-dasar'">Keselamatan
-                Dasar</div>
+            <div class="topic" onclick="window.location.href='./pengenalan.html#keselamatan-dasar'">Keselamatan Dasar
+            </div>
         </div>
 
         <div class="level" onclick="toggleLevel(this)"><span class="arrow">▶</span> Simbol Bahaya</div>
@@ -76,6 +97,7 @@
         </div>
 
         <hr>
+
         <div class="level" onclick="toggleLevel(this)"><span class="arrow">▶</span> Kelas 10</div>
         <div class="sub-level">
             <div class="mata-pelajaran" onclick="toggleTopic(this)"><span class="arrow">▶</span> Kimia</div>
