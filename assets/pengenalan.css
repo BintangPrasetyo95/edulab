@@ -541,20 +541,115 @@ body::before {
 }
 
 /* ===== RESPONSIVE STYLES ===== */
+
+/* Tablet landscape and small desktop */
+@media (max-width: 1024px) {
+
+    .tools-grid,
+    .symbols-grid {
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .page-title {
+        font-size: 2.2rem;
+    }
+
+    .main-content {
+        padding: 0 1.5rem;
+    }
+}
+
+/* Tablet portrait */
 @media (max-width: 768px) {
+    .header {
+        padding: 1rem 0.5rem;
+    }
+
+    .header-content {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: center;
+    }
+
+    .back-btn {
+        order: 1;
+        padding: 10px 16px;
+        font-size: 0.9rem;
+    }
+
+    .logo {
+        order: 2;
+        font-size: 1.3rem;
+    }
+
+    .main-content {
+        margin: 1.5rem auto;
+        padding: 0 1rem;
+    }
+
+    .page-title {
+        font-size: 2rem;
+        margin-bottom: 0.8rem;
+    }
+
+    .page-subtitle {
+        font-size: 1rem;
+        margin-bottom: 2rem;
+    }
 
     .tools-grid,
     .symbols-grid {
         grid-template-columns: 1fr;
         gap: 1.5rem;
+        margin-bottom: 2rem;
     }
 
-    .page-title {
-        font-size: 2rem;
+    .tool-card,
+    .symbol-card {
+        min-height: auto;
+        padding: 1.5rem;
     }
 
-    .main-content {
-        padding: 0 1rem;
+    .tool-visual,
+    .symbol-visual {
+        height: 160px;
+        margin-bottom: 1rem;
+    }
+
+    .tool-title,
+    .symbol-title {
+        font-size: 1.3rem;
+        margin-bottom: 0.8rem;
+    }
+
+    .tool-description,
+    .symbol-description {
+        font-size: 0.9rem;
+        margin-bottom: 0.8rem;
+    }
+
+    .tool-specs,
+    .symbol-specs {
+        padding: 0.8rem;
+    }
+
+    .tool-specs h4,
+    .symbol-specs h4 {
+        font-size: 0.9rem;
+    }
+
+    .tool-specs li,
+    .symbol-specs li {
+        font-size: 0.85rem;
+    }
+
+    /* Scale down tool visuals */
+    .beaker,
+    .bottle,
+    .pipette,
+    .litmus-paper {
+        transform: scale(0.8);
     }
 
     .hazard-symbol {
@@ -566,5 +661,294 @@ body::before {
         width: 60px;
         height: 60px;
         font-size: 2rem;
+    }
+
+    /* Safety section responsive */
+    #keselamatan-dasar {
+        padding: 1.5rem;
+        margin-top: 1.5rem;
+    }
+
+    #keselamatan-dasar>div {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    #keselamatan-dasar h2 {
+        font-size: 1.5rem;
+    }
+
+    #keselamatan-dasar h4 {
+        font-size: 1rem;
+    }
+
+    #keselamatan-dasar ul {
+        font-size: 0.9rem;
+    }
+}
+
+/* Mobile landscape */
+@media (max-width: 640px) {
+    .header {
+        padding: 0.8rem 0.5rem;
+    }
+
+    .back-btn {
+        padding: 8px 12px;
+        font-size: 0.85rem;
+    }
+
+    .logo {
+        font-size: 1.2rem;
+    }
+
+    .page-title {
+        font-size: 1.8rem;
+        margin-bottom: 0.6rem;
+    }
+
+    .page-subtitle {
+        font-size: 0.95rem;
+        margin-bottom: 1.5rem;
+        padding: 0 1rem;
+    }
+
+    .tool-card,
+    .symbol-card {
+        padding: 1.2rem;
+        border-radius: 16px;
+    }
+
+    .tool-visual,
+    .symbol-visual {
+        height: 140px;
+    }
+
+    .tool-title,
+    .symbol-title {
+        font-size: 1.2rem;
+    }
+
+    /* Further scale down visuals */
+    .beaker,
+    .bottle,
+    .pipette,
+    .litmus-paper {
+        transform: scale(0.7);
+    }
+
+    .hazard-symbol {
+        width: 70px;
+        height: 70px;
+    }
+
+    .symbol-content {
+        width: 50px;
+        height: 50px;
+        font-size: 1.8rem;
+    }
+}
+
+/* Mobile portrait */
+@media (max-width: 480px) {
+    .header {
+        padding: 0.6rem 0.3rem;
+    }
+
+    .header-content {
+        gap: 0.8rem;
+    }
+
+    .back-btn {
+        padding: 6px 10px;
+        font-size: 0.8rem;
+        border-radius: 8px;
+    }
+
+    .logo {
+        font-size: 1.1rem;
+    }
+
+    .main-content {
+        margin: 1rem auto;
+        padding: 0 0.8rem;
+    }
+
+    .page-title {
+        font-size: 1.6rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .page-subtitle {
+        font-size: 0.9rem;
+        margin-bottom: 1.2rem;
+        padding: 0 0.5rem;
+    }
+
+    .tools-grid,
+    .symbols-grid {
+        gap: 1.2rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .tool-card,
+    .symbol-card {
+        padding: 1rem;
+        border-radius: 14px;
+        min-height: auto;
+    }
+
+    .tool-visual,
+    .symbol-visual {
+        height: 120px;
+        margin-bottom: 0.8rem;
+    }
+
+    .tool-title,
+    .symbol-title {
+        font-size: 1.1rem;
+        margin-bottom: 0.6rem;
+    }
+
+    .tool-description,
+    .symbol-description {
+        font-size: 0.85rem;
+        margin-bottom: 0.6rem;
+        line-height: 1.5;
+    }
+
+    .tool-specs,
+    .symbol-specs {
+        padding: 0.6rem;
+        border-radius: 8px;
+    }
+
+    .tool-specs h4,
+    .symbol-specs h4 {
+        font-size: 0.85rem;
+        margin-bottom: 0.4rem;
+    }
+
+    .tool-specs li,
+    .symbol-specs li {
+        font-size: 0.8rem;
+        margin-bottom: 0.2rem;
+        line-height: 1.3;
+    }
+
+    /* Scale down visuals more for mobile */
+    .beaker,
+    .bottle,
+    .pipette,
+    .litmus-paper {
+        transform: scale(0.6);
+    }
+
+    .hazard-symbol {
+        width: 60px;
+        height: 60px;
+    }
+
+    .symbol-content {
+        width: 40px;
+        height: 40px;
+        font-size: 1.5rem;
+    }
+
+    .danger-level {
+        width: 24px;
+        height: 24px;
+        font-size: 0.7rem;
+        top: -8px;
+        right: -8px;
+    }
+
+    /* Safety section mobile */
+    #keselamatan-dasar {
+        padding: 1rem;
+        margin-top: 1rem;
+        border-radius: 16px;
+    }
+
+    #keselamatan-dasar h2 {
+        font-size: 1.3rem;
+        margin-bottom: 0.8rem;
+    }
+
+    #keselamatan-dasar h4 {
+        font-size: 0.9rem;
+        margin-bottom: 0.4rem;
+    }
+
+    #keselamatan-dasar ul {
+        font-size: 0.8rem;
+        line-height: 1.4;
+    }
+
+    #keselamatan-dasar li {
+        margin-bottom: 0.2rem;
+    }
+}
+
+/* Extra small mobile */
+@media (max-width: 360px) {
+    .back-btn {
+        padding: 4px 8px;
+        font-size: 0.75rem;
+    }
+
+    .logo {
+        font-size: 1rem;
+    }
+
+    .page-title {
+        font-size: 1.4rem;
+    }
+
+    .page-subtitle {
+        font-size: 0.85rem;
+    }
+
+    .main-content {
+        padding: 0 0.5rem;
+    }
+
+    .tool-card,
+    .symbol-card {
+        padding: 0.8rem;
+    }
+
+    .tool-visual,
+    .symbol-visual {
+        height: 100px;
+    }
+
+    .tool-title,
+    .symbol-title {
+        font-size: 1rem;
+    }
+
+    .tool-description,
+    .symbol-description {
+        font-size: 0.8rem;
+    }
+
+    /* Minimum scale for readability */
+    .beaker,
+    .bottle,
+    .pipette,
+    .litmus-paper {
+        transform: scale(0.5);
+    }
+
+    .hazard-symbol {
+        width: 50px;
+        height: 50px;
+    }
+
+    .symbol-content {
+        width: 35px;
+        height: 35px;
+        font-size: 1.3rem;
     }
 }
