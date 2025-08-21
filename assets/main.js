@@ -424,6 +424,7 @@ function renderModulContent(type) {
         console.error('Content card not found');
         return;
     }
+
     const headerBoxes = document.querySelectorAll('.header-box');
     headerBoxes.forEach(box => box.classList.remove('active'));
     const clickedBox = document.querySelector(`.header-box.${type}`);
@@ -433,19 +434,56 @@ function renderModulContent(type) {
 
     const urlParams = new URLSearchParams(window.location.search);
     const topicId = urlParams.get('topic') || 'asam-basa';
+
     if (type === 'modul') {
         if (topicId === 'asam-basa') {
-            contentCard.innerHTML = `
-                <embed src="./data/MODUL ASAM BASA_merged.pdf" type="application/pdf" width="100%" height="600px">
-            `;
+            // Check if it's mobile device (more reliable detection)
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768;
+
+            if (isMobile) {
+                // Mobile-friendly PDF display
+                contentCard.innerHTML = `
+                    <div class="mobile-pdf-container">
+                        <div class="pdf-info">
+                            <h3>📄 Modul Asam Basa</h3>
+                            <p>Untuk pengalaman terbaik membaca modul, silakan download PDF atau buka di desktop.</p>
+                        </div>
+                        <div class="pdf-actions">
+                            <a href="./data/MODUL ASAM BASA_merged.pdf" target="_blank" class="pdf-button view-pdf">
+                                👁️ Lihat PDF
+                            </a>
+                            <a href="./data/MODUL ASAM BASA_merged.pdf" download class="pdf-button download-pdf">
+                                📥 Download PDF
+                            </a>
+                        </div>
+                        <div class="pdf-fallback">
+                            <iframe src="./data/MODUL ASAM BASA_merged.pdf" 
+                                    width="100%" 
+                                    height="500px" 
+                                    style="border: none; border-radius: 8px;">
+                                <p>Browser Anda tidak mendukung tampilan PDF. 
+                                   <a href="./data/MODUL ASAM BASA_merged.pdf" target="_blank">Klik di sini untuk membuka PDF</a>
+                                </p>
+                            </iframe>
+                        </div>
+                    </div>
+                `;
+            } else {
+                // Desktop PDF display - use embed
+                contentCard.innerHTML = `
+                    <embed src="./data/MODUL ASAM BASA_merged.pdf" type="application/pdf" width="100%" height="600px" style="border-radius: 8px;">
+                `;
+            }
         } else {
             contentCard.innerHTML = `
-                <p>Modul untuk topik ini belum tersedia. Silakan pilih topik lain.</p>
+                <div style="text-align: center; padding: 2rem;">
+                    <p>Modul untuk topik ini belum tersedia. Silakan pilih topik lain.</p>
+                </div>
             `;
         }
     } else if (type === 'video') {
         contentCard.innerHTML = `
-            <video controls width="100%" height="400px">
+            <video controls width="100%" height="400px" style="border-radius: 8px;">
                 <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
