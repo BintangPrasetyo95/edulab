@@ -1518,6 +1518,15 @@ footer {
         height: 80px;
         font-size: 1rem;
     }
+
+    .alat-bahan {
+        grid-template-columns: 1fr; /* stack vertically */
+    }
+
+    .alat-section,
+    .bahan-section {
+        width: 100%; /* take full width */
+    }
 }
 
 @media (max-width: 480px) {
