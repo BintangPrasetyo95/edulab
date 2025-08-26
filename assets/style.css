@@ -1575,13 +1575,6 @@ footer {
         height: 70px;
         font-size: 0.9rem;
     }
-
-    .notification-dropdown,
-    .profile-dropdown {
-        right: 0.25rem;
-        left: 0.25rem;
-        min-width: auto;
-    }
 }
 
 /* Mobile PDF styling */
