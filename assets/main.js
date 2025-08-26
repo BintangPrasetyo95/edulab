@@ -26,11 +26,6 @@ const data = {
     }
 };
 
-const notifications = [
-    'Quiz Asam Basa besok jam 08.00!',
-    'Tugas kelompok harus selesai minggu ini.'
-];
-
 window.onload = function () {
     const loader = document.querySelector('.loader');
     if (loader) {
@@ -489,11 +484,6 @@ function renderModulContent(type) {
             </video>
         `;
     }
-}
-
-const notificationDropdown = document.getElementById('notification-dropdown');
-if (notificationDropdown) {
-    notificationDropdown.innerHTML = '<h3>Notifikasi</h3>' + notifications.map(n => `<p>${n}</p>`).join('');
 }
 
 document.addEventListener('DOMContentLoaded', () => {
