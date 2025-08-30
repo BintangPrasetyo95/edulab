@@ -1,0 +1,12 @@
+TO-DO-LIST
+
+- Praktikum Fix
+    - Praktikum Update with new tools
+    - Post-Test
+- Login Page
+- JsonBin implementation
+    - Account Flexibility
+    - Saving Progress
+    - Progress bar flexibility
+    - Feedback
+- 

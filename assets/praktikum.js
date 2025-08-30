@@ -1,6 +1,6 @@
 let toolCount = 0;
 let selectedTarget = null;
-let currentLanguage = 'english'; // Default language
+let currentLanguage = 'indonesian'; // Default language
 
 // Language translations
 const translations = {
