@@ -86,78 +86,41 @@ function getText(key) {
     return translations[currentLanguage][key] || key;
 }
 
-function toggleLanguage() {
-    currentLanguage = currentLanguage === 'english' ? 'indonesian' : 'english';
-    updateAllToolNames();
-    updateLanguageButton();
-    showToast(`Language changed to ${currentLanguage === 'english' ? 'English' : 'Indonesian'}!`);
-}
+// Dropdown functionality
+function toggleDropdown(dropdownId) {
+    const dropdown = document.getElementById(dropdownId);
+    const allDropdowns = document.querySelectorAll('.dropdown');
 
-function updateLanguageButton() {
-    const button = document.querySelector('.language-toggle');
-    if (button) {
-        button.textContent = getText('languageToggle');
-    }
-}
+    // Close all other dropdowns
+    allDropdowns.forEach(d => {
+        if (d.id !== dropdownId) {
+            d.classList.remove('active');
+        }
+    });
 
-function updateAllToolNames() {
-    const tools = document.querySelectorAll('.tool');
-    tools.forEach(tool => {
-        const toolName = tool.querySelector('.tool-name');
-        const buttons = tool.querySelector('.tool-buttons');
+    // Toggle current dropdown
+    dropdown.classList.toggle('active');
 
-        if (toolName && buttons) {
-            const type = tool.dataset.type;
-
-            // Update tool name
-            if (type === 'Beaker') {
-                toolName.textContent = getText('beaker');
-            } else if (type === 'Pipette') {
-                toolName.textContent = getText('pipette');
-            } else if (type === 'Litmus Paper') {
-                toolName.textContent = getText('litmusPaper');
-            } else if (type.includes('Acid')) {
-                toolName.textContent = getText('acid');
-            } else if (type.includes('Base')) {
-                toolName.textContent = getText('base');
-            } else if (type.includes('Indicator')) {
-                toolName.textContent = getText('indicator');
-            }
-
-            // Update buttons
-            updateToolButtons(tool);
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function closeDropdown(e) {
+        if (!dropdown.contains(e.target)) {
+            dropdown.classList.remove('active');
+            document.removeEventListener('click', closeDropdown);
         }
     });
 }
 
-function updateToolButtons(tool) {
-    const type = tool.dataset.type;
-    let buttonsHTML = '';
+// Modal functionality
+function showPostLabModal() {
+    const modal = document.getElementById('postLabModal');
+    modal.classList.add('show');
+    document.body.style.overflow = 'hidden';
+}
 
-    if (type === 'Pipette') {
-        buttonsHTML = `
-                    <button onclick="collectWithPipette(event)">${getText('suckLiquid')}</button>
-                    <button onclick="deliverWithPipette(event)">${getText('releaseLiquid')}</button>
-                    <button onclick="emptyTool(event)">${getText('empty')}</button>
-                    <button onclick="toggleButtons(event)">${getText('hide')}</button>
-                `;
-    } else if (type === 'Litmus Paper') {
-        buttonsHTML = `
-                    <button onclick="useLitmusPaper(event)">${getText('testPH')}</button>
-                    <button onclick="selectTarget(event)">${getText('dipInLiquid')}</button>
-                    <button onclick="toggleButtons(event)">${getText('hide')}</button>
-                `;
-    } else {
-        buttonsHTML = `
-                    <button onclick="shakeTool(event)">${getText('shake')}</button>
-                    <button onclick="emptyTool(event)">${getText('empty')}</button>
-                    <button onclick="selectTarget(event)">${getText('select')}</button>
-                    <button onclick="pourIntoTarget(event)">${getText('pour')}</button>
-                    <button onclick="toggleButtons(event)">${getText('hide')}</button>
-                `;
-    }
-
-    tool.querySelector('.tool-buttons').innerHTML = buttonsHTML;
+function hidePostLabModal() {
+    const modal = document.getElementById('postLabModal');
+    modal.classList.remove('show');
+    document.body.style.overflow = 'auto';
 }
 
 function showToast(message, type = 'success') {
@@ -202,49 +165,49 @@ function summonTool(type) {
     if (type === 'Beaker') {
         tool.classList.add('beaker');
         tool.innerHTML = `
-                    <div class="beaker-body">
-                        <div class="liquid" style="height: ${tool.dataset.volume}%; background-color: ${getLiquidColor(type, tool.dataset.ph)};"></div>
-                    </div>
-                    <div class="beaker-rim"></div>
-                    <div class="beaker-spout"></div>
-                    <div class="tool-name">${getText('beaker')}</div>
-                `;
+            <div class="beaker-body">
+                <div class="liquid" style="height: ${tool.dataset.volume}%; background-color: ${getLiquidColor(type, tool.dataset.ph)};"></div>
+            </div>
+            <div class="beaker-rim"></div>
+            <div class="beaker-spout"></div>
+            <div class="tool-name">${getText('beaker')}</div>
+        `;
     } else if (type === 'Pipette') {
         tool.classList.add('pipette');
         tool.dataset.collected = 'false';
         tool.dataset.collectedPh = '7';
         tool.innerHTML = `
-                    <div class="pipette-body" style="transform: scale(1.3);">
-                        <div class="pipette-bulb"></div>
-                        <div class="pipette-tube"></div>
-                        <div class="pipette-tip"></div>
-                        <div class="pipette-liquid" style="display: none;"></div>
-                    </div>
-                    <div class="tool-name">${getText('pipette')}</div>
-                `;
+            <div class="pipette-body" style="transform: scale(1.3);">
+                <div class="pipette-bulb"></div>
+                <div class="pipette-tube"></div>
+                <div class="pipette-tip"></div>
+                <div class="pipette-liquid" style="display: none;"></div>
+            </div>
+            <div class="tool-name">${getText('pipette')}</div>
+        `;
     } else if (type === 'Litmus Paper') {
         tool.classList.add('litmus-paper');
         tool.innerHTML = `
-                    <div class="litmus-handle" style="height: 60px; background: #8B4513;"></div>
-                    <div class="litmus-body" style="width: 25px; height: 80px; background: linear-gradient(to right, #ff6b6b 0%, #feca57 50%, #48dbfb 100%); border-radius: 3px; position: relative; top: -5px;"></div>
-                    <div class="tool-name">${getText('litmusPaper')}</div>
-                `;
+            <div class="litmus-handle" style="height: 60px; background: #8B4513;"></div>
+            <div class="litmus-body" style="width: 25px; height: 80px; background: linear-gradient(to right, #ff6b6b 0%, #feca57 50%, #48dbfb 100%); border-radius: 3px; position: relative; top: -5px;"></div>
+            <div class="tool-name">${getText('litmusPaper')}</div>
+        `;
     } else {
         tool.classList.add('bottle');
         const labelText = type.includes('Acid') ? 'HCl\npH 2' :
             type.includes('Base') ? 'NaOH\npH 12' :
-                'C₂₀H₁₄O₄\nIndicator';
+                'C₂₀H₁₄O₄\nIndikator';
         const displayName = type.includes('Acid') ? getText('acid') :
             type.includes('Base') ? getText('base') : getText('indicator');
         tool.innerHTML = `
-                    <div class="bottle-body">
-                        <div class="bottle-label">${labelText}</div>
-                        <div class="liquid" style="height: ${tool.dataset.volume}%; background-color: ${getLiquidColor(type, tool.dataset.ph)};"></div>
-                    </div>
-                    <div class="bottle-neck"></div>
-                    <div class="bottle-cap"></div>
-                    <div class="tool-name">${displayName}</div>
-                `;
+            <div class="bottle-body">
+                <div class="bottle-label">${labelText}</div>
+                <div class="liquid" style="height: ${tool.dataset.volume}%; background-color: ${getLiquidColor(type, tool.dataset.ph)};"></div>
+            </div>
+            <div class="bottle-neck"></div>
+            <div class="bottle-cap"></div>
+            <div class="tool-name">${displayName}</div>
+        `;
     }
 
     const buttons = document.createElement('div');
@@ -253,25 +216,25 @@ function summonTool(type) {
     // Set appropriate buttons based on tool type
     if (type === 'Pipette') {
         buttons.innerHTML = `
-                    <button onclick="collectWithPipette(event)">${getText('suckLiquid')}</button>
-                    <button onclick="deliverWithPipette(event)">${getText('releaseLiquid')}</button>
-                    <button onclick="emptyTool(event)">${getText('empty')}</button>
-                    <button onclick="toggleButtons(event)">${getText('hide')}</button>
-                `;
+            <button onclick="collectWithPipette(event)">${getText('suckLiquid')}</button>
+            <button onclick="deliverWithPipette(event)">${getText('releaseLiquid')}</button>
+            <button onclick="emptyTool(event)">${getText('empty')}</button>
+            <button onclick="toggleButtons(event)">${getText('hide')}</button>
+        `;
     } else if (type === 'Litmus Paper') {
         buttons.innerHTML = `
-                    <button onclick="useLitmusPaper(event)">${getText('testPH')}</button>
-                    <button onclick="selectTarget(event)">${getText('dipInLiquid')}</button>
-                    <button onclick="toggleButtons(event)">${getText('hide')}</button>
-                `;
+            <button onclick="useLitmusPaper(event)">${getText('testPH')}</button>
+            <button onclick="selectTarget(event)">${getText('dipInLiquid')}</button>
+            <button onclick="toggleButtons(event)">${getText('hide')}</button>
+        `;
     } else {
         buttons.innerHTML = `
-                    <button onclick="shakeTool(event)">${getText('shake')}</button>
-                    <button onclick="emptyTool(event)">${getText('empty')}</button>
-                    <button onclick="selectTarget(event)">${getText('select')}</button>
-                    <button onclick="pourIntoTarget(event)">${getText('pour')}</button>
-                    <button onclick="toggleButtons(event)">${getText('hide')}</button>
-                `;
+            <button onclick="shakeTool(event)">${getText('shake')}</button>
+            <button onclick="emptyTool(event)">${getText('empty')}</button>
+            <button onclick="selectTarget(event)">${getText('select')}</button>
+            <button onclick="pourIntoTarget(event)">${getText('pour')}</button>
+            <button onclick="toggleButtons(event)">${getText('hide')}</button>
+        `;
     }
     tool.appendChild(buttons);
 
@@ -304,6 +267,9 @@ function summonTool(type) {
     }, 100);
 
     showToast(`✨ ${type} ${getText('summoned')}`);
+
+    // Close any open dropdowns
+    document.querySelectorAll('.dropdown').forEach(d => d.classList.remove('active'));
 }
 
 function collectWithPipette(event) {
@@ -571,31 +537,7 @@ function pourIntoTarget(event) {
     selectedTarget = null;
 }
 
-// Add CSS for new animations
-const additionalStyles = document.createElement('style');
-additionalStyles.textContent = `
-            .pipette-liquid {
-                position: absolute;
-                width: 6px;
-                height: 30px;
-                background: #ff6b6b;
-                left: 50%;
-                top: 40%;
-                transform: translateX(-50%);
-                border-radius: 0 0 3px 3px;
-            }
-            
-            .testing {
-                animation: litmus-test 1s ease-in-out;
-            }
-            
-            @keyframes litmus-test {
-                0%, 100% { transform: scale(1); }
-                50% { transform: scale(1.1) rotate(5deg); }
-            }
-        `;
-document.head.appendChild(additionalStyles);
-
+// Lab table drag and drop setup
 const labTable = document.getElementById('lab-table');
 labTable.ondragover = (e) => e.preventDefault();
 labTable.ondrop = (e) => {
@@ -622,37 +564,25 @@ labTable.ondrop = (e) => {
     }, 200);
 };
 
-// Add some ambient particle effects
-function createParticle() {
-    const particle = document.createElement('div');
-    particle.style.cssText = `
-                position: fixed;
-                width: 4px;
-                height: 4px;
-                background: rgba(255, 255, 255, 0.6);
-                border-radius: 50%;
-                pointer-events: none;
-                z-index: -1;
-                left: ${Math.random() * window.innerWidth}px;
-                top: -10px;
-                animation: particle-fall ${3 + Math.random() * 4}s linear infinite;
-            `;
-    document.body.appendChild(particle);
+// Close dropdowns when clicking outside
+document.addEventListener('click', function (e) {
+    if (!e.target.closest('.dropdown')) {
+        document.querySelectorAll('.dropdown').forEach(dropdown => {
+            dropdown.classList.remove('active');
+        });
+    }
+});
 
-    setTimeout(() => particle.remove(), 7000);
-}
+// Close modal when clicking overlay
+document.getElementById('postLabModal').addEventListener('click', function (e) {
+    if (e.target === this) {
+        hidePostLabModal();
+    }
+});
 
-// Add particle animation
-const style = document.createElement('style');
-style.textContent = `
-            @keyframes particle-fall {
-                to {
-                    transform: translateY(${window.innerHeight + 20}px) rotate(360deg);
-                    opacity: 0;
-                }
-            }
-        `;
-document.head.appendChild(style);
-
-// Remove particle system for performance
-// setInterval(createParticle, 800);
+// ESC key to close modal
+document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') {
+        hidePostLabModal();
+    }
+});

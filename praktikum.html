@@ -1,28 +1,102 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EduLab - Acid-Base Practicum Simulator</title>
-    <link rel="stylesheet" href="./assets/praktikum.css?v=1">
+    <title>EduLab - Praktikum Asam-Basa Simulator</title>
+    <link rel="stylesheet" href="./assets/praktikum.css?v=2">
     <link rel="shortcut icon" href="./assets/images/Logo.png" type="image/x-icon">
 </head>
 
 <body>
-    <button class="back-button" onclick="window.location.href='./start-praktikum.html'">⬅ Kembali</button>
-    <h1>🧪 Praktikum Asam-Basa</h1>
-    <p class="instructions">Munculkan alat-alat lab dan lakukan eksperimen. Pilih sebuah alat dan lakukan operasi untuk memulai.</p>
-    <div id="summon-buttons">
-        <button onclick="summonTool('Beaker')">🥛 Summon Beaker</button>
-        <button onclick="summonTool('Acid Bottle')">🔴 Summon Acid (pH 2)</button>
-        <button onclick="summonTool('Base Bottle')">🔵 Summon Base (pH 12)</button>
-        <button onclick="summonTool('Indicator Bottle')">🟣 Summon Indicator</button>
-        <button onclick="summonTool('Pipette')">🧪 Summon Pipet</button>
-        <button onclick="summonTool('Litmus Paper')">📄 Summon Kertas Lakmus</button>
+    <!-- Header buttons -->
+    <div class="header-buttons">
+        <button class="back-button" onclick="window.location.href='./start-praktikum.html'">⬅ Kembali</button>
+        <button class="finish-button" onclick="showPostLabModal()">✅ Selesai</button>
     </div>
+
+    <h1>🧪 Praktikum Asam-Basa</h1>
+    <p class="instructions">Munculkan alat-alat lab dan bahan dari menu dropdown, lalu lakukan eksperimen untuk
+        mempelajari sifat asam-basa.</p>
+
+    <!-- Dropdown containers -->
+    <div class="dropdown-container">
+        <!-- Tools dropdown -->
+        <div class="dropdown" id="toolsDropdown">
+            <div class="dropdown-button" onclick="toggleDropdown('toolsDropdown')">
+                🔧 Alat-alat
+                <span class="dropdown-arrow">▼</span>
+            </div>
+            <div class="dropdown-content">
+                <button onclick="summonTool('Beaker')">🥛 Gelas Kimia</button>
+                <button onclick="summonTool('Pipette')">🧪 Pipet</button>
+                <button onclick="summonTool('Litmus Paper')">📄 Kertas Lakmus</button>
+            </div>
+        </div>
+
+        <!-- Materials dropdown -->
+        <div class="dropdown" id="materialsDropdown">
+            <div class="dropdown-button" onclick="toggleDropdown('materialsDropdown')">
+                ⚗️ Bahan-bahan
+                <span class="dropdown-arrow">▼</span>
+            </div>
+            <div class="dropdown-content">
+                <button onclick="summonTool('Acid Bottle')">🔴 Larutan Asam (pH 2)</button>
+                <button onclick="summonTool('Base Bottle')">🔵 Larutan Basa (pH 12)</button>
+                <button onclick="summonTool('Indicator Bottle')">🟣 Indikator</button>
+            </div>
+        </div>
+    </div>
+
     <div id="lab-table"></div>
-    <script src="./assets/praktikum.js?v=1"></script>
+
+    <!-- Post-lab modal -->
+    <div class="modal-overlay" id="postLabModal">
+        <div class="modal">
+            <button class="close-button" onclick="hidePostLabModal()">×</button>
+            <h2>📝 SOAL POSTLAB</h2>
+            <ol>
+                <li>Setelah melakukan titrasi HCl dengan NaOH, warna larutan berubah secara tiba-tiba. Menurutmu,
+                    mengapa perubahan warna ini bisa terjadi? Jelaskan dengan pendapatmu dan kaitkan dengan teori asam
+                    basa.</li>
+
+                <li><strong>(HOTS)</strong> Seorang siswa ingin menentukan pH larutan dengan menggunakan dua indikator
+                    alami, yaitu ekstrak bunga sepatu dan ekstrak kubis ungu. Warna yang muncul adalah merah pada bunga
+                    sepatu dan ungu pada kubis ungu.</li>
+
+                <li>Berdasarkan data rentang pH kedua indikator tersebut, tentukan kemungkinan pH larutan tersebut.</li>
+
+                <li>Jelaskan mengapa penggunaan dua indikator dapat meningkatkan akurasi perkiraan pH.</li>
+
+                <li>Jika larutan tersebut kemudian dititrasi dengan NaOH hingga warnanya berubah menjadi hijau pada
+                    kubis ungu, jelaskan apa yang terjadi pada konsentrasi ion H⁺ di larutan.</li>
+
+                <li><strong>(HOTS)</strong> Dua larutan, larutan asam lemah dan larutan basa lemah, dicampur. Indikator
+                    bromtimol biru menunjukkan warna hijau. Jika siswa ingin menetralkan larutan campuran dengan
+                    titrasi, jelaskan langkah-langkah yang harus dilakukan, indikator yang cocok digunakan, dan
+                    bagaimana pH akan berubah selama proses titrasi.</li>
+
+                <li>Seorang siswa menggunakan fenolftalein untuk titrasi larutan asam lemah dengan basa kuat. Ia
+                    mencatat perubahan warna dari tidak berwarna menjadi merah muda. Jelaskan mengapa warna berubah pada
+                    titik tertentu dan hubungkan fenomena ini dengan konsep pH dan kekuatan asam-basa.</li>
+
+                <li><strong>(HOTS)</strong> Seorang siswa melakukan percobaan titrasi untuk menentukan konsentrasi
+                    larutan asam sitrat C₆H₈O₇ yang terdapat pada minuman kemasan 250 mL. Dari minuman tersebut diambil
+                    sebanyak 15 mL, lalu diencerkan menjadi 150 mL dalam labu ukur. Kemudian, diambil 25 mL larutan
+                    hasil pengenceran tersebut dan dititrasi dengan larutan NaOH 0,2 M menggunakan indikator
+                    fenolftalein. Warna larutan berubah dari bening menjadi merah muda ketika volume NaOH yang
+                    ditambahkan mencapai 12 mL.<br><br>
+                    Diketahui massa molar C₆H₈O₇ = 192 g/mol dan massa jenis larutan asam sitrat murni = 1,665
+                    g/cm³.<br><br>
+                    Tentukan:<br>
+                    a. Konsentrasi molar larutan asam sitrat pada minuman sebelum diencerkan.<br>
+                    b. Kadar (% massa) asam sitrat dalam minuman tersebut.</li>
+            </ol>
+        </div>
+    </div>
+
+    <script src="./assets/praktikum.js?v=2"></script>
 </body>
 
 </html>

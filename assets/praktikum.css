@@ -14,7 +14,7 @@ body {
     overflow-x: hidden;
 }
 
-/* Simplified background */
+/* Background image with blur */
 body::before {
     content: '';
     position: fixed;
@@ -22,17 +22,24 @@ body::before {
     left: 0;
     width: 100%;
     height: 100%;
-    background: radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.2) 0%, transparent 50%),
-        radial-gradient(circle at 80% 20%, rgba(255, 118, 117, 0.2) 0%, transparent 50%);
+    background: url('./assets/images/BG-Lab.png') center/cover no-repeat, linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    filter: blur(2px);
     z-index: -1;
+    opacity: 0.3;
 }
 
-.back-button {
+.header-buttons {
     position: absolute;
     top: 20px;
     left: 20px;
+    right: 20px;
+    display: flex;
+    justify-content: space-between;
+    z-index: 100;
+}
+
+.back-button, .finish-button {
     padding: 12px 20px;
-    background: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(10px);
     color: white;
     border: 1px solid rgba(255, 255, 255, 0.2);
@@ -42,6 +49,10 @@ body::before {
     font-weight: 500;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.back-button {
+    background: rgba(255, 255, 255, 0.1);
 }
 
 .back-button:hover {
@@ -50,99 +61,16 @@ body::before {
     box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
 }
 
-/* Language toggle button */
-.language-toggle {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    padding: 12px 20px;
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    color: white;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 12px;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: 500;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+.finish-button {
+    background: rgba(76, 175, 80, 0.2);
+    border-color: rgba(76, 175, 80, 0.4);
 }
 
-.language-toggle:hover {
-    background: rgba(255, 255, 255, 0.2);
+.finish-button:hover {
+    background: rgba(76, 175, 80, 0.3);
     transform: translateY(-2px);
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 12px 40px rgba(76, 175, 80, 0.2);
 }
-
-/* Improved Litmus Paper Design */
-.litmus-paper {
-    width: 40px;
-    height: 120px;
-    position: relative;
-}
-
-.litmus-container {
-    position: relative;
-    width: 100%;
-    height: 100%;
-}
-
-.litmus-package {
-    width: 35px;
-    height: 45px;
-    background: linear-gradient(145deg, #f3e5f5, #e1bee7);
-    border: 2px solid #8e24aa;
-    border-radius: 4px;
-    position: absolute;
-    top: 0;
-    left: 2px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
-}
-
-.package-text {
-    font-size: 6px;
-    font-weight: bold;
-    color: #4a148c;
-    text-align: center;
-    line-height: 1.1;
-}
-
-.ph-scale {
-    width: 30px;
-    height: 8px;
-    background: linear-gradient(to right, 
-        #ff0000 0%, 
-        #ff6600 14%, 
-        #ffcc00 28%, 
-        #ccff00 42%, 
-        #66ff00 57%, 
-        #00ff66 71%, 
-        #00ccff 85%, 
-        #0066ff 100%);
-    border: 1px solid #333;
-    border-radius: 2px;
-    margin: 2px 0;
-}
-
-.litmus-strip-1, .litmus-strip-2, .litmus-strip-3 {
-    width: 5px;
-    height: 50px;
-    background: linear-gradient(to bottom, #8d6e63 0%, #8d6e63 20%, #ffeb3b 20%, #ffeb3b 100%);
-    border: 1px solid #5d4037;
-    border-radius: 2px;
-    position: absolute;
-    top: 50px;
-    transition: all 0.4s ease;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-}
-
-.litmus-strip-1 { left: 5px; }
-.litmus-strip-2 { left: 15px; }
-.litmus-strip-3 { left: 25px; }
 
 h1 {
     text-align: center;
@@ -150,7 +78,7 @@ h1 {
     font-size: 2.5rem;
     font-weight: 700;
     margin: 60px 0 10px 0;
-    text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    text-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
     letter-spacing: -0.02em;
 }
 
@@ -160,43 +88,104 @@ h1 {
     margin-bottom: 30px;
     font-size: 1.1rem;
     font-weight: 400;
-    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
 }
 
-#summon-buttons {
-    text-align: center;
-    margin-bottom: 30px;
+.dropdown-container {
     display: flex;
-    flex-wrap: wrap;
     justify-content: center;
-    gap: 15px;
+    gap: 30px;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
 }
 
-#summon-buttons button {
-    padding: 15px 25px;
-    background: rgba(255, 255, 255, 0.1);
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-button {
+    padding: 15px 30px;
+    background: rgba(255, 255, 255, 0.15);
     backdrop-filter: blur(15px);
     color: white;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
     cursor: pointer;
     border-radius: 16px;
     font-weight: 600;
-    font-size: 0.95rem;
+    font-size: 1rem;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-    position: relative;
-    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    min-width: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
 }
 
-#summon-buttons button::before {
-    display: none;
-    /* Removed shimmer effect */
-}
-
-#summon-buttons button:hover {
-    background: rgba(255, 255, 255, 0.2);
+.dropdown-button:hover {
+    background: rgba(255, 255, 255, 0.25);
     transform: translateY(-3px) scale(1.02);
-    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.25);
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    min-width: 220px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 8px 0;
+    top: 100%;
+    left: 0;
+    margin-top: 8px;
+}
+
+.dropdown-content button {
+    display: block;
+    width: 100%;
+    padding: 12px 20px;
+    background: transparent;
+    color: #2c3e50;
+    border: none;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    text-align: left;
+}
+
+.dropdown-content button:hover {
+    background: rgba(102, 126, 234, 0.1);
+    color: #667eea;
+}
+
+.dropdown.active .dropdown-content {
+    display: block;
+    animation: dropdownFadeIn 0.3s ease-out;
+}
+
+@keyframes dropdownFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.dropdown-arrow {
+    transition: transform 0.3s ease;
+}
+
+.dropdown.active .dropdown-arrow {
+    transform: rotate(180deg);
 }
 
 #lab-table {
@@ -208,17 +197,100 @@ h1 {
     position: relative;
     margin: 0 auto;
     overflow: visible;
-    /* Allow tools to go outside */
     border-radius: 24px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
     transition: all 0.3s ease;
 }
 
-#lab-table::before {
+/* Modal overlay */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+    z-index: 2000;
     display: none;
-    /* Removed animated border */
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.3s ease-out;
 }
 
+.modal-overlay.show {
+    display: flex;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.modal {
+    background: white;
+    border-radius: 20px;
+    padding: 30px;
+    max-width: 800px;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.3);
+    transform: translateY(0);
+    animation: modalSlideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+}
+
+@keyframes modalSlideIn {
+    from {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.modal h2 {
+    color: #2c3e50;
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.modal ol {
+    color: #34495e;
+    line-height: 1.6;
+    font-size: 0.95rem;
+}
+
+.modal li {
+    margin-bottom: 15px;
+    padding-left: 5px;
+}
+
+.modal strong {
+    color: #e74c3c;
+}
+
+.close-button {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #7f8c8d;
+    transition: color 0.3s ease;
+}
+
+.close-button:hover {
+    color: #e74c3c;
+}
+
+/* Tool styles */
 .tool {
     position: absolute;
     cursor: grab;
@@ -428,84 +500,6 @@ h1 {
     transform: translateY(0) scale(0.98);
 }
 
-@keyframes enhanced-shake {
-    0% {
-        transform: translate(0, 0) rotate(0deg);
-    }
-
-    10% {
-        transform: translate(-3px, -2px) rotate(-3deg);
-    }
-
-    20% {
-        transform: translate(3px, 2px) rotate(3deg);
-    }
-
-    30% {
-        transform: translate(-3px, 2px) rotate(-3deg);
-    }
-
-    40% {
-        transform: translate(3px, -2px) rotate(3deg);
-    }
-
-    50% {
-        transform: translate(-3px, -2px) rotate(-3deg);
-    }
-
-    60% {
-        transform: translate(3px, 2px) rotate(3deg);
-    }
-
-    70% {
-        transform: translate(-3px, 2px) rotate(-3deg);
-    }
-
-    80% {
-        transform: translate(3px, -2px) rotate(3deg);
-    }
-
-    90% {
-        transform: translate(-3px, -2px) rotate(-3deg);
-    }
-
-    100% {
-        transform: translate(0, 0) rotate(0deg);
-    }
-}
-
-.shaking {
-    animation: enhanced-shake 1s ease-in-out;
-}
-
-@keyframes enhanced-pour {
-    0% {
-        transform: rotate(0deg);
-    }
-
-    20% {
-        transform: rotate(-30deg) scale(1.05);
-    }
-
-    80% {
-        transform: rotate(-30deg) scale(1.05);
-    }
-
-    100% {
-        transform: rotate(0deg);
-    }
-}
-
-.pouring {
-    animation: enhanced-pour 1.5s ease-in-out;
-}
-
-.selected {
-    filter: drop-shadow(0 0 20px #4CAF50) drop-shadow(0 8px 25px rgba(0, 0, 0, 0.15));
-    transform: scale(1.1);
-    z-index: 25;
-}
-
 .pipette {
     width: 15px;
     height: 120px;
@@ -552,6 +546,18 @@ h1 {
     top: 98px;
     left: 5px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.pipette-liquid {
+    position: absolute;
+    width: 6px;
+    height: 30px;
+    background: #ff6b6b;
+    left: 50%;
+    top: 40%;
+    transform: translateX(-50%);
+    border-radius: 0 0 3px 3px;
+    display: none;
 }
 
 .litmus-paper {
@@ -617,6 +623,51 @@ h1 {
     border-radius: 2px;
 }
 
+/* Animation keyframes */
+@keyframes enhanced-shake {
+    0% { transform: translate(0, 0) rotate(0deg); }
+    10% { transform: translate(-3px, -2px) rotate(-3deg); }
+    20% { transform: translate(3px, 2px) rotate(3deg); }
+    30% { transform: translate(-3px, 2px) rotate(-3deg); }
+    40% { transform: translate(3px, -2px) rotate(3deg); }
+    50% { transform: translate(-3px, -2px) rotate(-3deg); }
+    60% { transform: translate(3px, 2px) rotate(3deg); }
+    70% { transform: translate(-3px, 2px) rotate(-3deg); }
+    80% { transform: translate(3px, -2px) rotate(3deg); }
+    90% { transform: translate(-3px, -2px) rotate(-3deg); }
+    100% { transform: translate(0, 0) rotate(0deg); }
+}
+
+.shaking {
+    animation: enhanced-shake 1s ease-in-out;
+}
+
+@keyframes enhanced-pour {
+    0% { transform: rotate(0deg); }
+    20% { transform: rotate(-30deg) scale(1.05); }
+    80% { transform: rotate(-30deg) scale(1.05); }
+    100% { transform: rotate(0deg); }
+}
+
+.pouring {
+    animation: enhanced-pour 1.5s ease-in-out;
+}
+
+.selected {
+    filter: drop-shadow(0 0 20px #4CAF50) drop-shadow(0 8px 25px rgba(0, 0, 0, 0.15));
+    transform: scale(1.1);
+    z-index: 25;
+}
+
+.testing {
+    animation: litmus-test 1s ease-in-out;
+}
+
+@keyframes litmus-test {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1) rotate(5deg); }
+}
+
 /* Success/Error message styling */
 .message-toast {
     position: fixed;
@@ -654,18 +705,34 @@ h1 {
     #lab-table {
         width: 95%;
         max-width: 800px;
+        height: 500px;
     }
 
     h1 {
         font-size: 2rem;
     }
 
-    #summon-buttons {
-        gap: 10px;
+    .dropdown-container {
+        gap: 15px;
     }
 
-    #summon-buttons button {
+    .dropdown-button {
         padding: 12px 20px;
+        font-size: 0.9rem;
+        min-width: 160px;
+    }
+
+    .modal {
+        max-width: 95%;
+        margin: 20px;
+        padding: 20px;
+    }
+
+    .modal h2 {
+        font-size: 1.5rem;
+    }
+
+    .modal ol {
         font-size: 0.9rem;
     }
 }
