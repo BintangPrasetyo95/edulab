@@ -16,16 +16,15 @@
         <button class="finish-button" onclick="showPostLabModal()">✅ Selesai</button>
     </div>
 
+    <!-- Title -->
     <h1>🧪 Praktikum Asam-Basa</h1>
-    <p class="instructions">Munculkan alat-alat lab dan bahan dari menu dropdown, lalu lakukan eksperimen untuk
-        mempelajari sifat asam-basa.</p>
 
     <!-- Dropdown containers -->
     <div class="dropdown-container">
         <!-- Tools dropdown -->
         <div class="dropdown" id="toolsDropdown">
             <div class="dropdown-button" onclick="toggleDropdown('toolsDropdown')">
-                🔧 Alat-alat
+                🔧 Alat
                 <span class="dropdown-arrow">▼</span>
             </div>
             <div class="dropdown-content">
@@ -38,12 +37,12 @@
         <!-- Materials dropdown -->
         <div class="dropdown" id="materialsDropdown">
             <div class="dropdown-button" onclick="toggleDropdown('materialsDropdown')">
-                ⚗️ Bahan-bahan
+                ⚗️ Bahan
                 <span class="dropdown-arrow">▼</span>
             </div>
             <div class="dropdown-content">
-                <button onclick="summonTool('Acid Bottle')">🔴 Larutan Asam (pH 2)</button>
-                <button onclick="summonTool('Base Bottle')">🔵 Larutan Basa (pH 12)</button>
+                <button onclick="summonTool('Acid Bottle')">🔴 Larutan Asam</button>
+                <button onclick="summonTool('Base Bottle')">🔵 Larutan Basa</button>
                 <button onclick="summonTool('Indicator Bottle')">🟣 Indikator</button>
             </div>
         </div>

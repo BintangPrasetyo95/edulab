@@ -1,89 +1,45 @@
 let toolCount = 0;
 let selectedTarget = null;
-let currentLanguage = 'indonesian'; // Default language
 
 // Language translations
 const translations = {
-    english: {
-        beaker: 'Beaker',
-        pipette: 'Pipet',
-        litmusPaper: 'Litmus Paper',
-        acid: 'Acid',
-        base: 'Base',
-        indicator: 'Indicator',
-        shake: '🔄 Shake',
-        empty: '🗑️ Empty',
-        select: '🎯 Select',
-        pour: '💧 Pour',
-        hide: '❌ Hide',
-        use: '🧪 Use',
-        // Pipette specific
-        suckLiquid: '📥 Suck Liquid',
-        releaseLiquid: '📤 Release',
-        // Litmus specific
-        testPH: '🧪 Test pH',
-        dipInLiquid: '🌊 Dip in Liquid',
-        summoned: 'summoned successfully!',
-        shaken: 'Tool shaken!',
-        emptied: 'Container emptied!',
-        selected: 'Selected',
-        asTarget: 'as target',
-        selectDifferent: 'Select a different target first!',
-        sourceEmpty: 'Source container is empty!',
-        onlyBeaker: 'Can only pour into Beaker!',
-        indicatorAdded: 'Indicator added - shake to see reaction!',
-        pouredSuccess: 'Poured successfully! New pH:',
-        pipetteCollected: 'Pipette collected liquid!',
-        pipetteEmpty: 'Pipette is empty!',
-        pipetteDelivered: 'Pipette delivered liquid!',
-        litmusUsed: 'Litmus paper used! pH:',
-        litmusNoLiquid: 'No liquid to test!',
-        languageToggle: '🌐 Language',
-        selectSourceFirst: 'Select source container first!',
-        selectTargetFirst: 'Select target container first!'
-    },
-    indonesian: {
-        beaker: 'Gelas Kimia',
-        pipette: 'Pipet',
-        litmusPaper: 'Kertas Lakmus',
-        acid: 'Asam',
-        base: 'Basa',
-        indicator: 'Indikator',
-        shake: '🔄 Kocok',
-        empty: '🗑️ Kosongkan',
-        select: '🎯 Pilih',
-        pour: '💧 Tuang',
-        hide: '❌ Sembunyikan',
-        use: '🧪 Gunakan',
-        // Pipette specific
-        suckLiquid: '📥 Sedot Cairan',
-        releaseLiquid: '📤 Keluarkan',
-        // Litmus specific
-        testPH: '🧪 Tes pH',
-        dipInLiquid: '🌊 Celup ke Cairan',
-        summoned: 'berhasil dipanggil!',
-        shaken: 'Alat dikocok!',
-        emptied: 'Wadah dikosongkan!',
-        selected: 'Terpilih',
-        asTarget: 'sebagai target',
-        selectDifferent: 'Pilih target yang berbeda dulu!',
-        sourceEmpty: 'Wadah sumber kosong!',
-        onlyBeaker: 'Hanya bisa tuang ke Gelas Kimia!',
-        indicatorAdded: 'Indikator ditambahkan - kocok untuk melihat reaksi!',
-        pouredSuccess: 'Berhasil dituang! pH baru:',
-        pipetteCollected: 'Pipet mengambil cairan!',
-        pipetteEmpty: 'Pipet kosong!',
-        pipetteDelivered: 'Pipet menyalurkan cairan!',
-        litmusUsed: 'Kertas lakmus digunakan! pH:',
-        litmusNoLiquid: 'Tidak ada cairan untuk diuji!',
-        languageToggle: '🌐 Bahasa',
-        selectSourceFirst: 'Pilih wadah sumber dulu!',
-        selectTargetFirst: 'Pilih wadah target dulu!'
-    }
+    beaker: 'Gelas Kimia',
+    pipette: 'Pipet',
+    litmusPaper: 'Kertas Lakmus',
+    acid: 'Asam',
+    base: 'Basa',
+    indicator: 'Indikator',
+    shake: '🔄 Kocok',
+    empty: '🗑️ Kosongkan',
+    select: '🎯 Pilih',
+    pour: '💧 Tuang',
+    hide: '❌ Sembunyikan',
+    use: '🧪 Gunakan',
+    suckLiquid: '📥 Sedot Cairan',
+    releaseLiquid: '📤 Keluarkan',
+    testPH: '🧪 Tes pH',
+    dipInLiquid: '🌊 Celup ke Cairan',
+    summoned: 'berhasil dipanggil!',
+    shaken: 'Alat dikocok!',
+    emptied: 'Wadah dikosongkan!',
+    selected: 'Terpilih',
+    asTarget: 'sebagai target',
+    selectDifferent: 'Pilih target yang berbeda dulu!',
+    sourceEmpty: 'Wadah sumber kosong!',
+    onlyBeaker: 'Hanya bisa tuang ke Gelas Kimia!',
+    indicatorAdded: 'Indikator ditambahkan - kocok untuk melihat reaksi!',
+    pouredSuccess: 'Berhasil dituang! pH baru:',
+    pipetteCollected: 'Pipet mengambil cairan!',
+    pipetteEmpty: 'Pipet kosong!',
+    pipetteDelivered: 'Pipet menyalurkan cairan!',
+    litmusUsed: 'Kertas lakmus digunakan! pH:',
+    litmusNoLiquid: 'Tidak ada cairan untuk diuji!',
+    selectSourceFirst: 'Pilih wadah sumber dulu!',
+    selectTargetFirst: 'Pilih wadah target dulu!'
 };
 
 function getText(key) {
-    return translations[currentLanguage][key] || key;
+    return translations[key] || key;
 }
 
 // Dropdown functionality
@@ -142,7 +98,7 @@ function showToast(message, type = 'success') {
     setTimeout(() => {
         toast.classList.remove('show');
         setTimeout(() => toast.remove(), 400);
-    }, 3000);
+    }, 2500);
 }
 
 function summonTool(type) {
@@ -150,9 +106,11 @@ function summonTool(type) {
     tool.className = 'tool';
     tool.id = 'tool-' + toolCount;
 
-    // Normal random spawning without any Y adjustment
-    const randomLeft = Math.random() * 700;
-    const randomTop = Math.random() * 450;
+    // Random spawning within the lab table
+    const labTable = document.getElementById('lab-table');
+    const labRect = labTable.getBoundingClientRect();
+    const randomLeft = Math.random() * (labRect.width - 150);
+    const randomTop = Math.random() * (labRect.height - 200);
 
     tool.style.left = randomLeft + 'px';
     tool.style.top = randomTop + 'px';
@@ -160,7 +118,7 @@ function summonTool(type) {
     tool.dataset.ph = getInitialPh(type);
     tool.dataset.volume = getInitialVolume(type);
 
-    toolCount++; // Increment after using
+    toolCount++;
 
     if (type === 'Beaker') {
         tool.classList.add('beaker');
@@ -177,7 +135,7 @@ function summonTool(type) {
         tool.dataset.collected = 'false';
         tool.dataset.collectedPh = '7';
         tool.innerHTML = `
-            <div class="pipette-body" style="transform: scale(1.3);">
+            <div class="pipette-body" style="transform: scale(1.2);">
                 <div class="pipette-bulb"></div>
                 <div class="pipette-tube"></div>
                 <div class="pipette-tip"></div>
@@ -188,15 +146,15 @@ function summonTool(type) {
     } else if (type === 'Litmus Paper') {
         tool.classList.add('litmus-paper');
         tool.innerHTML = `
-            <div class="litmus-handle" style="height: 60px; background: #8B4513;"></div>
-            <div class="litmus-body" style="width: 25px; height: 80px; background: linear-gradient(to right, #ff6b6b 0%, #feca57 50%, #48dbfb 100%); border-radius: 3px; position: relative; top: -5px;"></div>
+            <div class="litmus-handle"></div>
+            <div class="litmus-body"></div>
             <div class="tool-name">${getText('litmusPaper')}</div>
         `;
     } else {
         tool.classList.add('bottle');
         const labelText = type.includes('Acid') ? 'HCl\npH 2' :
             type.includes('Base') ? 'NaOH\npH 12' :
-                'C₂₀H₁₄O₄\nIndikator';
+                'Indikator';
         const displayName = type.includes('Acid') ? getText('acid') :
             type.includes('Base') ? getText('base') : getText('indicator');
         tool.innerHTML = `
@@ -240,7 +198,7 @@ function summonTool(type) {
 
     // Add click event to toggle buttons
     tool.addEventListener('click', function (e) {
-        if (e.target.closest('.tool-buttons')) return; // Don't toggle if clicking buttons
+        if (e.target.closest('.tool-buttons')) return;
         e.stopPropagation();
         tool.classList.toggle('show-buttons');
     });
@@ -248,22 +206,22 @@ function summonTool(type) {
     tool.draggable = true;
     tool.ondragstart = (e) => {
         e.dataTransfer.setData('text/plain', tool.id);
-        tool.style.transform = 'scale(0.95) rotate(5deg)';
+        tool.style.transform = 'scale(0.75) rotate(3deg)';
     };
 
     tool.ondragend = (e) => {
-        tool.style.transform = '';
+        tool.style.transform = 'scale(0.85)';
     };
 
     document.getElementById('lab-table').appendChild(tool);
 
     // Add entrance animation
     tool.style.opacity = '0';
-    tool.style.transform = 'scale(0.5) translateY(-50px)';
+    tool.style.transform = 'scale(0.4) translateY(-30px)';
     setTimeout(() => {
-        tool.style.transition = 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
+        tool.style.transition = 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
         tool.style.opacity = '1';
-        tool.style.transform = 'scale(1) translateY(0)';
+        tool.style.transform = 'scale(0.85) translateY(0)';
     }, 100);
 
     showToast(`✨ ${type} ${getText('summoned')}`);
@@ -546,21 +504,18 @@ labTable.ondrop = (e) => {
     const tool = document.getElementById(id);
     const rect = labTable.getBoundingClientRect();
 
-    // Extract tool number from ID (e.g., "tool-2" -> 2)
     const toolNumber = parseInt(id.split('-')[1]);
-
-    // Calculate position with progressive Y adjustment based on tool ID
     const newLeft = e.clientX - rect.left - 40;
     const baseTop = e.clientY - rect.top - 60;
-    const adjustedTop = baseTop - (toolNumber * 100); // Apply -100px per tool number
+    const adjustedTop = baseTop - (toolNumber * 80);
 
     tool.style.left = newLeft + 'px';
     tool.style.top = adjustedTop + 'px';
 
     // Add drop animation
-    tool.style.transform = 'scale(1.1)';
+    tool.style.transform = 'scale(0.95)';
     setTimeout(() => {
-        tool.style.transform = '';
+        tool.style.transform = 'scale(0.85)';
     }, 200);
 };
 
