@@ -175,14 +175,16 @@ function summonTool(type) {
             <div class="tool-name">${getText('kertasLakmusBiru')}</div>
         `;
     } else {
-        // Materials (bottles)
+        // Materials (bottles) - FIXED VERSION
         tool.classList.add('bottle');
         const labelText = getMaterialLabel(type);
         const displayName = getMaterialDisplayName(type);
+        const liquidColor = getLiquidColor(type, tool.dataset.ph);
+
         tool.innerHTML = `
             <div class="bottle-body">
                 <div class="bottle-label">${labelText}</div>
-                <div class="liquid" style="height: ${tool.dataset.volume}%; background-color: ${getLiquidColor(type, tool.dataset.ph)};"></div>
+                <div class="liquid" style="height: ${tool.dataset.volume}%; background-color: ${liquidColor};"></div>
             </div>
             <div class="bottle-neck"></div>
             <div class="bottle-cap"></div>
@@ -306,11 +308,15 @@ function collectWithPipette(event) {
     // Collect liquid
     const collectAmount = Math.min(10, sourceVolume);
     selectedTarget.dataset.volume = sourceVolume - collectAmount;
-    selectedTarget.querySelector('.liquid').style.height = (sourceVolume - collectAmount) + '%';
+    const liquidElement = selectedTarget.querySelector('.liquid');
+    if (liquidElement) {
+        liquidElement.style.height = (sourceVolume - collectAmount) + '%';
+    }
 
     pipette.dataset.collected = 'true';
     pipette.dataset.collectedPh = selectedTarget.dataset.ph;
     pipette.dataset.collectedVolume = collectAmount;
+    pipette.dataset.collectedType = selectedTarget.dataset.type;
 
     // Show liquid in pipette
     const pipetteLiquid = pipette.querySelector('.pipet-liquid');
@@ -355,11 +361,12 @@ function deliverWithPipette(event) {
     // Deliver liquid to the well
     const deliverAmount = parseFloat(pipette.dataset.collectedVolume);
     const pipettePh = parseFloat(pipette.dataset.collectedPh);
+    const originalType = pipette.dataset.collectedType;
 
     wells[emptyWellIndex] = {
         ph: pipettePh,
         volume: deliverAmount,
-        color: getLiquidColor('well', pipettePh)
+        color: getLiquidColor(originalType, pipettePh)
     };
 
     selectedTarget.dataset.wells = JSON.stringify(wells);
@@ -473,31 +480,32 @@ function getInitialVolume(type) {
     return 80;
 }
 
+// FIXED: Updated getLiquidColor function with better, more realistic colors
 function getLiquidColor(type, ph) {
     ph = parseFloat(ph);
 
-    // Special colors for specific materials
+    // Warna spesifik untuk setiap material - lebih vibrant dan realistis
     const materialColors = {
-        'Larutan Detergen': '#87CEEB',
-        'Minuman Berkarbonasi': '#F4A460',
-        'Larutan Pasta Gigi': '#E0E0E0',
-        'Larutan Garam Dapur': 'transparent',
-        'Larutan Cuka': '#FFFF99',
-        'Air Mineral': 'transparent',
-        'Air Jeruk': '#FFD700'
+        'Larutan Detergen': '#00BCD4',      // Cyan terang (seperti detergen sungguhan)
+        'Minuman Berkarbonasi': '#8D6E63',   // Coklat cola
+        'Larutan Pasta Gigi': '#E8F5E8',    // Hijau mint muda
+        'Larutan Garam Dapur': '#F0F8FF',   // Biru sangat muda (hampir transparan)
+        'Larutan Cuka': '#FFF59D',          // Kuning muda
+        'Air Mineral': '#E3F2FD',           // Biru sangat muda
+        'Air Jeruk': '#FFB74D'              // Orange terang
     };
 
     if (materialColors[type]) {
         return materialColors[type];
     }
 
-    // Generic pH-based coloring for wells and mixed solutions
-    if (ph < 4) return '#ff6b6b';
-    if (ph < 6) return '#ffca28';
-    if (ph >= 6 && ph <= 8) return 'rgba(135, 206, 235, 0.3)';
-    if (ph > 8) return '#4fc3f7';
-    if (ph > 10) return '#29b6f6';
-    return 'transparent';
+    // Warna berdasarkan pH untuk campuran dan well
+    if (ph < 4) return '#F44336';      // Merah untuk sangat asam
+    if (ph < 6) return '#FF9800';      // Orange untuk asam
+    if (ph >= 6 && ph <= 8) return '#E3F2FD';  // Biru muda untuk netral
+    if (ph > 8) return '#2196F3';     // Biru untuk basa
+    if (ph > 10) return '#3F51B5';    // Biru tua untuk sangat basa
+    return '#E3F2FD';                 // Default biru muda
 }
 
 function toggleButtons(event) {
@@ -552,6 +560,7 @@ function selectTarget(event) {
     showToast(`🎯 ${getText('selected')} ${selectedTarget.dataset.type} ${getText('asTarget')}`);
 }
 
+// FIXED: Updated pourIntoTarget function
 function pourIntoTarget(event) {
     event.stopPropagation();
     const source = event.target.closest('.tool');
@@ -586,15 +595,18 @@ function pourIntoTarget(event) {
     const newSourceVol = Math.max(0, sourceVol - actualPour);
 
     source.dataset.volume = newSourceVol;
-    source.querySelector('.liquid').style.height = newSourceVol + '%';
+    const sourceLiquid = source.querySelector('.liquid');
+    if (sourceLiquid) {
+        sourceLiquid.style.height = newSourceVol + '%';
+    }
 
     const sourcePh = parseFloat(source.dataset.ph);
 
-    // Add liquid to the well
+    // Add liquid to the well - FIXED: use original source type for color
     wells[emptyWellIndex] = {
         ph: sourcePh,
         volume: actualPour,
-        color: getLiquidColor(source.dataset.type, sourcePh)
+        color: getLiquidColor(source.dataset.type, sourcePh)  // Use original source type
     };
 
     selectedTarget.dataset.wells = JSON.stringify(wells);
