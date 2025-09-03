@@ -3,39 +3,47 @@ let selectedTarget = null;
 
 // Language translations
 const translations = {
-    beaker: 'Gelas Kimia',
-    pipette: 'Pipet',
-    litmusPaper: 'Kertas Lakmus',
-    acid: 'Asam',
-    base: 'Basa',
-    indicator: 'Indikator',
-    shake: '🔄 Kocok',
+    paletTetes: 'Palet Tetes',
+    pipetTetes: 'Pipet Tetes',
+    kertasLakmusMerah: 'Kertas Lakmus Merah',
+    kertasLakmusBiru: 'Kertas Lakmus Biru',
+    larutanDetergen: 'Larutan Detergen',
+    minumanBerkarbonasi: 'Minuman Berkarbonasi',
+    larutanPastaGigi: 'Larutan Pasta Gigi',
+    larutanGaramDapur: 'Larutan Garam Dapur',
+    larutanCuka: 'Larutan Cuka',
+    airMineral: 'Air Mineral',
+    airJeruk: 'Air Jeruk',
+    addToWell: '💧 Tambah ke Lubang',
     empty: '🗑️ Kosongkan',
     select: '🎯 Pilih',
     pour: '💧 Tuang',
     hide: '❌ Sembunyikan',
-    use: '🧪 Gunakan',
     suckLiquid: '📥 Sedot Cairan',
     releaseLiquid: '📤 Keluarkan',
     testPH: '🧪 Tes pH',
     dipInLiquid: '🌊 Celup ke Cairan',
     summoned: 'berhasil dipanggil!',
-    shaken: 'Alat dikocok!',
     emptied: 'Wadah dikosongkan!',
     selected: 'Terpilih',
     asTarget: 'sebagai target',
     selectDifferent: 'Pilih target yang berbeda dulu!',
     sourceEmpty: 'Wadah sumber kosong!',
-    onlyBeaker: 'Hanya bisa tuang ke Gelas Kimia!',
-    indicatorAdded: 'Indikator ditambahkan - kocok untuk melihat reaksi!',
-    pouredSuccess: 'Berhasil dituang! pH baru:',
+    onlyPalet: 'Hanya bisa tuang ke Palet Tetes!',
+    pouredSuccess: 'Berhasil dituang! pH:',
     pipetteCollected: 'Pipet mengambil cairan!',
     pipetteEmpty: 'Pipet kosong!',
     pipetteDelivered: 'Pipet menyalurkan cairan!',
-    litmusUsed: 'Kertas lakmus digunakan! pH:',
+    litmusUsed: 'Kertas lakmus digunakan! Hasil:',
     litmusNoLiquid: 'Tidak ada cairan untuk diuji!',
     selectSourceFirst: 'Pilih wadah sumber dulu!',
-    selectTargetFirst: 'Pilih wadah target dulu!'
+    selectTargetFirst: 'Pilih wadah target dulu!',
+    acidic: 'ASAM',
+    basic: 'BASA',
+    neutral: 'NETRAL',
+    redToBlue: 'Merah → Biru',
+    blueToRed: 'Biru → Merah',
+    noChange: 'Tidak berubah'
 };
 
 function getText(key) {
@@ -120,43 +128,57 @@ function summonTool(type) {
 
     toolCount++;
 
-    if (type === 'Beaker') {
-        tool.classList.add('beaker');
+    if (type === 'Palet Tetes') {
+        tool.classList.add('palet-tetes');
         tool.innerHTML = `
-            <div class="beaker-body">
-                <div class="liquid" style="height: ${tool.dataset.volume}%; background-color: ${getLiquidColor(type, tool.dataset.ph)};"></div>
+            <div class="palet-body">
+                <div class="palet-wells">
+                    <div class="palet-well" data-well="0"></div>
+                    <div class="palet-well" data-well="1"></div>
+                    <div class="palet-well" data-well="2"></div>
+                    <div class="palet-well" data-well="3"></div>
+                    <div class="palet-well" data-well="4"></div>
+                    <div class="palet-well" data-well="5"></div>
+                    <div class="palet-well" data-well="6"></div>
+                    <div class="palet-well" data-well="7"></div>
+                </div>
             </div>
-            <div class="beaker-rim"></div>
-            <div class="beaker-spout"></div>
-            <div class="tool-name">${getText('beaker')}</div>
+            <div class="tool-name">${getText('paletTetes')}</div>
         `;
-    } else if (type === 'Pipette') {
-        tool.classList.add('pipette');
+        // Initialize wells data
+        tool.dataset.wells = JSON.stringify(Array(8).fill({ ph: 7, volume: 0, color: 'transparent' }));
+    } else if (type === 'Pipet Tetes') {
+        tool.classList.add('pipet-tetes');
         tool.dataset.collected = 'false';
         tool.dataset.collectedPh = '7';
         tool.innerHTML = `
-            <div class="pipette-body" style="transform: scale(1.2);">
-                <div class="pipette-bulb"></div>
-                <div class="pipette-tube"></div>
-                <div class="pipette-tip"></div>
-                <div class="pipette-liquid" style="display: none;"></div>
+            <div class="pipet-body">
+                <div class="pipet-bulb"></div>
+                <div class="pipet-tube"></div>
+                <div class="pipet-tip"></div>
+                <div class="pipet-liquid" style="display: none;"></div>
             </div>
-            <div class="tool-name">${getText('pipette')}</div>
+            <div class="tool-name">${getText('pipetTetes')}</div>
         `;
-    } else if (type === 'Litmus Paper') {
-        tool.classList.add('litmus-paper');
+    } else if (type === 'Kertas Lakmus Merah') {
+        tool.classList.add('kertas-lakmus', 'lakmus-merah');
         tool.innerHTML = `
-            <div class="litmus-handle"></div>
-            <div class="litmus-body"></div>
-            <div class="tool-name">${getText('litmusPaper')}</div>
+            <div class="lakmus-handle"></div>
+            <div class="lakmus-paper"></div>
+            <div class="tool-name">${getText('kertasLakmusMerah')}</div>
+        `;
+    } else if (type === 'Kertas Lakmus Biru') {
+        tool.classList.add('kertas-lakmus', 'lakmus-biru');
+        tool.innerHTML = `
+            <div class="lakmus-handle"></div>
+            <div class="lakmus-paper"></div>
+            <div class="tool-name">${getText('kertasLakmusBiru')}</div>
         `;
     } else {
+        // Materials (bottles)
         tool.classList.add('bottle');
-        const labelText = type.includes('Acid') ? 'HCl\npH 2' :
-            type.includes('Base') ? 'NaOH\npH 12' :
-                'Indikator';
-        const displayName = type.includes('Acid') ? getText('acid') :
-            type.includes('Base') ? getText('base') : getText('indicator');
+        const labelText = getMaterialLabel(type);
+        const displayName = getMaterialDisplayName(type);
         tool.innerHTML = `
             <div class="bottle-body">
                 <div class="bottle-label">${labelText}</div>
@@ -172,14 +194,20 @@ function summonTool(type) {
     buttons.className = 'tool-buttons';
 
     // Set appropriate buttons based on tool type
-    if (type === 'Pipette') {
+    if (type === 'Palet Tetes') {
+        buttons.innerHTML = `
+            <button onclick="emptyTool(event)">${getText('empty')}</button>
+            <button onclick="selectTarget(event)">${getText('select')}</button>
+            <button onclick="toggleButtons(event)">${getText('hide')}</button>
+        `;
+    } else if (type === 'Pipet Tetes') {
         buttons.innerHTML = `
             <button onclick="collectWithPipette(event)">${getText('suckLiquid')}</button>
             <button onclick="deliverWithPipette(event)">${getText('releaseLiquid')}</button>
             <button onclick="emptyTool(event)">${getText('empty')}</button>
             <button onclick="toggleButtons(event)">${getText('hide')}</button>
         `;
-    } else if (type === 'Litmus Paper') {
+    } else if (type.includes('Kertas Lakmus')) {
         buttons.innerHTML = `
             <button onclick="useLitmusPaper(event)">${getText('testPH')}</button>
             <button onclick="selectTarget(event)">${getText('dipInLiquid')}</button>
@@ -187,7 +215,6 @@ function summonTool(type) {
         `;
     } else {
         buttons.innerHTML = `
-            <button onclick="shakeTool(event)">${getText('shake')}</button>
             <button onclick="emptyTool(event)">${getText('empty')}</button>
             <button onclick="selectTarget(event)">${getText('select')}</button>
             <button onclick="pourIntoTarget(event)">${getText('pour')}</button>
@@ -230,6 +257,32 @@ function summonTool(type) {
     document.querySelectorAll('.dropdown').forEach(d => d.classList.remove('active'));
 }
 
+function getMaterialLabel(type) {
+    const labels = {
+        'Larutan Detergen': 'Detergen\npH ~10',
+        'Minuman Berkarbonasi': 'Soda\npH ~3.5',
+        'Larutan Pasta Gigi': 'Pasta Gigi\npH ~9',
+        'Larutan Garam Dapur': 'NaCl\npH ~7',
+        'Larutan Cuka': 'Cuka\npH ~2.5',
+        'Air Mineral': 'H₂O\npH ~7',
+        'Air Jeruk': 'Jeruk\npH ~3'
+    };
+    return labels[type] || type;
+}
+
+function getMaterialDisplayName(type) {
+    const names = {
+        'Larutan Detergen': getText('larutanDetergen'),
+        'Minuman Berkarbonasi': getText('minumanBerkarbonasi'),
+        'Larutan Pasta Gigi': getText('larutanPastaGigi'),
+        'Larutan Garam Dapur': getText('larutanGaramDapur'),
+        'Larutan Cuka': getText('larutanCuka'),
+        'Air Mineral': getText('airMineral'),
+        'Air Jeruk': getText('airJeruk')
+    };
+    return names[type] || type;
+}
+
 function collectWithPipette(event) {
     event.stopPropagation();
     const pipette = event.target.closest('.tool');
@@ -239,7 +292,7 @@ function collectWithPipette(event) {
         return;
     }
 
-    if (selectedTarget.dataset.type === 'Pipette') {
+    if (selectedTarget.dataset.type === 'Pipet Tetes') {
         showToast(`❌ ${getText('selectDifferent')}`, 'error');
         return;
     }
@@ -260,7 +313,7 @@ function collectWithPipette(event) {
     pipette.dataset.collectedVolume = collectAmount;
 
     // Show liquid in pipette
-    const pipetteLiquid = pipette.querySelector('.pipette-liquid');
+    const pipetteLiquid = pipette.querySelector('.pipet-liquid');
     pipetteLiquid.style.display = 'block';
     pipetteLiquid.style.backgroundColor = getLiquidColor(selectedTarget.dataset.type, selectedTarget.dataset.ph);
 
@@ -285,32 +338,42 @@ function deliverWithPipette(event) {
         return;
     }
 
-    if (selectedTarget.dataset.type !== 'Beaker') {
-        showToast(`❌ ${getText('onlyBeaker')}`, 'error');
+    if (selectedTarget.dataset.type !== 'Palet Tetes') {
+        showToast(`❌ ${getText('onlyPalet')}`, 'error');
         return;
     }
 
-    // Deliver liquid
+    // Find an empty well in the palet
+    const wells = JSON.parse(selectedTarget.dataset.wells);
+    const emptyWellIndex = wells.findIndex(well => well.volume === 0);
+
+    if (emptyWellIndex === -1) {
+        showToast('❌ Semua lubang palet sudah terisi!', 'error');
+        return;
+    }
+
+    // Deliver liquid to the well
     const deliverAmount = parseFloat(pipette.dataset.collectedVolume);
-    const targetVolume = parseFloat(selectedTarget.dataset.volume);
-    const newTargetVolume = Math.min(100, targetVolume + deliverAmount);
-
-    // Calculate new pH
     const pipettePh = parseFloat(pipette.dataset.collectedPh);
-    const targetPh = parseFloat(selectedTarget.dataset.ph);
-    const newPh = targetVolume === 0 ? pipettePh :
-        ((targetPh * targetVolume) + (pipettePh * deliverAmount)) / newTargetVolume;
 
-    selectedTarget.dataset.volume = newTargetVolume;
-    selectedTarget.dataset.ph = newPh;
-    selectedTarget.querySelector('.liquid').style.height = newTargetVolume + '%';
-    selectedTarget.querySelector('.liquid').style.backgroundColor = getLiquidColor('Beaker', newPh);
+    wells[emptyWellIndex] = {
+        ph: pipettePh,
+        volume: deliverAmount,
+        color: getLiquidColor('well', pipettePh)
+    };
+
+    selectedTarget.dataset.wells = JSON.stringify(wells);
+
+    // Update visual
+    const wellElement = selectedTarget.querySelector(`[data-well="${emptyWellIndex}"]`);
+    wellElement.style.backgroundColor = wells[emptyWellIndex].color;
+    wellElement.style.border = '2px solid #333';
 
     // Clear pipette
     pipette.dataset.collected = 'false';
-    pipette.querySelector('.pipette-liquid').style.display = 'none';
+    pipette.querySelector('.pipet-liquid').style.display = 'none';
 
-    showToast(`💧 ${getText('pipetteDelivered')} pH: ${newPh.toFixed(1)}`);
+    showToast(`💧 ${getText('pipetteDelivered')} pH: ${pipettePh.toFixed(1)}`);
 
     // Clear selection
     selectedTarget.classList.remove('selected');
@@ -320,38 +383,72 @@ function deliverWithPipette(event) {
 function useLitmusPaper(event) {
     event.stopPropagation();
     const litmus = event.target.closest('.tool');
+    const isRedLitmus = litmus.classList.contains('lakmus-merah');
 
     if (!selectedTarget) {
         showToast(`❌ ${getText('selectTargetFirst')}`, 'error');
         return;
     }
 
-    const targetVolume = parseFloat(selectedTarget.dataset.volume);
-    if (targetVolume <= 0) {
-        showToast(`❌ ${getText('litmusNoLiquid')}`, 'error');
-        return;
-    }
+    let ph = null;
+    let volume = 0;
 
-    const ph = parseFloat(selectedTarget.dataset.ph);
-    const litmusBody = litmus.querySelector('.litmus-body');
-
-    // Change litmus color based on pH
-    let color;
-    if (ph < 5) {
-        color = '#ff6b6b'; // Red for acidic
-    } else if (ph > 9) {
-        color = '#48dbfb'; // Blue for basic
+    // Check if target is a palet with wells
+    if (selectedTarget.dataset.type === 'Palet Tetes') {
+        const wells = JSON.parse(selectedTarget.dataset.wells);
+        const filledWell = wells.find(well => well.volume > 0);
+        if (!filledWell) {
+            showToast(`❌ ${getText('litmusNoLiquid')}`, 'error');
+            return;
+        }
+        ph = filledWell.ph;
+        volume = filledWell.volume;
     } else {
-        color = '#feca57'; // Yellow for neutral
+        volume = parseFloat(selectedTarget.dataset.volume);
+        if (volume <= 0) {
+            showToast(`❌ ${getText('litmusNoLiquid')}`, 'error');
+            return;
+        }
+        ph = parseFloat(selectedTarget.dataset.ph);
     }
 
-    litmusBody.style.background = color;
+    // Test with litmus paper
+    let result = '';
+    let newColor = '';
+
+    if (isRedLitmus) {
+        if (ph > 8) {
+            result = getText('redToBlue');
+            newColor = '#4488cc';
+        } else {
+            result = getText('noChange');
+            newColor = '#ff4444';
+        }
+    } else { // Blue litmus
+        if (ph < 6) {
+            result = getText('blueToRed');
+            newColor = '#ff4444';
+        } else {
+            result = getText('noChange');
+            newColor = '#4488cc';
+        }
+    }
+
+    // Change litmus color
+    const litmusPaper = litmus.querySelector('.lakmus-paper');
+    litmusPaper.style.background = newColor;
 
     // Add animation
     litmus.classList.add('testing');
     setTimeout(() => litmus.classList.remove('testing'), 1000);
 
-    showToast(`🧪 ${getText('litmusUsed')} ${ph.toFixed(1)}`);
+    // Determine acid/base/neutral
+    let nature = '';
+    if (ph < 6) nature = getText('acidic');
+    else if (ph > 8) nature = getText('basic');
+    else nature = getText('neutral');
+
+    showToast(`🧪 ${getText('litmusUsed')} ${result} (${nature}, pH: ${ph.toFixed(1)})`);
 
     // Clear selection
     selectedTarget.classList.remove('selected');
@@ -359,39 +456,48 @@ function useLitmusPaper(event) {
 }
 
 function getInitialPh(type) {
-    if (type === 'Acid Bottle') return 2;
-    if (type === 'Base Bottle') return 12;
-    if (type === 'Indicator Bottle') return 7;
-    return 7;
+    const phValues = {
+        'Larutan Detergen': 10.0,
+        'Minuman Berkarbonasi': 3.5,
+        'Larutan Pasta Gigi': 9.0,
+        'Larutan Garam Dapur': 7.0,
+        'Larutan Cuka': 2.5,
+        'Air Mineral': 7.0,
+        'Air Jeruk': 3.0
+    };
+    return phValues[type] || 7;
 }
 
 function getInitialVolume(type) {
-    if (type === 'Beaker') return 0;
-    if (type === 'Pipette') return 0;
-    return 60;
+    if (type === 'Palet Tetes' || type === 'Pipet Tetes' || type.includes('Kertas Lakmus')) return 0;
+    return 80;
 }
 
 function getLiquidColor(type, ph) {
-    if (type === 'Indicator Bottle') return '#8e44ad';
-    if (type.includes('Acid')) return '#ef5350';
-    if (type.includes('Base')) return '#1565c0';
     ph = parseFloat(ph);
-    if (ph < 4) return '#ef5350';
-    if (ph < 6) return '#ffca28';
-    if (ph >= 6 && ph <= 8) return 'transparent';
-    if (ph > 8) return '#2e7d32';
-    if (ph > 10) return '#1565c0';
-    return 'transparent';
-}
 
-function applyIndicator(beaker) {
-    const ph = parseFloat(beaker.dataset.ph);
-    const liquid = beaker.querySelector('.liquid');
-    if (ph >= 8.2) {
-        liquid.style.backgroundColor = '#ec407a';
-    } else {
-        liquid.style.backgroundColor = 'transparent';
+    // Special colors for specific materials
+    const materialColors = {
+        'Larutan Detergen': '#87CEEB',
+        'Minuman Berkarbonasi': '#F4A460',
+        'Larutan Pasta Gigi': '#E0E0E0',
+        'Larutan Garam Dapur': 'transparent',
+        'Larutan Cuka': '#FFFF99',
+        'Air Mineral': 'transparent',
+        'Air Jeruk': '#FFD700'
+    };
+
+    if (materialColors[type]) {
+        return materialColors[type];
     }
+
+    // Generic pH-based coloring for wells and mixed solutions
+    if (ph < 4) return '#ff6b6b';
+    if (ph < 6) return '#ffca28';
+    if (ph >= 6 && ph <= 8) return 'rgba(135, 206, 235, 0.3)';
+    if (ph > 8) return '#4fc3f7';
+    if (ph > 10) return '#29b6f6';
+    return 'transparent';
 }
 
 function toggleButtons(event) {
@@ -400,32 +506,33 @@ function toggleButtons(event) {
     tool.classList.remove('show-buttons');
 }
 
-function shakeTool(event) {
-    event.stopPropagation();
-    const tool = event.target.closest('.tool');
-    tool.classList.add('shaking');
-    setTimeout(() => tool.classList.remove('shaking'), 1000);
-    if (tool.dataset.type === 'Beaker') {
-        applyIndicator(tool);
-    }
-    showToast(`🌀 ${getText('shaken')}`);
-}
-
 function emptyTool(event) {
     event.stopPropagation();
     const tool = event.target.closest('.tool');
-    const liquid = tool.querySelector('.liquid');
-    if (liquid) {
-        liquid.style.height = '0%';
-        liquid.style.backgroundColor = 'transparent';
+
+    if (tool.dataset.type === 'Palet Tetes') {
+        // Empty all wells
+        tool.dataset.wells = JSON.stringify(Array(8).fill({ ph: 7, volume: 0, color: 'transparent' }));
+        const wells = tool.querySelectorAll('.palet-well');
+        wells.forEach(well => {
+            well.style.backgroundColor = 'rgba(255, 255, 255, 0.8)';
+            well.style.border = '1px solid #ddd';
+        });
+    } else {
+        const liquid = tool.querySelector('.liquid');
+        if (liquid) {
+            liquid.style.height = '0%';
+            liquid.style.backgroundColor = 'transparent';
+        }
     }
+
     tool.dataset.volume = 0;
     tool.dataset.ph = 7;
 
     // Special handling for pipette
-    if (tool.dataset.type === 'Pipette') {
+    if (tool.dataset.type === 'Pipet Tetes') {
         tool.dataset.collected = 'false';
-        const pipetteLiquid = tool.querySelector('.pipette-liquid');
+        const pipetteLiquid = tool.querySelector('.pipet-liquid');
         if (pipetteLiquid) {
             pipetteLiquid.style.display = 'none';
         }
@@ -456,8 +563,17 @@ function pourIntoTarget(event) {
         showToast(`❌ ${getText('sourceEmpty')}`, 'error');
         return;
     }
-    if (selectedTarget.dataset.type !== 'Beaker') {
-        showToast(`❌ ${getText('onlyBeaker')}`, 'error');
+    if (selectedTarget.dataset.type !== 'Palet Tetes') {
+        showToast(`❌ ${getText('onlyPalet')}`, 'error');
+        return;
+    }
+
+    // Find an empty well in the target palet
+    const wells = JSON.parse(selectedTarget.dataset.wells);
+    const emptyWellIndex = wells.findIndex(well => well.volume === 0);
+
+    if (emptyWellIndex === -1) {
+        showToast('❌ Semua lubang palet sudah terisi!', 'error');
         return;
     }
 
@@ -466,30 +582,29 @@ function pourIntoTarget(event) {
 
     const pourAmount = 15;
     const sourceVol = parseFloat(source.dataset.volume);
-    const targetVol = parseFloat(selectedTarget.dataset.volume);
     const actualPour = Math.min(pourAmount, sourceVol);
     const newSourceVol = Math.max(0, sourceVol - actualPour);
-    const newTargetVol = Math.min(100, targetVol + actualPour);
 
     source.dataset.volume = newSourceVol;
     source.querySelector('.liquid').style.height = newSourceVol + '%';
-    selectedTarget.dataset.volume = newTargetVol;
-    selectedTarget.querySelector('.liquid').style.height = newTargetVol + '%';
 
     const sourcePh = parseFloat(source.dataset.ph);
-    const targetPh = parseFloat(selectedTarget.dataset.ph);
 
-    if (source.dataset.type === 'Indicator Bottle') {
-        setTimeout(() => applyIndicator(selectedTarget), 800);
-        showToast(`🧪 ${getText('indicatorAdded')}`);
-    } else {
-        const newPh = targetVol === 0 ? sourcePh :
-            ((targetPh * targetVol) + (sourcePh * actualPour)) / newTargetVol;
-        selectedTarget.dataset.ph = newPh;
-        selectedTarget.querySelector('.liquid').style.backgroundColor =
-            getLiquidColor('Beaker', newPh);
-        showToast(`💧 ${getText('pouredSuccess')} ${newPh.toFixed(1)}`);
-    }
+    // Add liquid to the well
+    wells[emptyWellIndex] = {
+        ph: sourcePh,
+        volume: actualPour,
+        color: getLiquidColor(source.dataset.type, sourcePh)
+    };
+
+    selectedTarget.dataset.wells = JSON.stringify(wells);
+
+    // Update visual
+    const wellElement = selectedTarget.querySelector(`[data-well="${emptyWellIndex}"]`);
+    wellElement.style.backgroundColor = wells[emptyWellIndex].color;
+    wellElement.style.border = '2px solid #333';
+
+    showToast(`💧 ${getText('pouredSuccess')} ${sourcePh.toFixed(1)}`);
 
     selectedTarget.classList.remove('selected');
     selectedTarget = null;
