@@ -404,9 +404,9 @@
             <div class="lab-area" id="lab">
                 <div class="bench" id="bench">
                     <div class="beaker" id="beaker" aria-label="Beaker">
-                        <div class="liquid" id="liquid"
-                            style="background:linear-gradient(180deg,#9be7ff, #60a5fa); height:40%"></div>
-                        <div class="label">Beaker</div>
+                        <div class="liquid" id="liquid" style="background:transparent; height:0%">
+                        </div>
+                        <div class="label">Beaker / Wadah</div>
                     </div>
                     <button class="tray-toggle" id="trayToggle">🧪 Alat & Bahan</button>
                     <div class="tray" id="tray"></div>
@@ -430,7 +430,7 @@
             </div>
 
             <div style="margin-top:10px">
-                <strong>📖 Legenda pH</strong>
+                <strong>📖 pH</strong>
                 <div class="legend" style="margin-top:8px">
                     <div style="display:flex; align-items:center; gap:6px">
                         <div class="dot" style="background:#ff6b6b"></div>
@@ -485,7 +485,7 @@
         const lab = document.getElementById('lab');
 
         let state = {
-            contents: [{ id: 'river', pH: 7.0, vol: 30 }], // baseline water
+            contents: [], // baseline water
         }
 
         function createToolCard(item) {
@@ -710,6 +710,14 @@
 
             } else if (item.id === 'litmus') {
                 const currentPH = computePH(true);
+
+                // TAMBAHKAN CEK KOSONG:
+                if (currentPH === null) {
+                    logEvent(`<span style="color:#94a3b8">⚠️</span> Kertas lakmus: <strong>Tidak ada cairan untuk diuji</strong>`);
+                    flashMessage(`Beaker kosong - tambahkan reagent dahulu`);
+                    return;
+                }
+
                 let result, color;
                 if (currentPH < 7) {
                     result = 'merah (asam)';
@@ -727,6 +735,14 @@
 
             } else if (item.id === 'phprobe') {
                 const currentPH = computePH(true);
+
+                // TAMBAHKAN CEK KOSONG:
+                if (currentPH === null) {
+                    logEvent(`<span style="color:#94a3b8">⚠️</span> pH Meter: <strong>Tidak ada cairan untuk diukur</strong>`);
+                    flashMessage(`Beaker kosong - tambahkan reagent dahulu`);
+                    return;
+                }
+
                 let condition;
                 if (currentPH < 3) condition = 'Asam Kuat';
                 else if (currentPH < 6.5) condition = 'Asam Lemah';
@@ -778,7 +794,10 @@
 
         // Compute pH
         function computePH(short = false) {
-            if (state.contents.length === 0) { if (!short) updatePHUI(7.0); return 7.0; }
+            if (state.contents.length === 0) {
+                if (!short) updatePHUI(null); // null = beaker kosong
+                return null;
+            }
 
             let V = 0; let Htotal = 0;
             state.contents.forEach(c => { V += c.vol; Htotal += Math.pow(10, -c.pH) * c.vol; });
@@ -790,6 +809,19 @@
         }
 
         function updatePHUI(pH) {
+            // TAMBAHKAN di awal fungsi:
+            if (pH === null || pH === undefined) {
+                // Beaker kosong
+                phValueEl.style.background = 'rgba(255,255,255,0.05)';
+                phValueEl.style.color = '#94a3b8';
+                phValueEl.innerHTML = `--<div style="font-size:13px;margin-top:4px;opacity:0.9;font-weight:500">Beaker Kosong</div>`;
+
+                liquidEl.style.background = 'transparent';
+                liquidEl.style.height = '0%';
+                return;
+            }
+
+            // Sisa kode tetap sama untuk pH yang valid
             const p = Number.isFinite(pH) ? pH : 7.0;
 
             let bg, textColor, indicator;
@@ -838,6 +870,14 @@
         }
 
         function updateBeakerAppearance() {
+            // TAMBAHKAN di awal:
+            if (state.contents.length === 0) {
+                liquidEl.style.background = 'transparent';
+                liquidEl.style.height = '0%';
+                return;
+            }
+
+            // Sisa kode tetap sama
             const base = { r: 155, g: 231, b: 255, v: 30 };
             const rgbList = [base];
 
@@ -885,7 +925,7 @@
 
         // Reset with confirmation
         resetBtn.addEventListener('click', () => {
-            if (state.contents.length > 1) {
+            if (state.contents.length > 0) {
                 const confirmReset = document.createElement('div');
                 confirmReset.style.position = 'fixed';
                 confirmReset.style.left = '50%';
@@ -919,17 +959,17 @@
                 });
 
             } else {
-                performReset();
+                flashMessage('Beaker sudah kosong!');
             }
         });
 
         function performReset() {
-            state.contents = [{ id: 'river', pH: 7.0, vol: 30 }];
+            state.contents = []; // beaker kosong
             historyEl.innerHTML = '';
             updateBeakerAppearance();
-            updatePHUI(7.0);
-            logEvent('<span style="color:#94a3b8">🔄</span> Beaker direset ke kondisi awal');
-            flashMessage('✓ Beaker direset!');
+            updatePHUI(null); // null = tidak ada pH (kosong)
+            logEvent('<span style="color:#94a3b8">🔄</span> Beaker direset ke kondisi awal (kosong)');
+            flashMessage('✓ Beaker dikosongkan!');
         }
 
         // Initialize
