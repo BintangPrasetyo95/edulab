@@ -1,12 +1,16 @@
 TO-DO-LIST
 
-- Praktikum Fix
-    - Praktikum Update with new tools
-    - Post-Test (half - done)
+- Bug
+    - Scroll Tools
 
-- JsonBin implementation
+- Praktikum Fix
+    - Praktikum Update with newer tools
+    - Post-Test (half - done)
+    - Jumlah ml
+    - Jumlah History ml
+
+- Json implementation
     - Account Flexibility
     - Saving Progress
     - Progress bar flexibility
     - Feedback
-- 
