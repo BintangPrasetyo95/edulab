@@ -1,3 +1,6 @@
+let wellLabels = {};
+let testResults = [];
+let autoTestInProgress = false;
 let toolCount = 0;
 let selectedTarget = null;
 
@@ -131,22 +134,20 @@ function summonTool(type) {
     if (type === 'Palet Tetes') {
         tool.classList.add('palet-tetes');
         tool.innerHTML = `
-            <div class="palet-body">
-                <div class="palet-wells">
-                    <div class="palet-well" data-well="0"></div>
-                    <div class="palet-well" data-well="1"></div>
-                    <div class="palet-well" data-well="2"></div>
-                    <div class="palet-well" data-well="3"></div>
-                    <div class="palet-well" data-well="4"></div>
-                    <div class="palet-well" data-well="5"></div>
-                    <div class="palet-well" data-well="6"></div>
-                    <div class="palet-well" data-well="7"></div>
-                </div>
+        <div class="palet-body">
+            <div class="palet-wells">
+                ${Array.from({ length: 8 }, (_, i) =>
+            `<div class="palet-well" data-well="${i}">
+                        <div class="well-label">${i + 1}</div>
+                    </div>`
+        ).join('')}
             </div>
-            <div class="tool-name">${getText('paletTetes')}</div>
-        `;
+        </div>
+        <div class="tool-name">${getText('paletTetes')}</div>
+    `;
         // Initialize wells data
-        tool.dataset.wells = JSON.stringify(Array(8).fill({ ph: 7, volume: 0, color: 'transparent' }));
+        tool.dataset.wells = JSON.stringify(Array(8).fill({ ph: 7, volume: 0, color: 'transparent', label: '', type: '' }));
+        wellLabels[tool.id] = Array(8).fill('');
     } else if (type === 'Pipet Tetes') {
         tool.classList.add('pipet-tetes');
         tool.dataset.collected = 'false';
@@ -457,6 +458,17 @@ function useLitmusPaper(event) {
 
     showToast(`🧪 ${getText('litmusUsed')} ${result} (${nature}, pH: ${ph.toFixed(1)})`);
 
+    // Update results table
+    if (selectedTarget.dataset.type === 'Palet Tetes') {
+        const wells = JSON.parse(selectedTarget.dataset.wells);
+        const filledWell = wells.find(well => well.volume > 0);
+        if (filledWell && filledWell.type) {
+            updateResultsTable(filledWell.type, ph, isRedLitmus ? result : null, !isRedLitmus ? result : null);
+        }
+    } else if (selectedTarget.dataset.type && parseFloat(selectedTarget.dataset.volume) > 0) {
+        updateResultsTable(selectedTarget.dataset.type, ph, isRedLitmus ? result : null, !isRedLitmus ? result : null);
+    }
+
     // Clear selection
     selectedTarget.classList.remove('selected');
     selectedTarget = null;
@@ -606,8 +618,17 @@ function pourIntoTarget(event) {
     wells[emptyWellIndex] = {
         ph: sourcePh,
         volume: actualPour,
-        color: getLiquidColor(source.dataset.type, sourcePh)  // Use original source type
+        color: getLiquidColor(source.dataset.type, sourcePh),
+        label: source.dataset.type,
+        type: source.dataset.type
     };
+
+    // Update well label
+    const wellLabel = selectedTarget.querySelector(`[data-well="${emptyWellIndex}"] .well-label`);
+    if (wellLabel) {
+        wellLabel.textContent = getMaterialShortName(source.dataset.type);
+        wellLabel.style.background = '#e3f2fd';
+    }
 
     selectedTarget.dataset.wells = JSON.stringify(wells);
 
@@ -668,3 +689,150 @@ document.addEventListener('keydown', function (e) {
         hidePostLabModal();
     }
 });
+
+function getMaterialShortName(type) {
+    const shortNames = {
+        'Larutan Detergen': 'DET',
+        'Minuman Berkarbonasi': 'SODA',
+        'Larutan Pasta Gigi': 'PASTA',
+        'Larutan Garam Dapur': 'GARAM',
+        'Larutan Cuka': 'CUKA',
+        'Air Mineral': 'AIR',
+        'Air Jeruk': 'JERUK'
+    };
+    return shortNames[type] || 'UNK';
+}
+
+function showResultsTable() {
+    const resultsSection = document.getElementById('resultsSection');
+    resultsSection.style.display = resultsSection.style.display === 'none' ? 'block' : 'none';
+}
+
+function updateResultsTable(materialType, ph, redResult, blueResult) {
+    const existingIndex = testResults.findIndex(r => r.material === materialType);
+
+    const newResult = {
+        material: materialType,
+        ph: ph,
+        redLitmus: redResult || '-',
+        blueLitmus: blueResult || '-',
+        nature: ph < 6 ? 'ASAM' : ph > 8 ? 'BASA' : 'NETRAL'
+    };
+
+    if (existingIndex >= 0) {
+        if (redResult) testResults[existingIndex].redLitmus = redResult;
+        if (blueResult) testResults[existingIndex].blueLitmus = blueResult;
+        testResults[existingIndex].nature = newResult.nature;
+    } else {
+        testResults.push(newResult);
+    }
+
+    renderResultsTable();
+}
+
+function renderResultsTable() {
+    const tbody = document.getElementById('resultsBody');
+    tbody.innerHTML = testResults.map((result, index) =>
+        `<tr>
+            <td>${index + 1}</td>
+            <td>${result.material}</td>
+            <td>${result.ph.toFixed(1)}</td>
+            <td>${result.redLitmus}</td>
+            <td>${result.blueLitmus}</td>
+            <td class="${result.nature.toLowerCase()}">${result.nature}</td>
+        </tr>`
+    ).join('');
+}
+
+function clearResults() {
+    testResults = [];
+    renderResultsTable();
+    showToast('Tabel hasil direset!');
+}
+
+async function autoTestAll() {
+    if (autoTestInProgress) return;
+
+    const palets = document.querySelectorAll('.palet-tetes');
+    const redLitmus = document.querySelector('.lakmus-merah');
+    const blueLitmus = document.querySelector('.lakmus-biru');
+
+    if (palets.length === 0 || !redLitmus || !blueLitmus) {
+        showToast('Siapkan palet dan kertas lakmus dulu!', 'error');
+        return;
+    }
+
+    autoTestInProgress = true;
+    document.getElementById('resultsSection').style.display = 'block';
+
+    for (const palet of palets) {
+        const wells = JSON.parse(palet.dataset.wells);
+
+        for (let i = 0; i < wells.length; i++) {
+            if (wells[i].volume > 0 && wells[i].type) {
+                await new Promise(resolve => setTimeout(resolve, 800));
+
+                // Test with red litmus
+                selectTargetProgrammatically(palet);
+                const redResult = testLitmusProgrammatically(redLitmus, wells[i].ph);
+
+                await new Promise(resolve => setTimeout(resolve, 500));
+
+                // Test with blue litmus  
+                selectTargetProgrammatically(palet);
+                const blueResult = testLitmusProgrammatically(blueLitmus, wells[i].ph);
+
+                updateResultsTable(wells[i].type, wells[i].ph, redResult, blueResult);
+            }
+        }
+    }
+
+    if (selectedTarget) {
+        selectedTarget.classList.remove('selected');
+        selectedTarget = null;
+    }
+
+    autoTestInProgress = false;
+    showToast('Auto test selesai! Cek tabel hasil.');
+}
+
+function selectTargetProgrammatically(tool) {
+    if (selectedTarget) selectedTarget.classList.remove('selected');
+    selectedTarget = tool;
+    selectedTarget.classList.add('selected');
+}
+
+function testLitmusProgrammatically(litmus, ph) {
+    const isRedLitmus = litmus.classList.contains('lakmus-merah');
+
+    let result = '';
+    let newColor = '';
+
+    if (isRedLitmus) {
+        if (ph > 8) {
+            result = 'Merah → Biru';
+            newColor = '#4488cc';
+        } else {
+            result = 'Tidak berubah';
+            newColor = '#ff4444';
+        }
+    } else {
+        if (ph < 6) {
+            result = 'Biru → Merah';
+            newColor = '#ff4444';
+        } else {
+            result = 'Tidak berubah';
+            newColor = '#4488cc';
+        }
+    }
+
+    const litmusPaper = litmus.querySelector('.lakmus-paper');
+    litmusPaper.style.background = newColor;
+
+    return result;
+
+    if (selectedTarget) {
+        selectedTarget.classList.remove('selected');
+        selectedTarget = null;
+    }
+}

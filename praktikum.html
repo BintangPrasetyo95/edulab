@@ -1,104 +1,1082 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="id">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EduLab - Praktikum Asam-Basa Simulator</title>
-    <link rel="stylesheet" href="./assets/praktikum.css?v=2">
-    <link rel="shortcut icon" href="./assets/images/Logo.png" type="image/x-icon">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Virtual Lab: Asam - Basa</title>
+    <style>
+        :root {
+            --bg: #0f1724;
+            --card: #0b1220;
+            --accent: #60a5fa;
+            --muted: #94a3b8;
+            --glass: rgba(255, 255, 255, 0.03);
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+            background: linear-gradient(180deg, #071026 0%, #07162a 100%);
+            color: #e6eef8;
+            overflow-x: hidden
+        }
+
+        .app {
+            display: grid;
+            grid-template-columns: 320px 1fr 320px;
+            gap: 14px;
+            padding: 12px;
+            height: 100vh
+        }
+
+        @media (max-width:900px) {
+            .app {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto 1fr auto;
+                padding: 8px;
+                height: auto;
+                min-height: 100vh
+            }
+
+            .right,
+            .left {
+                order: 2
+            }
+
+            .workspace {
+                order: 1
+            }
+        }
+
+        .panel {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 12px;
+            box-shadow: 0 6px 20px rgba(2, 6, 23, 0.6);
+            min-height: 80px
+        }
+
+        .left {
+            display: flex;
+            flex-direction: column;
+            gap: 10px
+        }
+
+        .tools {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px
+        }
+
+        .tool {
+            background: var(--glass);
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+            cursor: grab;
+            user-select: none;
+            touch-action: none;
+            transition: transform 0.2s
+        }
+
+        .tool:active {
+            cursor: grabbing;
+            transform: scale(0.98)
+        }
+
+        .tool .label {
+            font-size: 13px;
+            color: var(--muted)
+        }
+
+        .tool .name {
+            font-weight: 600;
+            margin-top: 6px;
+            font-size: 14px
+        }
+
+        .workspace {
+            position: relative;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            height: 100vh;
+            /* Buat workspace memenuhi layar saat pertama masuk */
+            overflow-y: auto;
+            /* Bisa di-scroll ke bawah */
+        }
+
+        .lab-area {
+            width: 100%;
+            height: calc(100vh - 64px - 24px);
+            border-radius: 12px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            padding: 18px;
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+            overflow: hidden
+        }
+
+        @media (max-width:900px) {
+            .lab-area {
+                height: 100%;
+                min-height: 400px
+            }
+        }
+
+        .bench {
+            flex: 1;
+            position: relative;
+            border-radius: 10px;
+            background: linear-gradient(180deg, #081528, #061527);
+            padding: 12px;
+            overflow: hidden;
+            min-height: 500px
+        }
+
+        @media (max-width:900px) {
+            .bench {
+                height: 100%;
+                min-height: 400px
+            }
+        }
+
+        .beaker {
+            position: absolute;
+            left: 50%;
+            top: 30%;
+            transform: translate(-50%, 0);
+            width: 210px;
+            height: 260px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+            border-radius: 10px;
+            border: 2px solid rgba(255, 255, 255, 0.04);
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            pointer-events: none;
+            transition: all 0.3s
+        }
+
+        @media (max-width:900px) {
+            .beaker {
+                top: 50%;
+                transform: translate(-50%, -50%);
+            }
+        }
+
+        .liquid {
+            width: 86%;
+            height: 40%;
+            border-radius: 8px 8px 30px 30px;
+            margin-bottom: 18px;
+            transition: background 350ms, height 350ms;
+            box-shadow: inset 0 -2px 8px rgba(0, 0, 0, 0.2), 0 4px 12px rgba(0, 0, 0, 0.3)
+        }
+
+        .beaker .label {
+            position: absolute;
+            bottom: 8px;
+            font-size: 12px;
+            color: var(--muted)
+        }
+
+        .tray-toggle {
+            position: absolute;
+            right: 12px;
+            top: 12px;
+            background: var(--accent);
+            color: #04263b;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tray-toggle:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(96, 165, 250, 0.4);
+        }
+
+        .tray {
+            position: absolute;
+            right: 12px;
+            top: 50px;
+            /* Di bawah tombol toggle */
+            display: none;
+            /* Awalnya disembunyikan */
+            flex-direction: column;
+            gap: 8px;
+            width: 200px;
+            max-height: calc(100% - 24px);
+            overflow-y: auto;
+            background: var(--card);
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .tray.open {
+            display: flex;
+            /* Tampilkan saat toggle */
+        }
+
+        .inventory {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap
+        }
+
+        .right {
+            display: flex;
+            flex-direction: column;
+            gap: 10px
+        }
+
+        .meter {
+            padding: 10px;
+            border-radius: 8px;
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+        }
+
+        .meter .value {
+            font-size: 28px;
+            font-weight: 700;
+            padding: 12px 16px;
+            border-radius: 8px;
+            display: inline-block;
+            margin-top: 6px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3)
+        }
+
+        .history {
+            max-height: 220px;
+            overflow: auto;
+            padding: 8px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.02)
+        }
+
+        .history::-webkit-scrollbar {
+            width: 6px
+        }
+
+        .history::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.02)
+        }
+
+        .history::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 8px 12px;
+            border-radius: 8px;
+            background: linear-gradient(90deg, var(--accent), #3b82f6);
+            color: #04263b;
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+            box-shadow: 0 2px 8px rgba(96, 165, 250, 0.3)
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(96, 165, 250, 0.4)
+        }
+
+        .btn:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 6px rgba(96, 165, 250, 0.3)
+        }
+
+        .floating {
+            position: fixed;
+            z-index: 1000
+        }
+
+        .tool-ghost {
+            opacity: 0.95;
+            transform: translate(-50%, -50%);
+            pointer-events: none
+        }
+
+        footer {
+            font-size: 13px;
+            color: var(--muted);
+            padding: 8px;
+            text-align: center
+        }
+
+        .legend {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-wrap: wrap
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%
+        }
+
+        @keyframes ripple {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.02);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.7;
+            }
+        }
+
+        @keyframes glow {
+
+            0%,
+            100% {
+                box-shadow: 0 0 20px rgba(96, 165, 250, 0.3);
+            }
+
+            50% {
+                box-shadow: 0 0 30px rgba(96, 165, 250, 0.5);
+            }
+        }
+    </style>
 </head>
 
 <body>
-    <!-- Header buttons -->
-    <div class="header-buttons">
-        <button class="back-button" onclick="window.location.href='./start-praktikum.html'">⬅ Kembali</button>
-        <button class="finish-button" onclick="showPostLabModal()">✅ Selesai</button>
+    <div class="app">
+        <aside class="panel left">
+            <h3 style="margin:0 0 12px 0">🧪 Palet Alat & Bahan</h3>
+            <div class="tools" id="tools">
+                <!-- tools will be generated by JS -->
+            </div>
+            <div style="margin-top:8px; font-size:13px; color:var(--muted); line-height:1.4">
+                <strong>Petunjuk:</strong> Seret alat/bahan ke beaker untuk bereaksi. Di mobile, tap area lab untuk
+                quick menu.
+            </div>
+        </aside>
+
+        <main class="panel workspace">
+            <div class="lab-area" id="lab">
+                <div class="bench" id="bench">
+                    <div class="beaker" id="beaker" aria-label="Beaker">
+                        <div class="liquid" id="liquid"
+                            style="background:linear-gradient(180deg,#9be7ff, #60a5fa); height:40%"></div>
+                        <div class="label">Beaker</div>
+                    </div>
+                    <button class="tray-toggle" id="trayToggle">🧪 Alat & Bahan</button>
+                    <div class="tray" id="tray"></div>
+                </div>
+            </div>
+        </main>
+
+        <aside class="panel right">
+            <h3 style="margin:0 0 12px 0">📊 Instrumen</h3>
+            <div class="meter">
+                <div style="font-size:14px; color:var(--muted)">pH Saat Ini</div>
+                <div class="value" id="phValue">7.00</div>
+            </div>
+
+            <div style="margin-top:10px">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px">
+                    <strong>📜 Riwayat Reaksi</strong>
+                    <button id="resetBtn" class="btn" style="padding:6px 10px; font-size:13px">Reset</button>
+                </div>
+                <div class="history" id="history"></div>
+            </div>
+
+            <div style="margin-top:10px">
+                <strong>📖 Legenda pH</strong>
+                <div class="legend" style="margin-top:8px">
+                    <div style="display:flex; align-items:center; gap:6px">
+                        <div class="dot" style="background:#ff6b6b"></div>
+                        <div style="color:var(--muted); font-size:12px">Asam Kuat</div>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:6px">
+                        <div class="dot" style="background:#ffb86b"></div>
+                        <div style="color:var(--muted); font-size:12px">Asam Lemah</div>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:6px">
+                        <div class="dot" style="background:#60a5fa"></div>
+                        <div style="color:var(--muted); font-size:12px">Netral</div>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:6px">
+                        <div class="dot" style="background:#99f6e4"></div>
+                        <div style="color:var(--muted); font-size:12px">Basa Lemah</div>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:6px">
+                        <div class="dot" style="background:#6ee7b7"></div>
+                        <div style="color:var(--muted); font-size:12px">Basa Kuat</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
     </div>
 
-    <!-- Title -->
-    <h1>🧪 Praktikum Asam-Basa</h1>
+    <footer>Simulasi Virtual Lab: Asam & Basa — Responsif Mobile & Desktop</footer>
 
-    <!-- Dropdown containers -->
-    <div class="dropdown-container">
-        <!-- Tools dropdown -->
-        <div class="dropdown" id="toolsDropdown">
-            <div class="dropdown-button" onclick="toggleDropdown('toolsDropdown')">
-                🔧 Alat
-                <span class="dropdown-arrow">▼</span>
-            </div>
-            <div class="dropdown-content">
-                <button onclick="summonTool('Palet Tetes')">🎨 Palet Tetes</button>
-                <button onclick="summonTool('Pipet Tetes')">💧 Pipet Tetes</button>
-                <button onclick="summonTool('Kertas Lakmus Merah')">📄 Kertas Lakmus Merah</button>
-                <button onclick="summonTool('Kertas Lakmus Biru')">📘 Kertas Lakmus Biru</button>
-            </div>
-        </div>
+    <script>
+        /* Virtual Lab - Complete Fixed Version */
 
-        <!-- Materials dropdown -->
-        <div class="dropdown" id="materialsDropdown">
-            <div class="dropdown-button" onclick="toggleDropdown('materialsDropdown')">
-                ⚗️ Bahan
-                <span class="dropdown-arrow">▼</span>
-            </div>
-            <div class="dropdown-content">
-                <button onclick="summonTool('Larutan Detergen')">🧼 Larutan Detergen</button>
-                <button onclick="summonTool('Minuman Berkarbonasi')">🥤 Minuman Berkarbonasi</button>
-                <button onclick="summonTool('Larutan Pasta Gigi')">🦷 Larutan Pasta Gigi</button>
-                <button onclick="summonTool('Larutan Garam Dapur')">🧂 Larutan Garam Dapur</button>
-                <button onclick="summonTool('Larutan Cuka')">🍶 Larutan Cuka</button>
-                <button onclick="summonTool('Air Mineral')">💧 Air Mineral</button>
-                <button onclick="summonTool('Air Jeruk')">🍋 Air Jeruk</button>
-            </div>
-        </div>
+        // Reagents and tools data
+        const itemsData = [
+            { id: 'vinegar', name: 'Cuka', type: 'reagent', pH: 2.5, color: '#ff6b6b', vol: 20 },
+            { id: 'lemon', name: 'Air Jeruk', type: 'reagent', pH: 2.0, color: '#ff4d4d', vol: 15 },
+            { id: 'baking', name: 'Soda Kue', type: 'reagent', pH: 8.3, color: '#99f6e4', vol: 20 },
+            { id: 'soap', name: 'Sabun', type: 'reagent', pH: 9.0, color: '#6ee7b7', vol: 10 },
+            { id: 'river', name: 'Air Sungai', type: 'reagent', pH: 7.0, color: '#60a5fa', vol: 30 },
+            { id: 'litmus', name: 'Kertas Lakmus', type: 'tool', mode: 'paper', color: '#ffffff' },
+            { id: 'phprobe', name: 'pH Meter', type: 'tool', mode: 'probe' },
+        ];
+
+        const toolsContainer = document.getElementById('tools');
+        const bench = document.getElementById('bench');
+        const beaker = document.getElementById('beaker');
+        const liquidEl = document.getElementById('liquid');
+        const phValueEl = document.getElementById('phValue');
+        const historyEl = document.getElementById('history');
+        const tray = document.getElementById('tray');
+        const trayToggle = document.getElementById('trayToggle');
+        const resetBtn = document.getElementById('resetBtn');
+        const lab = document.getElementById('lab');
+
+        let state = {
+            contents: [{ id: 'river', pH: 7.0, vol: 30 }], // baseline water
+        }
+
+        function createToolCard(item) {
+            const el = document.createElement('div');
+            el.className = 'tool';
+            el.dataset.id = item.id;
+            el.tabIndex = 0;
+            el.setAttribute('role', 'button');
+            el.setAttribute('aria-label', `${item.name} - ${item.type === 'reagent' ? 'pH ' + item.pH : 'Alat ukur'}`);
+
+            el.innerHTML = `
+    <div style="height:46px; display:flex; align-items:center; justify-content:center">
+      ${getIconSVG(item)}
     </div>
+    <div class="name">${item.name}</div>
+    <div class="label">${item.type === 'reagent' ? 'pH ~' + item.pH : 'Alat Ukur'}</div>
+  `;
 
-    <div id="lab-table"></div>
+            makeDraggable(el, item);
+            return el;
+        }
 
-    <!-- Post-lab modal -->
-    <div class="modal-overlay" id="postLabModal">
-        <div class="modal">
-            <button class="close-button" onclick="hidePostLabModal()">×</button>
-            <h2>📝 SOAL POSTLAB</h2>
-            <ol>
-                <li>Setelah melakukan pengujian berbagai larutan dengan kertas lakmus, Anda menemukan bahwa detergen
-                    mengubah kertas lakmus merah menjadi biru. Jelaskan mengapa hal ini terjadi dan kaitkan dengan sifat
-                    asam-basa detergen.</li>
+        function getIconSVG(item) {
+            if (item.type === 'reagent') {
+                return `<svg width="44" height="44" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="5" y="4" width="14" height="16" rx="2" fill="${item.color}" fill-opacity="0.95" stroke="rgba(0,0,0,0.2)" stroke-width="1"/>
+      <rect x="7" y="6" width="10" height="2" fill="rgba(255,255,255,0.3)"/>
+    </svg>`
+            }
+            if (item.id === 'litmus') {
+                return `<svg width="44" height="44" viewBox="0 0 24 24">
+      <rect x="7" y="4" width="5" height="16" rx="1" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>
+      <rect x="12" y="4" width="5" height="16" rx="1" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>
+    </svg>`
+            }
+            return `<svg width="44" height="44" viewBox="0 0 24 24">
+    <rect x="9" y="3" width="6" height="18" rx="2" fill="#cbd5e1"/>
+    <circle cx="12" cy="8" r="2" fill="#60a5fa"/>
+    <rect x="10" y="12" width="4" height="6" rx="1" fill="#1e293b"/>
+  </svg>`
+        }
 
-                <li><strong>(HOTS)</strong> Dari hasil pengujian dengan kertas lakmus merah dan biru, Anda mendapatkan
-                    data berikut:
-                    - Larutan A: lakmus merah tetap merah, lakmus biru menjadi merah
-                    - Larutan B: lakmus merah menjadi biru, lakmus biru tetap biru
-                    - Larutan C: lakmus merah tetap merah, lakmus biru tetap biru
-                    Identifikasi sifat asam-basa masing-masing larutan dan jelaskan alasannya.</li>
+        // Populate tools
+        itemsData.forEach(it => {
+            const node = createToolCard(it);
+            toolsContainer.appendChild(node);
+        });
 
-                <li>Mengapa dalam praktikum ini kita menggunakan kertas lakmus merah dan biru secara bersamaan? Jelaskan
-                    keunggulan penggunaan kedua jenis kertas lakmus tersebut.</li>
+        // Add quick items to tray
+        itemsData.forEach(it => {
+            const node = document.createElement('div');
+            node.className = 'tool';
+            node.style.width = '100%';
+            node.style.display = 'flex';
+            node.style.alignItems = 'center';
+            node.style.justifyContent = 'space-between';
+            node.style.padding = '8px';
+            node.style.cursor = 'default';
 
-                <li>Berdasarkan pengamatan Anda, urutkan larutan berikut dari yang paling asam hingga paling basa:
-                    detergen, cuka, pasta gigi, air mineral, minuman berkarbonasi, garam dapur, dan air jeruk. Jelaskan
-                    dasar pengurutan Anda.</li>
+            const detail = it.type === 'reagent' ? `pH ${it.pH} • ${it.vol}ml` : 'Alat Ukur';
 
-                <li><strong>(HOTS)</strong> Jika Anda ingin membuat larutan dengan sifat netral menggunakan bahan-bahan
-                    yang tersedia, bagaimana caranya? Jelaskan prinsip yang Anda gunakan dan prediksi hasil yang akan
-                    diperoleh.</li>
-
-                <li>Mengapa air jeruk dan minuman berkarbonasi menunjukkan sifat asam? Jelaskan kandungan kimia apa yang
-                    menyebabkan sifat asam tersebut.</li>
-
-                <li><strong>(HOTS)</strong> Seorang siswa melakukan pengujian pH larutan detergen dengan konsentrasi
-                    berbeda menggunakan kertas lakmus. Hasil menunjukkan bahwa semakin tinggi konsentrasi detergen,
-                    semakin kuat sifat basanya. Jelaskan hubungan antara konsentrasi larutan dengan kekuatan asam-basa,
-                    dan bagaimana hal ini mempengaruhi hasil uji kertas lakmus.</li>
-
-                <li>Dalam kehidupan sehari-hari, pengetahuan tentang sifat asam-basa larutan sangat penting. Berikan 3
-                    contoh aplikasi praktis dari pengujian pH menggunakan kertas lakmus dalam kehidupan sehari-hari dan
-                    jelaskan manfaatnya.</li>
-            </ol>
-        </div>
+            node.innerHTML = `
+    <div style="display:flex; align-items:center; gap:8px; flex:1">
+      <div style="width:28px;height:20px;border-radius:6px;background:${it.color || '#cbd5e1'}; box-shadow:0 2px 6px rgba(0,0,0,0.3)"></div>
+      <div style="flex:1">
+        <div style="font-weight:600; font-size:13px">${it.name}</div>
+        <div style="font-size:11px;color:var(--muted)">${detail}</div>
+      </div>
     </div>
+    <button class="btn" style="padding:4px 10px; font-size:12px; margin-left:8px">+</button>
+  `;
 
-    <script src="./assets/praktikum.js?v=2"></script>
+            node.querySelector('.btn').addEventListener('click', (e) => {
+                e.stopPropagation();
+                addToBeaker(it);
+            });
+            tray.appendChild(node);
+        });
+
+        // Toggle tray
+        trayToggle.addEventListener('click', () => {
+            tray.classList.toggle('open');
+        });
+
+        // Make draggable
+        function makeDraggable(domNode, item) {
+            let ghost = null; let dragging = false;
+
+            function start(ev) {
+                ev.preventDefault();
+                ev.stopPropagation();
+                dragging = true;
+
+                const clientX = ev.clientX !== undefined ? ev.clientX : ev.touches?.[0]?.clientX;
+                const clientY = ev.clientY !== undefined ? ev.clientY : ev.touches?.[0]?.clientY;
+
+                ghost = domNode.cloneNode(true);
+                ghost.classList.add('floating', 'tool-ghost');
+                ghost.style.position = 'fixed';
+                ghost.style.left = clientX + 'px';
+                ghost.style.top = clientY + 'px';
+                ghost.style.width = Math.max(80, domNode.offsetWidth) + 'px';
+                ghost.style.pointerEvents = 'none';
+                ghost.style.zIndex = '1000';
+                document.body.appendChild(ghost);
+
+                document.addEventListener('pointermove', move, { passive: false });
+                document.addEventListener('pointerup', end);
+                document.addEventListener('touchmove', move, { passive: false });
+                document.addEventListener('touchend', end);
+            }
+
+            function move(ev) {
+                if (!dragging) return;
+                ev.preventDefault();
+
+                const clientX = ev.clientX !== undefined ? ev.clientX : ev.touches?.[0]?.clientX;
+                const clientY = ev.clientY !== undefined ? ev.clientY : ev.touches?.[0]?.clientY;
+
+                ghost.style.left = clientX + 'px';
+                ghost.style.top = clientY + 'px';
+
+                // Collision check
+                const ghostRect = ghost.getBoundingClientRect();
+                const ghostCenterX = ghostRect.left + ghostRect.width / 2;
+                const ghostCenterY = ghostRect.top + ghostRect.height / 2;
+
+                const beakerRect = beaker.getBoundingClientRect();
+                const isOver = ghostCenterX >= beakerRect.left &&
+                    ghostCenterX <= beakerRect.right &&
+                    ghostCenterY >= beakerRect.top &&
+                    ghostCenterY <= beakerRect.bottom;
+
+                if (isOver) {
+                    ghost.style.transform = 'translate(-50%,-50%) scale(1.12)';
+                    beaker.style.border = '2px solid rgba(96,165,250,0.6)';
+                    beaker.style.animation = 'glow 1s infinite';
+                } else {
+                    ghost.style.transform = 'translate(-50%,-50%) scale(1)';
+                    beaker.style.border = '2px solid rgba(255,255,255,0.04)';
+                    beaker.style.animation = 'none';
+                }
+            }
+
+            function end(ev) {
+                if (!dragging) return;
+                dragging = false;
+
+                document.removeEventListener('pointermove', move);
+                document.removeEventListener('pointerup', end);
+                document.removeEventListener('touchmove', move);
+                document.removeEventListener('touchend', end);
+
+                if (ghost) {
+                    const ghostRect = ghost.getBoundingClientRect();
+                    const ghostCenterX = ghostRect.left + ghostRect.width / 2;
+                    const ghostCenterY = ghostRect.top + ghostRect.height / 2;
+
+                    const beakerRect = beaker.getBoundingClientRect();
+                    const isOver = ghostCenterX >= beakerRect.left &&
+                        ghostCenterX <= beakerRect.right &&
+                        ghostCenterY >= beakerRect.top &&
+                        ghostCenterY <= beakerRect.bottom;
+
+                    if (isOver) {
+                        animateAddition(ghostRect, () => onDropIntoBeaker(item));
+                    }
+
+                    beaker.style.border = '2px solid rgba(255,255,255,0.04)';
+                    beaker.style.animation = 'none';
+                    ghost.remove();
+                    ghost = null;
+                }
+            }
+
+            domNode.addEventListener('pointerdown', start);
+            domNode.addEventListener('touchstart', start, { passive: false });
+        }
+
+        function animateAddition(fromRect, callback) {
+            const particle = document.createElement('div');
+            particle.style.position = 'fixed';
+            particle.style.left = fromRect.left + fromRect.width / 2 + 'px';
+            particle.style.top = fromRect.top + fromRect.height / 2 + 'px';
+            particle.style.width = '20px';
+            particle.style.height = '20px';
+            particle.style.borderRadius = '50%';
+            particle.style.background = 'radial-gradient(circle, #60a5fa, #3b82f6)';
+            particle.style.transform = 'translate(-50%, -50%)';
+            particle.style.transition = 'all 0.4s ease-out';
+            particle.style.zIndex = '999';
+            particle.style.pointerEvents = 'none';
+            document.body.appendChild(particle);
+
+            const liquidRect = liquidEl.getBoundingClientRect();
+            setTimeout(() => {
+                particle.style.left = liquidRect.left + liquidRect.width / 2 + 'px';
+                particle.style.top = liquidRect.top + liquidRect.height / 2 + 'px';
+                particle.style.opacity = '0';
+                particle.style.transform = 'translate(-50%, -50%) scale(0.3)';
+            }, 10);
+
+            setTimeout(() => {
+                particle.remove();
+                callback();
+            }, 450);
+        }
+
+        // Add via tray button
+        function addToBeaker(item) {
+            onDropIntoBeaker(item);
+        }
+
+        // Handle drop
+        function onDropIntoBeaker(item) {
+            if (item.type === 'reagent') {
+                state.contents.push({ id: item.id, pH: item.pH, vol: item.vol });
+                logEvent(`<span style="color:#60a5fa">✓</span> Ditambahkan: <strong>${item.name}</strong> (pH ${item.pH}, ${item.vol}ml)`);
+                updateBeakerAppearance();
+                computePH();
+                flashMessage(`${item.name} ditambahkan!`);
+
+            } else if (item.id === 'litmus') {
+                const currentPH = computePH(true);
+                let result, color;
+                if (currentPH < 7) {
+                    result = 'merah (asam)';
+                    color = '#ff6b6b';
+                } else if (currentPH > 7) {
+                    result = 'biru (basa)';
+                    color = '#6ee7b7';
+                } else {
+                    result = 'ungu (netral)';
+                    color = '#a78bfa';
+                }
+
+                logEvent(`<span style="color:${color}">🧪</span> Kertas lakmus: <strong style="color:${color}">${result}</strong> (pH ${currentPH.toFixed(2)})`);
+                flashMessage(`Kertas lakmus: ${result}`);
+
+            } else if (item.id === 'phprobe') {
+                const currentPH = computePH(true);
+                let condition;
+                if (currentPH < 3) condition = 'Asam Kuat';
+                else if (currentPH < 6.5) condition = 'Asam Lemah';
+                else if (currentPH <= 7.5) condition = 'Netral';
+                else if (currentPH <= 9) condition = 'Basa Lemah';
+                else condition = 'Basa Kuat';
+
+                logEvent(`<span style="color:#60a5fa">📊</span> pH Meter: <strong>${currentPH.toFixed(2)}</strong> (${condition})`);
+                flashMessage(`pH = ${currentPH.toFixed(2)} - ${condition}`);
+            }
+        }
+
+        function logEvent(text) {
+            const el = document.createElement('div');
+            el.style.padding = '8px';
+            el.style.borderBottom = '1px dashed rgba(255,255,255,0.08)';
+            el.style.fontSize = '13px';
+            el.style.animation = 'slideIn 0.3s ease-out';
+            el.innerHTML = `<div style="color:#94a3b8; font-size:11px">${new Date().toLocaleTimeString()}</div><div style="margin-top:2px">${text}</div>`;
+            historyEl.prepend(el);
+        }
+
+        function flashMessage(text) {
+            const f = document.createElement('div');
+            f.style.position = 'fixed';
+            f.style.left = '50%';
+            f.style.top = '20%';
+            f.style.transform = 'translateX(-50%) scale(0.8)';
+            f.style.background = 'rgba(0,0,0,0.9)';
+            f.style.backdropFilter = 'blur(10px)';
+            f.style.padding = '16px 24px';
+            f.style.borderRadius = '12px';
+            f.style.zIndex = '9999';
+            f.style.fontSize = '16px';
+            f.style.fontWeight = '600';
+            f.style.boxShadow = '0 8px 32px rgba(0,0,0,0.5)';
+            f.style.border = '1px solid rgba(255,255,255,0.1)';
+            f.style.transition = 'all 0.3s ease-out';
+            f.innerText = text;
+            document.body.appendChild(f);
+
+            setTimeout(() => f.style.transform = 'translateX(-50%) scale(1)', 10);
+            setTimeout(() => {
+                f.style.opacity = '0';
+                f.style.transform = 'translateX(-50%) scale(0.8)';
+            }, 1500);
+            setTimeout(() => f.remove(), 1800);
+        }
+
+        // Compute pH
+        function computePH(short = false) {
+            if (state.contents.length === 0) { if (!short) updatePHUI(7.0); return 7.0; }
+
+            let V = 0; let Htotal = 0;
+            state.contents.forEach(c => { V += c.vol; Htotal += Math.pow(10, -c.pH) * c.vol; });
+            const Hconc = Htotal / V;
+            const pH = -Math.log10(Hconc);
+
+            if (!short) updatePHUI(pH);
+            return pH;
+        }
+
+        function updatePHUI(pH) {
+            const p = Number.isFinite(pH) ? pH : 7.0;
+
+            let bg, textColor, indicator;
+            if (p < 3) {
+                bg = '#ff6b6b';
+                textColor = '#ffffff';
+                indicator = 'Asam Kuat';
+            } else if (p < 6.5) {
+                bg = '#ffb86b';
+                textColor = '#1a1a1a';
+                indicator = 'Asam Lemah';
+            } else if (p <= 7.5) {
+                bg = '#60a5fa';
+                textColor = '#ffffff';
+                indicator = 'Netral';
+            } else if (p <= 9) {
+                bg = '#99f6e4';
+                textColor = '#1a1a1a';
+                indicator = 'Basa Lemah';
+            } else {
+                bg = '#6ee7b7';
+                textColor = '#1a1a1a';
+                indicator = 'Basa Kuat';
+            }
+
+            phValueEl.style.background = bg;
+            phValueEl.style.color = textColor;
+            phValueEl.innerHTML = `${p.toFixed(2)}<div style="font-size:13px;margin-top:4px;opacity:0.9;font-weight:500">${indicator}</div>`;
+
+            // Update liquid
+            const liquidBg = adjustBrightness(bg, p < 7 ? 1.1 : 1.2);
+            liquidEl.style.background = `linear-gradient(180deg, ${liquidBg}, ${shade(liquidBg, -15)})`;
+
+            const totalVol = state.contents.reduce((s, c) => s + c.vol, 0);
+            const pct = Math.min(90, 20 + (totalVol / 3));
+            liquidEl.style.height = pct + '%';
+        }
+
+        function adjustBrightness(hex, factor) {
+            const c = hexToRgb(hex);
+            return rgbToHex(
+                Math.min(255, Math.round(c.r * factor)),
+                Math.min(255, Math.round(c.g * factor)),
+                Math.min(255, Math.round(c.b * factor))
+            );
+        }
+
+        function updateBeakerAppearance() {
+            const base = { r: 155, g: 231, b: 255, v: 30 };
+            const rgbList = [base];
+
+            state.contents.forEach(c => {
+                const it = itemsData.find(x => x.id === c.id);
+                if (it && it.color) {
+                    rgbList.push({ ...hexToRgb(it.color), v: c.vol });
+                }
+            });
+
+            let Vr = 0, Vg = 0, Vb = 0, Vt = 0;
+            rgbList.forEach(r => { Vr += r.r * r.v; Vg += r.g * r.v; Vb += r.b * r.v; Vt += r.v; });
+
+            const r = Math.min(255, Math.round(Vr / Vt * 1.1));
+            const g = Math.min(255, Math.round(Vg / Vt * 1.1));
+            const b = Math.min(255, Math.round(Vb / Vt * 1.1));
+            const hex = rgbToHex(r, g, b);
+
+            liquidEl.style.background = `linear-gradient(180deg, ${hex}, ${shade(hex, -15)})`;
+            liquidEl.style.animation = 'none';
+            setTimeout(() => liquidEl.style.animation = 'ripple 0.6s ease-out', 10);
+        }
+
+        // Color utilities
+        function hexToRgb(hex) {
+            hex = hex.replace('#', '');
+            if (hex.length === 3) hex = hex.split('').map(s => s + s).join('');
+            const n = parseInt(hex, 16);
+            return { r: (n >> 16) & 255, g: (n >> 8) & 255, b: n & 255 };
+        }
+
+        function rgbToHex(r, g, b) {
+            return '#' + [r, g, b].map(x => Math.round(x).toString(16).padStart(2, '0')).join('');
+        }
+
+        function shade(hex, percent) {
+            const c = hexToRgb(hex);
+            const amt = Math.round(2.55 * percent);
+            return rgbToHex(clamp(c.r + amt, 0, 255), clamp(c.g + amt, 0, 255), clamp(c.b + amt, 0, 255));
+        }
+
+        function clamp(a, b, c) {
+            return Math.max(b, Math.min(c, a));
+        }
+
+        // Reset with confirmation
+        resetBtn.addEventListener('click', () => {
+            if (state.contents.length > 1) {
+                const confirmReset = document.createElement('div');
+                confirmReset.style.position = 'fixed';
+                confirmReset.style.left = '50%';
+                confirmReset.style.top = '50%';
+                confirmReset.style.transform = 'translate(-50%, -50%)';
+                confirmReset.style.background = 'rgba(11,18,32,0.98)';
+                confirmReset.style.backdropFilter = 'blur(10px)';
+                confirmReset.style.padding = '24px';
+                confirmReset.style.borderRadius = '12px';
+                confirmReset.style.border = '1px solid rgba(255,255,255,0.1)';
+                confirmReset.style.boxShadow = '0 8px 32px rgba(0,0,0,0.5)';
+                confirmReset.style.zIndex = '9999';
+                confirmReset.style.textAlign = 'center';
+                confirmReset.style.maxWidth = '300px';
+
+                confirmReset.innerHTML = `
+      <div style="font-size:18px;font-weight:700;margin-bottom:12px">Reset Beaker?</div>
+      <div style="color:#94a3b8;margin-bottom:20px;font-size:14px">Semua reagent akan dihapus dan beaker dikembalikan ke kondisi awal</div>
+      <div style="display:flex;gap:10px;justify-content:center">
+        <button id="cancelReset" style="padding:10px 20px;border-radius:8px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#e6eef8;font-weight:600;cursor:pointer">Batal</button>
+        <button id="confirmReset" style="padding:10px 20px;border-radius:8px;background:linear-gradient(90deg,#ef4444,#dc2626);border:none;color:white;font-weight:600;cursor:pointer">Reset</button>
+      </div>
+    `;
+
+                document.body.appendChild(confirmReset);
+
+                document.getElementById('cancelReset').addEventListener('click', () => confirmReset.remove());
+                document.getElementById('confirmReset').addEventListener('click', () => {
+                    performReset();
+                    confirmReset.remove();
+                });
+
+            } else {
+                performReset();
+            }
+        });
+
+        function performReset() {
+            state.contents = [{ id: 'river', pH: 7.0, vol: 30 }];
+            historyEl.innerHTML = '';
+            updateBeakerAppearance();
+            updatePHUI(7.0);
+            logEvent('<span style="color:#94a3b8">🔄</span> Beaker direset ke kondisi awal');
+            flashMessage('✓ Beaker direset!');
+        }
+
+        // Initialize
+        updateBeakerAppearance();
+        computePH();
+
+        // Keyboard accessibility
+        document.querySelectorAll('.tool').forEach(t => {
+            t.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    const id = t.dataset.id;
+                    const it = itemsData.find(x => x.id === id);
+                    if (it) {
+                        t.style.transform = 'scale(0.95)';
+                        setTimeout(() => t.style.transform = 'scale(1)', 100);
+                        onDropIntoBeaker(it);
+                    }
+                }
+            });
+
+            t.addEventListener('focus', () => t.style.outline = '2px solid #60a5fa');
+            t.addEventListener('blur', () => t.style.outline = 'none');
+        });
+
+        // Quick menu on bench click
+        let menuOpen = false;
+        bench.addEventListener('click', (e) => {
+            if (menuOpen) return;
+            if (e.target.closest('.tool') || e.target === trayToggle || tray.contains(e.target)) return;
+
+            menuOpen = true;
+            const menu = document.createElement('div');
+            menu.style.position = 'fixed';
+            menu.style.left = '50%';
+            menu.style.top = '50%';
+            menu.style.transform = 'translate(-50%, -50%) scale(0.9)';
+            menu.style.background = 'rgba(11,18,32,0.98)';
+            menu.style.backdropFilter = 'blur(10px)';
+            menu.style.padding = '16px';
+            menu.style.borderRadius = '12px';
+            menu.style.border = '1px solid rgba(255,255,255,0.1)';
+            menu.style.boxShadow = '0 8px 32px rgba(0,0,0,0.5)';
+            menu.style.zIndex = '9999';
+            menu.style.maxWidth = '320px';
+            menu.style.transition = 'all 0.2s ease-out';
+            menu.style.opacity = '0';
+
+            menu.innerHTML = '<div style="font-weight:700;margin-bottom:10px;font-size:16px">⚗️ Quick Add Reagent</div>';
+
+            itemsData.filter(i => i.type === 'reagent').forEach(it => {
+                const b = document.createElement('div');
+                b.style.padding = '10px';
+                b.style.cursor = 'pointer';
+                b.style.borderTop = '1px solid rgba(255,255,255,0.05)';
+                b.style.display = 'flex';
+                b.style.alignItems = 'center';
+                b.style.gap = '10px';
+                b.style.transition = 'background 0.2s';
+                b.innerHTML = `<div style="width:24px;height:24px;border-radius:6px;background:${it.color};box-shadow:0 2px 8px rgba(0,0,0,0.3)"></div><div style="flex:1"><div style="font-weight:600">${it.name}</div><div style="font-size:12px;color:#94a3b8">pH ${it.pH} • ${it.vol}ml</div></div>`;
+
+                b.addEventListener('mouseenter', () => b.style.background = 'rgba(255,255,255,0.05)');
+                b.addEventListener('mouseleave', () => b.style.background = 'transparent');
+                b.addEventListener('click', (ev) => {
+                    ev.stopPropagation();
+                    onDropIntoBeaker(it);
+                    menu.style.opacity = '0';
+                    menu.style.transform = 'translate(-50%, -50%) scale(0.9)';
+                    setTimeout(() => { menu.remove(); menuOpen = false; }, 200);
+                });
+                menu.appendChild(b);
+            });
+
+            document.body.appendChild(menu);
+            setTimeout(() => {
+                menu.style.opacity = '1';
+                menu.style.transform = 'translate(-50%, -50%) scale(1)';
+            }, 10);
+
+            const closeMenu = (ev) => {
+                if (!menu.contains(ev.target)) {
+                    menu.style.opacity = '0';
+                    menu.style.transform = 'translate(-50%, -50%) scale(0.9)';
+                    setTimeout(() => { menu.remove(); menuOpen = false; }, 200);
+                    document.removeEventListener('click', closeMenu);
+                }
+            };
+
+            setTimeout(() => document.addEventListener('click', closeMenu), 100);
+        });
+
+        // Responsive adjustments
+        function touchHack() {
+            if (window.innerWidth < 600) {
+                document.querySelectorAll('.tool').forEach(t => {
+                    t.style.padding = '14px';
+                    t.style.minHeight = '100px';
+                });
+                beaker.style.width = '180px';
+                beaker.style.height = '230px';
+            } else {
+                document.querySelectorAll('.tool').forEach(t => {
+                    t.style.padding = '10px';
+                    t.style.minHeight = 'auto';
+                });
+                beaker.style.width = '210px';
+                beaker.style.height = '260px';
+            }
+        }
+        window.addEventListener('resize', touchHack);
+        touchHack();
+
+        // Welcome message
+        window.addEventListener('load', () => {
+            flashMessage('🧪 Virtual Lab siap digunakan!');
+        });
+
+        // Help tooltip
+        let hasInteracted = false;
+        function showHelpTooltip() {
+            if (hasInteracted) return;
+
+            const tooltip = document.createElement('div');
+            tooltip.style.position = 'fixed';
+            tooltip.style.left = '50%';
+            tooltip.style.bottom = '20px';
+            tooltip.style.transform = 'translateX(-50%)';
+            tooltip.style.background = 'rgba(96,165,250,0.95)';
+            tooltip.style.color = '#04263b';
+            tooltip.style.padding = '12px 20px';
+            tooltip.style.borderRadius = '24px';
+            tooltip.style.fontWeight = '600';
+            tooltip.style.fontSize = '14px';
+            tooltip.style.zIndex = '9998';
+            tooltip.style.boxShadow = '0 4px 16px rgba(96,165,250,0.4)';
+            tooltip.style.animation = 'pulse 2s infinite';
+            tooltip.innerHTML = '💡 Seret alat/bahan ke beaker untuk memulai eksperimen!';
+
+            document.body.appendChild(tooltip);
+
+            setTimeout(() => tooltip.remove(), 8000);
+        }
+
+        setTimeout(showHelpTooltip, 2000);
+        document.addEventListener('pointerdown', () => hasInteracted = true, { once: true });
+
+    </script>
 </body>
 
 </html>
