@@ -53,22 +53,39 @@
             height: 100vh;
         }
 
+        aside {
+            display: block;
+        }
+
         @media (max-width:900px) {
             .app {
                 grid-template-columns: 1fr;
-                grid-template-rows: auto 1fr auto;
+                grid-template-rows: 1fr auto;
                 padding: 8px;
                 height: auto;
                 min-height: 100vh;
             }
 
-            .right,
-            .left {
+            /* HIDE LEFT PANEL (ASIDE.LEFT) ON MOBILE */
+            aside.left {
+                display: none !important;
+            }
+
+            /* KEEP RIGHT PANEL VISIBLE */
+            aside.right {
+                display: flex;
                 order: 2;
             }
 
             .workspace {
                 order: 1;
+            }
+
+            /* MAKE TRAY SCROLLABLE ON MOBILE */
+            .tray {
+                max-height: calc(100vh - 120px) !important;
+                overflow-y: auto !important;
+                -webkit-overflow-scrolling: touch;
             }
         }
 
@@ -256,7 +273,7 @@
             flex-direction: column;
             gap: 8px;
             width: 220px;
-            max-height: calc(100% - 80px);
+            max-height: calc(100vh - 100px);
             overflow-y: auto;
             background: var(--glass-bg);
             padding: 12px;
@@ -852,7 +869,8 @@
             f.style.left = '50%';
             f.style.top = '20%';
             f.style.transform = 'translateX(-50%) scale(0.8)';
-            f.style.background = 'rgba(0,0,0,0.9)';
+            f.style.background = 'var(--glass-bg)';
+            f.style.color = 'var(--text-dark)';
             f.style.backdropFilter = 'blur(10px)';
             f.style.padding = '16px 24px';
             f.style.borderRadius = '12px';
@@ -1012,7 +1030,7 @@
                 confirmReset.style.left = '50%';
                 confirmReset.style.top = '50%';
                 confirmReset.style.transform = 'translate(-50%, -50%)';
-                confirmReset.style.background = 'rgba(11,18,32,0.98)';
+                confirmReset.style.background = 'rgba(255, 255, 255, 0.98)';
                 confirmReset.style.backdropFilter = 'blur(10px)';
                 confirmReset.style.padding = '24px';
                 confirmReset.style.borderRadius = '12px';
@@ -1023,9 +1041,9 @@
                 confirmReset.style.maxWidth = '300px';
 
                 confirmReset.innerHTML = `
-      <div style="font-size:18px;font-weight:700;margin-bottom:12px">Reset Beaker?</div>
-      <div style="color:#94a3b8;margin-bottom:20px;font-size:14px">Semua reagent akan dihapus dan beaker dikembalikan ke kondisi awal</div>
-      <div style="display:flex;gap:10px;justify-content:center">
+        <div style="font-size:18px;font-weight:700;margin-bottom:12px;color:var(--text-dark)">Reset Beaker?</div>
+        <div style="color:var(--text-muted);margin-bottom:20px;font-size:14px">Semua reagent akan dihapus dan beaker dikembalikan ke kondisi awal</div>
+        <div style="display:flex;gap:10px;justify-content:center">
         <button id="cancelReset" style="padding:10px 20px;border-radius:8px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#e6eef8;font-weight:600;cursor:pointer">Batal</button>
         <button id="confirmReset" style="padding:10px 20px;border-radius:8px;background:linear-gradient(90deg,#ef4444,#dc2626);border:none;color:white;font-weight:600;cursor:pointer">Reset</button>
       </div>
@@ -1074,72 +1092,6 @@
 
             t.addEventListener('focus', () => t.style.outline = '2px solid #60a5fa');
             t.addEventListener('blur', () => t.style.outline = 'none');
-        });
-
-        // Quick menu on bench click
-        let menuOpen = false;
-        bench.addEventListener('click', (e) => {
-            if (menuOpen) return;
-            if (e.target.closest('.tool') || e.target === trayToggle || tray.contains(e.target)) return;
-
-            menuOpen = true;
-            const menu = document.createElement('div');
-            menu.style.position = 'fixed';
-            menu.style.left = '50%';
-            menu.style.top = '50%';
-            menu.style.transform = 'translate(-50%, -50%) scale(0.9)';
-            menu.style.background = 'rgba(11,18,32,0.98)';
-            menu.style.backdropFilter = 'blur(10px)';
-            menu.style.padding = '16px';
-            menu.style.borderRadius = '12px';
-            menu.style.border = '1px solid rgba(255,255,255,0.1)';
-            menu.style.boxShadow = '0 8px 32px rgba(0,0,0,0.5)';
-            menu.style.zIndex = '9999';
-            menu.style.maxWidth = '320px';
-            menu.style.transition = 'all 0.2s ease-out';
-            menu.style.opacity = '0';
-
-            menu.innerHTML = '<div style="font-weight:700;margin-bottom:10px;font-size:16px">⚗️ Quick Add Reagent</div>';
-
-            itemsData.filter(i => i.type === 'reagent').forEach(it => {
-                const b = document.createElement('div');
-                b.style.padding = '10px';
-                b.style.cursor = 'pointer';
-                b.style.borderTop = '1px solid rgba(255,255,255,0.05)';
-                b.style.display = 'flex';
-                b.style.alignItems = 'center';
-                b.style.gap = '10px';
-                b.style.transition = 'background 0.2s';
-                b.innerHTML = `<div style="width:24px;height:24px;border-radius:6px;background:${it.color};box-shadow:0 2px 8px rgba(0,0,0,0.3)"></div><div style="flex:1"><div style="font-weight:600">${it.name}</div><div style="font-size:12px;color:#94a3b8">pH ${it.pH} • ${it.vol}ml</div></div>`;
-
-                b.addEventListener('mouseenter', () => b.style.background = 'rgba(255,255,255,0.05)');
-                b.addEventListener('mouseleave', () => b.style.background = 'transparent');
-                b.addEventListener('click', (ev) => {
-                    ev.stopPropagation();
-                    onDropIntoBeaker(it);
-                    menu.style.opacity = '0';
-                    menu.style.transform = 'translate(-50%, -50%) scale(0.9)';
-                    setTimeout(() => { menu.remove(); menuOpen = false; }, 200);
-                });
-                menu.appendChild(b);
-            });
-
-            document.body.appendChild(menu);
-            setTimeout(() => {
-                menu.style.opacity = '1';
-                menu.style.transform = 'translate(-50%, -50%) scale(1)';
-            }, 10);
-
-            const closeMenu = (ev) => {
-                if (!menu.contains(ev.target)) {
-                    menu.style.opacity = '0';
-                    menu.style.transform = 'translate(-50%, -50%) scale(0.9)';
-                    setTimeout(() => { menu.remove(); menuOpen = false; }, 200);
-                    document.removeEventListener('click', closeMenu);
-                }
-            };
-
-            setTimeout(() => document.addEventListener('click', closeMenu), 100);
         });
 
         // Responsive adjustments

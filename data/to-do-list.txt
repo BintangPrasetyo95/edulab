@@ -1,7 +1,8 @@
 TO-DO-LIST
 
 - Bug
-    - Scroll Tools
+    - Scroll Tools (Praktikum)
+    - Open Menu Mobile di modul
 
 - Praktikum Fix
     - Praktikum Update with newer tools
@@ -14,3 +15,12 @@ TO-DO-LIST
     - Saving Progress
     - Progress bar flexibility
     - Feedback
+
+- Additional Features
+    - Landing Page
+    - Framer
+    - Tampilan Menu Topik
+    - Guru Input Materi
+    - Dashboard Guru
+    - Chat Diskusi (Guru dapat melihat chat diskusi)
+    - 

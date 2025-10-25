@@ -6,154 +6,71 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - EduLab</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./assets/style.css">
+    <link rel="shortcut icon" href="./assets/images/Logo.png" type="image/x-icon">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Montserrat', sans-serif;
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
-
-        .auth-page {
-            display: flex;
-            min-height: 100vh;
-            width: 100%;
-        }
-
-        /* Left side - Image */
-        .image-section {
-            flex: 1;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
-
-        .image-section::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(255, 118, 117, 0.3) 0%, transparent 50%);
-        }
-
-        .image-content {
-            position: relative;
-            z-index: 1;
-            text-align: center;
-            padding: 2rem;
-            color: white;
-        }
-
-        .placeholder-image {
-            width: 100%;
-            max-width: 500px;
-            height: 500px;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.15);
-        }
-
-        .placeholder-text {
-            font-size: 1.5rem;
-            font-weight: 600;
-            opacity: 0.8;
-        }
-
-        .bg-circle {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(40px);
-            opacity: 0.3;
-        }
-
-        .circle1 {
-            width: 300px;
-            height: 300px;
-            background: rgba(255, 255, 255, 0.2);
-            top: 10%;
-            left: 5%;
-        }
-
-        .circle2 {
-            width: 200px;
-            height: 200px;
-            background: rgba(255, 255, 255, 0.15);
-            bottom: 15%;
-            right: 10%;
-        }
-
-        /* Right side - Form */
-        .form-section {
-            flex: 1;
-            background: #ffffff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 2rem;
-        }
-
+        /* Additional classes for login page */
         .auth-main-container {
-            width: 100%;
-            max-width: 500px;
             position: relative;
+            width: 100%;
+            max-width: 450px;
+            margin: 0 auto;
+            height: 600px;
+            perspective: 1000px;
         }
 
         .auth-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
             width: 100%;
-            transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            height: 100%;
             position: absolute;
             top: 0;
             left: 0;
+            overflow: hidden;
+            transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            opacity: 1;
+            transform: translateX(0) rotateY(0deg);
         }
 
         .login-container {
             z-index: 2;
-            opacity: 1;
-            transform: translateX(0);
         }
 
         .register-container {
             z-index: 1;
+            transform: translateX(100%) rotateY(15deg);
             opacity: 0;
-            transform: translateX(100%);
         }
 
         .auth-main-container.show-register .login-container {
+            transform: translateX(-100%) rotateY(-15deg);
             opacity: 0;
-            transform: translateX(-100%);
             z-index: 1;
         }
 
         .auth-main-container.show-register .register-container {
+            transform: translateX(0) rotateY(0deg);
             opacity: 1;
-            transform: translateX(0);
             z-index: 2;
         }
 
         .auth-card {
-            padding: 0;
+            padding: 3rem 2.5rem;
+            text-align: center;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
 
         .register-container .auth-card {
-            max-height: 80vh;
+            justify-content: flex-start;
             overflow-y: auto;
-            padding-right: 0.5rem;
+            padding: 2rem 2.5rem;
         }
 
         .register-container .auth-card::-webkit-scrollbar {
@@ -161,7 +78,7 @@
         }
 
         .register-container .auth-card::-webkit-scrollbar-track {
-            background: rgba(102, 126, 234, 0.1);
+            background: rgba(255, 255, 255, 0.1);
             border-radius: 3px;
         }
 
@@ -170,8 +87,15 @@
             border-radius: 3px;
         }
 
+        .register-container .auth-card::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #5a6fd8, #6a5b93);
+        }
+
         .auth-header {
-            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
             margin-bottom: 2.5rem;
         }
 
@@ -182,7 +106,7 @@
             background: linear-gradient(135deg, #667eea, #764ba2);
             padding: 8px;
             box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
-            margin-bottom: 1rem;
+            transition: all 0.3s ease;
         }
 
         .auth-header h1 {
@@ -290,6 +214,16 @@
             color: #764ba2;
         }
 
+        .auth-page {
+            min-height: 100vh;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            margin: 0;
+        }
+
         .message {
             padding: 0.75rem 1rem;
             border-radius: 8px;
@@ -310,97 +244,97 @@
             border-left: 4px solid #2e7d32;
         }
 
-        /* Mobile Responsive */
-        @media (max-width: 968px) {
-            .auth-page {
-                flex-direction: column;
-            }
+        /* Background styling from original CSS */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-            .image-section {
-                min-height: 40vh;
-                flex: none;
-            }
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
 
-            .placeholder-image {
-                max-width: 350px;
-                height: 350px;
-            }
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 118, 117, 0.15) 0%, transparent 50%);
+            z-index: -1;
+        }
 
-            .form-section {
-                flex: none;
-                min-height: 60vh;
+        .bg-circle {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(30px);
+            opacity: 0.2;
+            z-index: -1;
+        }
+
+        .circle1 {
+            width: 250px;
+            height: 250px;
+            background: rgba(21, 101, 192, 0.3);
+            top: 10%;
+            left: 5%;
+        }
+
+        .circle2 {
+            width: 180px;
+            height: 180px;
+            background: rgba(46, 125, 50, 0.3);
+            bottom: 20%;
+            right: 10%;
+        }
+
+        /* Tablet responsiveness */
+        @media (max-width: 1024px) {
+            .auth-main-container {
+                max-width: 420px;
+                height: min(580px, 85vh);
+                margin: 0 1.5rem;
             }
         }
 
         @media (max-width: 768px) {
-            .image-section {
-                min-height: 35vh;
-            }
-
-            .placeholder-image {
-                max-width: 300px;
-                height: 300px;
-            }
-
-            .placeholder-text {
-                font-size: 1.2rem;
-            }
-
-            .form-section {
-                padding: 1.5rem;
-            }
-
             .auth-main-container {
-                max-width: 100%;
+                max-width: 400px;
+                height: min(550px, 80vh);
+                margin: 0 1rem;
             }
 
-            .auth-header h1 {
-                font-size: 1.8rem;
-            }
-
-            .auth-header img {
-                width: 3.5rem;
-                height: 3.5rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .image-section {
-                min-height: 30vh;
-            }
-
-            .placeholder-image {
-                max-width: 250px;
-                height: 250px;
-            }
-
-            .placeholder-text {
-                font-size: 1rem;
-            }
-
-            .form-section {
-                padding: 1rem;
+            .auth-container {
+                border-radius: 20px;
             }
 
             .auth-card {
-                padding: 1rem 0;
+                padding: 2rem 1.5rem;
+            }
+
+            .register-container .auth-card {
+                padding: 1.5rem;
             }
 
             .auth-header {
                 margin-bottom: 1.5rem;
             }
 
-            .auth-header img {
-                width: 3rem;
-                height: 3rem;
-            }
-
             .auth-header h1 {
-                font-size: 1.5rem;
+                font-size: 1.8rem;
             }
 
             .auth-header p {
-                font-size: 0.9rem;
+                font-size: 0.95rem;
             }
 
             .form-group {
@@ -418,130 +352,258 @@
                 font-size: 0.95rem;
             }
         }
+
+        @media (max-width: 480px) {
+            .auth-page {
+                padding: 0.5rem;
+            }
+
+            .auth-main-container {
+                max-width: calc(100vw - 1rem);
+                height: min(85vh, 500px);
+                margin: 0;
+            }
+
+            .auth-container {
+                border-radius: 16px;
+            }
+
+            .auth-card {
+                padding: 1.5rem 1.25rem;
+            }
+
+            .register-container .auth-card {
+                padding: 1.25rem 1rem;
+            }
+
+            .auth-header {
+                gap: 0.5rem;
+                margin-bottom: 1.25rem;
+            }
+
+            .auth-header img {
+                width: 3rem;
+                height: 3rem;
+            }
+
+            .auth-header h1 {
+                font-size: 1.5rem;
+            }
+
+            .auth-header p {
+                font-size: 0.85rem;
+                line-height: 1.4;
+            }
+
+            .form-group {
+                margin-bottom: 0.9rem;
+            }
+
+            .form-group label {
+                font-size: 0.9rem;
+                margin-bottom: 0.4rem;
+            }
+
+            .form-group input,
+            .form-group select {
+                padding: 0.8rem 1rem;
+                font-size: 0.85rem;
+                border-radius: 10px;
+            }
+
+            .auth-btn {
+                padding: 1rem;
+                font-size: 0.9rem;
+                margin-bottom: 1rem;
+            }
+
+            .auth-toggle {
+                font-size: 0.8rem;
+                line-height: 1.4;
+            }
+
+            .password-toggle {
+                font-size: 1rem;
+                right: 0.8rem;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .auth-main-container {
+                max-width: calc(100vw - 0.5rem);
+                height: min(90vh, 460px);
+                margin: 0;
+            }
+
+            .auth-page {
+                padding: 0.25rem;
+            }
+
+            .auth-card {
+                padding: 1.25rem 0.9rem;
+            }
+
+            .register-container .auth-card {
+                padding: 1rem 0.8rem;
+            }
+
+            .auth-header h1 {
+                font-size: 1.3rem;
+            }
+
+            .form-group {
+                margin-bottom: 0.8rem;
+            }
+
+            .form-group input,
+            .form-group select {
+                padding: 0.7rem 0.9rem;
+                font-size: 0.8rem;
+            }
+        }
+
+        /* Very small screens and landscape phones */
+        @media (max-height: 600px) and (max-width: 768px) {
+            .auth-main-container {
+                height: 95vh;
+                margin: 0;
+            }
+
+            .auth-page {
+                padding: 0.25rem;
+            }
+
+            .auth-card {
+                padding: 1rem;
+            }
+
+            .register-container .auth-card {
+                padding: 0.75rem;
+            }
+
+            .auth-header {
+                margin-bottom: 1rem;
+            }
+
+            .auth-header img {
+                width: 2.5rem;
+                height: 2.5rem;
+            }
+
+            .form-group {
+                margin-bottom: 0.7rem;
+            }
+        }
     </style>
 </head>
 
-<body>
-    <div class="auth-page">
-        <!-- Left Side - Image Section -->
-        <div class="image-section">
-            <div class="bg-circle circle1"></div>
-            <div class="bg-circle circle2"></div>
-            <div class="image-content">
-                <div class="placeholder-image">
-                    <div class="placeholder-text">📚 EduLab Image</div>
+<body class="auth-page">
+    <div class="bg-circle circle1"></div>
+    <div class="bg-circle circle2"></div>
+
+    <div class="auth-main-container">
+        <!-- Login Container -->
+        <div class="auth-container login-container">
+            <div class="auth-card">
+                <div class="auth-header">
+                    <img src="./assets/images/Logo.png" alt="Logo EduLab">
+                    <h1>EduLab</h1>
+                    <p>Selamat datang kembali! Masuk ke akun Anda.</p>
                 </div>
+
+                <div class="message error-message" id="loginError"></div>
+                <div class="message success-message" id="loginSuccess"></div>
+
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label for="loginNis">Nomor Induk Siswa (NIS)</label>
+                        <input type="text" id="loginNis" name="nis" placeholder="Masukkan NIS Anda" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="loginPassword">Kata Sandi</label>
+                        <div class="password-group">
+                            <input type="password" id="loginPassword" name="password" placeholder="Masukkan kata sandi"
+                                required>
+                            <button type="button" class="password-toggle"
+                                onclick="togglePassword('loginPassword')">👁️</button>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="auth-btn" id="loginBtn">Masuk</button>
+
+                    <div class="auth-toggle">
+                        Belum punya akun? <a onclick="switchToRegister()">Daftar sekarang</a>
+                    </div>
+                </form>
             </div>
         </div>
 
-        <!-- Right Side - Form Section -->
-        <div class="form-section">
-            <div class="auth-main-container">
-                <!-- Login Container -->
-                <div class="auth-container login-container">
-                    <div class="auth-card">
-                        <div class="auth-header">
-                            <img src="./assets/images/Logo.png" alt="Logo EduLab">
-                            <h1>EduLab</h1>
-                            <p>Selamat datang kembali! Masuk ke akun Anda.</p>
-                        </div>
-
-                        <div class="message error-message" id="loginError"></div>
-                        <div class="message success-message" id="loginSuccess"></div>
-
-                        <form id="loginForm">
-                            <div class="form-group">
-                                <label for="loginNis">Nomor Induk Siswa (NIS)</label>
-                                <input type="text" id="loginNis" name="nis" placeholder="Masukkan NIS Anda" required>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="loginPassword">Kata Sandi</label>
-                                <div class="password-group">
-                                    <input type="password" id="loginPassword" name="password"
-                                        placeholder="Masukkan kata sandi" required>
-                                    <button type="button" class="password-toggle"
-                                        onclick="togglePassword('loginPassword')">👁️</button>
-                                </div>
-                            </div>
-
-                            <button type="submit" class="auth-btn" id="loginBtn">Masuk</button>
-
-                            <div class="auth-toggle">
-                                Belum punya akun? <a onclick="switchToRegister()">Daftar sekarang</a>
-                            </div>
-                        </form>
-                    </div>
+        <!-- Register Container -->
+        <div class="auth-container register-container">
+            <div class="auth-card">
+                <div class="auth-header">
+                    <img src="./assets/images/Logo.png" alt="Logo EduLab">
+                    <h1>EduLab</h1>
+                    <p>Selamat datang! Buat akun baru Anda.</p>
                 </div>
 
-                <!-- Register Container -->
-                <div class="auth-container register-container">
-                    <div class="auth-card">
-                        <div class="auth-header">
-                            <img src="./assets/images/Logo.png" alt="Logo EduLab">
-                            <h1>EduLab</h1>
-                            <p>Selamat datang! Buat akun baru Anda.</p>
-                        </div>
+                <div class="message error-message" id="registerError"></div>
+                <div class="message success-message" id="registerSuccess"></div>
 
-                        <div class="message error-message" id="registerError"></div>
-                        <div class="message success-message" id="registerSuccess"></div>
-
-                        <form id="registerForm">
-                            <div class="form-group">
-                                <label for="registerNama">Nama Lengkap</label>
-                                <input type="text" id="registerNama" name="nama" placeholder="Masukkan nama lengkap"
-                                    required>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="registerNis">Nomor Induk Siswa (NIS)</label>
-                                <input type="text" id="registerNis" name="nis" placeholder="Masukkan NIS Anda" required>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="registerSekolah">Asal Sekolah</label>
-                                <input type="text" id="registerSekolah" name="sekolah"
-                                    placeholder="Masukkan nama sekolah" required>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="registerKelas">Kelas</label>
-                                <select id="registerKelas" name="kelas" required>
-                                    <option value="">Pilih kelas</option>
-                                    <option value="10">Kelas 10</option>
-                                    <option value="11">Kelas 11</option>
-                                    <option value="12">Kelas 12</option>
-                                </select>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="registerPassword">Kata Sandi</label>
-                                <div class="password-group">
-                                    <input type="password" id="registerPassword" name="password"
-                                        placeholder="Buat kata sandi" required>
-                                    <button type="button" class="password-toggle"
-                                        onclick="togglePassword('registerPassword')">👁️</button>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="confirmPassword">Konfirmasi Kata Sandi</label>
-                                <div class="password-group">
-                                    <input type="password" id="confirmPassword" name="confirmPassword"
-                                        placeholder="Konfirmasi kata sandi" required>
-                                    <button type="button" class="password-toggle"
-                                        onclick="togglePassword('confirmPassword')">👁️</button>
-                                </div>
-                            </div>
-
-                            <button type="submit" class="auth-btn" id="registerBtn">Daftar</button>
-
-                            <div class="auth-toggle">
-                                Sudah punya akun? <a onclick="switchToLogin()">Masuk di sini</a>
-                            </div>
-                        </form>
+                <form id="registerForm">
+                    <div class="form-group">
+                        <label for="registerNama">Nama Lengkap</label>
+                        <input type="text" id="registerNama" name="nama" placeholder="Masukkan nama lengkap" required>
                     </div>
-                </div>
+
+                    <div class="form-group">
+                        <label for="registerNis">Nomor Induk Siswa (NIS)</label>
+                        <input type="text" id="registerNis" name="nis" placeholder="Masukkan NIS Anda" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="registerSekolah">Asal Sekolah</label>
+                        <input type="text" id="registerSekolah" name="sekolah" placeholder="Masukkan nama sekolah"
+                            required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="registerKelas">Kelas</label>
+                        <select id="registerKelas" name="kelas" required>
+                            <option value="">Pilih kelas</option>
+                            <option value="10">Kelas 10</option>
+                            <option value="11">Kelas 11</option>
+                            <option value="12">Kelas 12</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="registerPassword">Kata Sandi</label>
+                        <div class="password-group">
+                            <input type="password" id="registerPassword" name="password" placeholder="Buat kata sandi"
+                                required>
+                            <button type="button" class="password-toggle"
+                                onclick="togglePassword('registerPassword')">👁️</button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="confirmPassword">Konfirmasi Kata Sandi</label>
+                        <div class="password-group">
+                            <input type="password" id="confirmPassword" name="confirmPassword"
+                                placeholder="Konfirmasi kata sandi" required>
+                            <button type="button" class="password-toggle"
+                                onclick="togglePassword('confirmPassword')">👁️</button>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="auth-btn" id="registerBtn">Daftar</button>
+
+                    <div class="auth-toggle">
+                        Sudah punya akun? <a onclick="switchToLogin()">Masuk di sini</a>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -585,6 +647,7 @@
             element.textContent = message;
             element.style.display = 'block';
 
+            // Auto hide after 5 seconds
             setTimeout(() => {
                 element.style.display = 'none';
             }, 5000);
@@ -611,6 +674,7 @@
             return password.length >= 4;
         }
 
+        // Login form handler
         document.getElementById('loginForm').addEventListener('submit', async function (e) {
             e.preventDefault();
             clearMessages();
@@ -618,6 +682,7 @@
             const nis = document.getElementById('loginNis').value.trim();
             const password = document.getElementById('loginPassword').value;
 
+            // Basic validation
             if (!validateNIS(nis)) {
                 showMessage('loginError', 'NIS harus berupa angka dan minimal 1 digit');
                 return;
@@ -630,9 +695,11 @@
 
             setButtonLoading('loginBtn', true);
 
+            // Simulate login process
             setTimeout(() => {
                 setButtonLoading('loginBtn', false);
 
+                // Redirect to index.html for any valid credentials (demo purposes)
                 if (validateNIS(nis) && validatePassword(password)) {
                     showMessage('loginSuccess', 'Login berhasil! Mengalihkan...', false);
                     setTimeout(() => {
@@ -644,6 +711,7 @@
             }, 1500);
         });
 
+        // Register form handler
         document.getElementById('registerForm').addEventListener('submit', async function (e) {
             e.preventDefault();
             clearMessages();
@@ -655,6 +723,7 @@
             const password = document.getElementById('registerPassword').value;
             const confirmPassword = document.getElementById('confirmPassword').value;
 
+            // Validation
             if (!nama) {
                 showMessage('registerError', 'Nama lengkap harus diisi');
                 return;
@@ -687,10 +756,12 @@
 
             setButtonLoading('registerBtn', true);
 
+            // Simulate registration process
             setTimeout(() => {
                 setButtonLoading('registerBtn', false);
                 showMessage('registerSuccess', 'Pendaftaran berhasil! Silakan masuk dengan akun baru Anda.', false);
 
+                // Auto switch to login after successful registration
                 setTimeout(() => {
                     switchToLogin();
                     document.getElementById('loginNis').value = nis;
@@ -698,6 +769,7 @@
             }, 2000);
         });
 
+        // Real-time password confirmation validation
         document.getElementById('confirmPassword').addEventListener('input', function () {
             const password = document.getElementById('registerPassword').value;
             const confirmPassword = this.value;
@@ -709,6 +781,12 @@
             } else {
                 this.style.borderColor = 'rgba(102, 126, 234, 0.2)';
             }
+        });
+
+        // Add floating animation to background circles
+        const circles = document.querySelectorAll('.bg-circle');
+        circles.forEach((circle, index) => {
+            circle.style.animationDelay = `${index * 1.5}s`;
         });
     </script>
 </body>
