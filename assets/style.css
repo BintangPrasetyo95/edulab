@@ -604,26 +604,67 @@ main {
     gap: 1.5rem;
 }
 
+/* STYLE UTAMA (tetap sama) */
 .progress-item {
+    position: relative;
     text-align: center;
     padding: 1.5rem;
-    background: rgba(102, 126, 234, 0.05);
     border-radius: 16px;
+    overflow: hidden;
     border: 1px solid rgba(102, 126, 234, 0.1);
     transition: all 0.3s ease;
+    color: white;
+    z-index: 1;
+}
+
+.progress-item::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    filter: brightness(0.8);
+    z-index: -1;
+    transition: 0.3s ease;
 }
 
 .progress-item:hover {
-    background: rgba(102, 126, 234, 0.1);
     transform: translateY(-5px);
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
 }
 
 .progress-item h3 {
     font-size: 1.3rem;
     font-weight: 700;
     margin-bottom: 1rem;
-    color: #2c3e50;
+    color: white;
+}
+
+/* ============================= */
+/* BACKGROUND BERBEDA PER KELAS  */
+/* ============================= */
+
+.kelas10::before {
+    background-image:
+        linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)),
+        url('./images/kelas10.jpg');
+}
+
+.kelas11::before {
+    background-image:
+        linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)),
+        url('./images/kelas11.jpg');
+}
+
+.kelas12::before {
+    background-image:
+        linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)),
+        url('./images/kelas12.jpg');
+}
+
+.progress-item:hover::before {
+    filter: brightness(1);
 }
 
 .progress-circle {
