@@ -42,7 +42,8 @@ body::before {
     grid-template-columns: 320px 1fr 320px;
     gap: 14px;
     padding: 12px;
-    height: 100vh;
+    min-height: 100vh;
+    height: auto;
 }
 
 aside {
@@ -114,6 +115,8 @@ button:hover {
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     border: 1px solid var(--glass-border);
     min-height: 80px;
+    height: fit-content;
+    align-self: start;
 }
 
 .panel h3 {
@@ -128,6 +131,8 @@ button:hover {
     display: flex;
     flex-direction: column;
     gap: 10px;
+    max-height: calc(100vh - 24px);
+    overflow-y: auto;
 }
 
 .tools {
@@ -177,13 +182,13 @@ button:hover {
     display: flex;
     align-items: flex-start;
     justify-content: center;
-    height: 100vh;
+    height: 95vh;
     overflow-y: auto;
 }
 
 .lab-area {
     width: 100%;
-    height: calc(100vh - 64px - 24px);
+    height: 100%;
     border-radius: 16px;
     background: rgba(255, 255, 255, 0.9);
     border: 1px solid var(--glass-border);
@@ -347,6 +352,25 @@ button:hover {
     display: flex;
     flex-direction: column;
     gap: 10px;
+    max-height: calc(100vh - 24px);
+    overflow-y: auto;
+}
+
+.left::-webkit-scrollbar,
+.right::-webkit-scrollbar {
+    width: 6px;
+}
+
+.left::-webkit-scrollbar-track,
+.right::-webkit-scrollbar-track {
+    background: rgba(102, 126, 234, 0.05);
+    border-radius: 3px;
+}
+
+.left::-webkit-scrollbar-thumb,
+.right::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, var(--primary-purple), var(--secondary-purple));
+    border-radius: 3px;
 }
 
 .meter {
