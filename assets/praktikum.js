@@ -9,9 +9,7 @@ const itemsData = [
     { id: 'turmeric', name: 'Air Kunyit', type: 'reagent', pH: 6.5, color: '#ffab00', vol: 20 },
 
     // ALAT (Tools)
-    { id: 'beaker', name: 'Gelas', type: 'tool', mode: 'container', color: '#e0e0e0' },
     { id: 'litmus', name: 'Kertas Lakmus', type: 'tool', mode: 'paper', color: '#ffffff' },
-    { id: 'pipette', name: 'Pipet Lab', type: 'tool', mode: 'pipette', color: '#90caf9' },
     { id: 'testtube', name: 'Tabung Reaksi', type: 'tool', mode: 'tube', color: '#b0bec5' },
 ];
 
@@ -74,24 +72,6 @@ function getIconSVG(item) {
         return `<svg width="44" height="44" viewBox="0 0 24 24">
       <rect x="7" y="4" width="5" height="16" rx="1" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>
       <rect x="12" y="4" width="5" height="16" rx="1" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>
-    </svg>`
-    }
-
-    // Icon untuk Gelas/Beaker
-    if (item.id === 'beaker') {
-        return `<svg width="44" height="44" viewBox="0 0 24 24">
-      <path d="M8 4h8v14a2 2 0 01-2 2h-4a2 2 0 01-2-2V4z" fill="${item.color}" stroke="#37474f" stroke-width="1.5"/>
-      <line x1="8" y1="4" x2="16" y2="4" stroke="#37474f" stroke-width="2"/>
-      <path d="M9 10h6" stroke="rgba(255,255,255,0.5)" stroke-width="1"/>
-    </svg>`
-    }
-
-    // Icon untuk Pipet
-    if (item.id === 'pipette') {
-        return `<svg width="44" height="44" viewBox="0 0 24 24">
-      <line x1="12" y1="3" x2="12" y2="16" stroke="${item.color}" stroke-width="2" stroke-linecap="round"/>
-      <circle cx="12" cy="3" r="1.5" fill="#37474f"/>
-      <path d="M10 16l2 5 2-5z" fill="${item.color}" stroke="#37474f" stroke-width="1"/>
     </svg>`
     }
 
@@ -315,45 +295,6 @@ function onDropIntoBeaker(item) {
 
         logEvent(`<span style="color:${color}">🧪</span> Kertas lakmus: <strong style="color:${color}">${result}</strong> (pH ${currentPH.toFixed(2)})`);
         flashMessage(`Kertas lakmus: ${result}`);
-
-    } else if (item.id === 'beaker') {
-        // Gelas: Buat wadah tambahan
-        if (document.querySelectorAll('.beaker').length >= 3) {
-            flashMessage('❌ Maksimal 3 beaker di bench!');
-            return;
-        }
-
-        const newBeaker = createExtraBeaker();
-        bench.appendChild(newBeaker);
-        logEvent(`<span style="color:#90caf9">🥤</span> <strong>Gelas baru</strong> ditambahkan ke bench`);
-        flashMessage('✔ Gelas baru siap digunakan!');
-
-    } else if (item.id === 'pipette') {
-        // Pipet: Transfer cairan
-        const currentPH = computePH(true);
-
-        if (currentPH === null) {
-            logEvent(`<span style="color:#94a3b8">⚠️</span> Pipet: <strong>Tidak ada cairan untuk ditransfer</strong>`);
-            flashMessage(`Beaker kosong - tidak ada yang bisa dipindahkan`);
-            return;
-        }
-
-        if (state.contents.length === 0) {
-            flashMessage('❌ Tidak ada cairan untuk ditransfer');
-            return;
-        }
-
-        // Ambil 5ml dari cairan terakhir
-        const lastContent = state.contents[state.contents.length - 1];
-        if (lastContent.vol > 5) {
-            lastContent.vol -= 5;
-            logEvent(`<span style="color:#90caf9">💧</span> Pipet: <strong>5ml ${itemsData.find(x => x.id === lastContent.id)?.name}</strong> ditransfer`);
-            flashMessage(`💧 5ml ditransfer dengan pipet`);
-            updateBeakerAppearance();
-            computePH();
-        } else {
-            flashMessage('❌ Volume terlalu sedikit untuk ditransfer');
-        }
 
     } else if (item.id === 'testtube') {
         // Tabung Reaksi: Uji skala kecil
@@ -760,64 +701,6 @@ function showHelpTooltip() {
     document.body.appendChild(tooltip);
 
     setTimeout(() => tooltip.remove(), 8000);
-}
-
-function createExtraBeaker() {
-    const newBeaker = document.createElement('div');
-    newBeaker.className = 'beaker';
-    newBeaker.style.position = 'absolute';
-    newBeaker.style.left = Math.random() * 60 + 20 + '%';
-    newBeaker.style.top = Math.random() * 40 + 30 + '%';
-    newBeaker.style.width = '150px';
-    newBeaker.style.height = '200px';
-    newBeaker.style.cursor = 'move';
-
-    newBeaker.innerHTML = `
-                <div class="liquid" style="background:transparent; height:0%"></div>
-                <div class="label">Gelas Ekstra</div>
-            `;
-
-    // Buat draggable untuk reposisi
-    makeBeakerDraggable(newBeaker);
-
-    return newBeaker;
-}
-
-// Fungsi untuk membuat beaker bisa di-drag
-function makeBeakerDraggable(beakerEl) {
-    let isDragging = false;
-    let offsetX, offsetY;
-
-    beakerEl.addEventListener('pointerdown', (e) => {
-        if (e.target === beakerEl || e.target.classList.contains('label')) {
-            isDragging = true;
-            const rect = beakerEl.getBoundingClientRect();
-            offsetX = e.clientX - rect.left;
-            offsetY = e.clientY - rect.top;
-            beakerEl.style.cursor = 'grabbing';
-        }
-    });
-
-    document.addEventListener('pointermove', (e) => {
-        if (!isDragging) return;
-        const benchRect = bench.getBoundingClientRect();
-        let newX = e.clientX - benchRect.left - offsetX;
-        let newY = e.clientY - benchRect.top - offsetY;
-
-        // Batas agar tidak keluar bench
-        newX = Math.max(0, Math.min(newX, benchRect.width - beakerEl.offsetWidth));
-        newY = Math.max(0, Math.min(newY, benchRect.height - beakerEl.offsetHeight));
-
-        beakerEl.style.left = newX + 'px';
-        beakerEl.style.top = newY + 'px';
-    });
-
-    document.addEventListener('pointerup', () => {
-        if (isDragging) {
-            isDragging = false;
-            beakerEl.style.cursor = 'move';
-        }
-    });
 }
 
 // Animasi tabung reaksi muncul
