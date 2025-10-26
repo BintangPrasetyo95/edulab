@@ -8,6 +8,4 @@ TO-DO-LIST
 
 - Additional Features
     - Framer
-    - Guru Input Materi (1/2)
-    - Dashboard Guru (1/2)
     - Chat Diskusi (Guru dapat melihat chat diskusi)

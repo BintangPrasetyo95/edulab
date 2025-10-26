@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 26, 2025 at 09:09 PM
+-- Generation Time: Oct 26, 2025 at 11:31 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -20,6 +20,82 @@ SET time_zone = "+00:00";
 --
 -- Database: `edulab`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `kelompok`
+--
+
+CREATE TABLE `kelompok` (
+  `id_kelompok` int(11) NOT NULL,
+  `nama_kelompok` varchar(50) NOT NULL,
+  `laporan` int(11) DEFAULT 0,
+  `presentasi` int(11) DEFAULT 0,
+  `kerjasama` int(11) DEFAULT 0,
+  `total` int(11) DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `kelompok`
+--
+
+INSERT INTO `kelompok` (`id_kelompok`, `nama_kelompok`, `laporan`, `presentasi`, `kerjasama`, `total`) VALUES
+(1, 'Kelompok 1', 0, 0, 0, 0),
+(2, 'Kelompok 2', 0, 0, 0, 0),
+(3, 'Kelompok 3', 0, 0, 0, 0),
+(4, 'Kelompok 4', 0, 0, 0, 0),
+(5, 'Kelompok 5', 0, 0, 0, 0),
+(6, 'Kelompok 6', 0, 0, 0, 0);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `kelompok_anggota`
+--
+
+CREATE TABLE `kelompok_anggota` (
+  `id_anggota` int(11) NOT NULL,
+  `id_kelompok` int(11) NOT NULL,
+  `id_user` int(11) NOT NULL,
+  `peran` enum('ketua','anggota') NOT NULL DEFAULT 'anggota'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `kelompok_anggota`
+--
+
+INSERT INTO `kelompok_anggota` (`id_anggota`, `id_kelompok`, `id_user`, `peran`) VALUES
+(1, 1, 1, 'ketua'),
+(2, 1, 2, 'anggota'),
+(3, 1, 3, 'anggota'),
+(4, 1, 4, 'anggota'),
+(5, 1, 5, 'anggota'),
+(6, 2, 6, 'ketua'),
+(7, 2, 7, 'anggota'),
+(8, 2, 8, 'anggota'),
+(9, 2, 9, 'anggota'),
+(10, 2, 10, 'anggota'),
+(11, 3, 11, 'ketua'),
+(12, 3, 12, 'anggota'),
+(13, 3, 13, 'anggota'),
+(14, 3, 14, 'anggota'),
+(15, 3, 15, 'anggota'),
+(16, 4, 16, 'ketua'),
+(17, 4, 17, 'anggota'),
+(18, 4, 18, 'anggota'),
+(19, 4, 19, 'anggota'),
+(20, 4, 20, 'anggota'),
+(21, 5, 21, 'ketua'),
+(22, 5, 22, 'anggota'),
+(23, 5, 23, 'anggota'),
+(24, 5, 24, 'anggota'),
+(25, 5, 25, 'anggota'),
+(26, 6, 26, 'ketua'),
+(27, 6, 27, 'anggota'),
+(28, 6, 28, 'anggota'),
+(29, 6, 29, 'anggota'),
+(30, 6, 30, 'anggota');
 
 -- --------------------------------------------------------
 
@@ -44,7 +120,6 @@ CREATE TABLE `students` (
   `prelab` int(11) DEFAULT NULL,
   `praktikum` int(11) DEFAULT NULL,
   `postlab` int(11) DEFAULT NULL,
-  `kelompok` varchar(10) DEFAULT NULL,
   `totalNilai` int(11) DEFAULT NULL,
   `feedback` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -53,37 +128,37 @@ CREATE TABLE `students` (
 -- Dumping data for table `students`
 --
 
-INSERT INTO `students` (`id_user`, `nis`, `nisn`, `nama`, `kelas`, `sekolah`, `jenisKelamin`, `tempatLahir`, `tanggalLahir`, `alamat`, `nomorTelepon`, `email`, `password`, `prelab`, `praktikum`, `postlab`, `kelompok`, `totalNilai`, `feedback`) VALUES
-(1, 1, 999999, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '1', NULL, NULL, NULL, NULL, NULL, NULL),
-(2, 2, 999999, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2', NULL, NULL, NULL, NULL, NULL, NULL),
-(3, 3, 999999, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '3', NULL, NULL, NULL, NULL, NULL, NULL),
-(4, 4, 999999, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '4', NULL, NULL, NULL, NULL, NULL, NULL),
-(5, 5, 999999, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '5', NULL, NULL, NULL, NULL, NULL, NULL),
-(6, 6, 999999, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '6', NULL, NULL, NULL, NULL, NULL, NULL),
-(7, 7, 999999, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '7', NULL, NULL, NULL, NULL, NULL, NULL),
-(8, 8, 999999, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '8', NULL, NULL, NULL, NULL, NULL, NULL),
-(9, 9, 999999, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '9', NULL, NULL, NULL, NULL, NULL, NULL),
-(10, 10, 999999, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '10', NULL, NULL, NULL, NULL, NULL, NULL),
-(11, 11, 999999, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '11', NULL, NULL, NULL, NULL, NULL, NULL),
-(12, 12, 999999, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '12', NULL, NULL, NULL, NULL, NULL, NULL),
-(13, 13, 999999, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '13', NULL, NULL, NULL, NULL, NULL, NULL),
-(14, 14, 999999, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '14', NULL, NULL, NULL, NULL, NULL, NULL),
-(15, 15, 999999, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '15', NULL, NULL, NULL, NULL, NULL, NULL),
-(16, 16, 999999, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '16', NULL, NULL, NULL, NULL, NULL, NULL),
-(17, 17, 999999, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '17', NULL, NULL, NULL, NULL, NULL, NULL),
-(18, 18, 999999, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '18', NULL, NULL, NULL, NULL, NULL, NULL),
-(19, 19, 999999, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '19', NULL, NULL, NULL, NULL, NULL, NULL),
-(20, 20, 999999, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '20', NULL, NULL, NULL, NULL, NULL, NULL),
-(21, 21, 999999, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '21', NULL, NULL, NULL, NULL, NULL, NULL),
-(22, 22, 999999, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '22', NULL, NULL, NULL, NULL, NULL, NULL),
-(23, 23, 999999, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '23', NULL, NULL, NULL, NULL, NULL, NULL),
-(24, 24, 999999, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '24', NULL, NULL, NULL, NULL, NULL, NULL),
-(25, 25, 999999, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '25', NULL, NULL, NULL, NULL, NULL, NULL),
-(26, 26, 999999, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '26', NULL, NULL, NULL, NULL, NULL, NULL),
-(27, 27, 999999, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '27', NULL, NULL, NULL, NULL, NULL, NULL),
-(28, 28, 999999, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '28', NULL, NULL, NULL, NULL, NULL, NULL),
-(29, 29, 999999, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '29', NULL, NULL, NULL, NULL, NULL, NULL),
-(30, 30, 999999, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '30', NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `students` (`id_user`, `nis`, `nisn`, `nama`, `kelas`, `sekolah`, `jenisKelamin`, `tempatLahir`, `tanggalLahir`, `alamat`, `nomorTelepon`, `email`, `password`, `prelab`, `praktikum`, `postlab`, `totalNilai`, `feedback`) VALUES
+(1, 1, 999999, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '1', NULL, NULL, NULL, NULL, NULL),
+(2, 2, 999999, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2', NULL, NULL, NULL, NULL, NULL),
+(3, 3, 999999, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '3', NULL, NULL, NULL, NULL, NULL),
+(4, 4, 999999, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '4', NULL, NULL, NULL, NULL, NULL),
+(5, 5, 999999, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '5', NULL, NULL, NULL, NULL, NULL),
+(6, 6, 999999, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '6', NULL, NULL, NULL, NULL, NULL),
+(7, 7, 999999, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '7', NULL, NULL, NULL, NULL, NULL),
+(8, 8, 999999, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '8', NULL, NULL, NULL, NULL, NULL),
+(9, 9, 999999, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '9', NULL, NULL, NULL, NULL, NULL),
+(10, 10, 999999, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '10', NULL, NULL, NULL, NULL, NULL),
+(11, 11, 999999, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '11', NULL, NULL, NULL, NULL, NULL),
+(12, 12, 999999, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '12', NULL, NULL, NULL, NULL, NULL),
+(13, 13, 999999, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '13', NULL, NULL, NULL, NULL, NULL),
+(14, 14, 999999, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '14', NULL, NULL, NULL, NULL, NULL),
+(15, 15, 999999, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '15', NULL, NULL, NULL, NULL, NULL),
+(16, 16, 999999, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '16', NULL, NULL, NULL, NULL, NULL),
+(17, 17, 999999, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '17', NULL, NULL, NULL, NULL, NULL),
+(18, 18, 999999, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '18', NULL, NULL, NULL, NULL, NULL),
+(19, 19, 999999, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '19', NULL, NULL, NULL, NULL, NULL),
+(20, 20, 999999, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '20', NULL, NULL, NULL, NULL, NULL),
+(21, 21, 999999, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '21', NULL, NULL, NULL, NULL, NULL),
+(22, 22, 999999, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '22', NULL, NULL, NULL, NULL, NULL),
+(23, 23, 999999, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '23', NULL, NULL, NULL, NULL, NULL),
+(24, 24, 999999, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '24', NULL, NULL, NULL, NULL, NULL),
+(25, 25, 999999, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '25', NULL, NULL, NULL, NULL, NULL),
+(26, 26, 999999, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '26', NULL, NULL, NULL, NULL, NULL),
+(27, 27, 999999, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '27', NULL, NULL, NULL, NULL, NULL),
+(28, 28, 999999, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '28', NULL, NULL, NULL, NULL, NULL),
+(29, 29, 999999, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '29', NULL, NULL, NULL, NULL, NULL),
+(30, 30, 999999, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '30', NULL, NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -119,6 +194,20 @@ INSERT INTO `topics` (`id_topic`, `judul`, `tingkat`, `mataPelajaran`, `deskrips
 --
 
 --
+-- Indexes for table `kelompok`
+--
+ALTER TABLE `kelompok`
+  ADD PRIMARY KEY (`id_kelompok`);
+
+--
+-- Indexes for table `kelompok_anggota`
+--
+ALTER TABLE `kelompok_anggota`
+  ADD PRIMARY KEY (`id_anggota`),
+  ADD KEY `id_kelompok` (`id_kelompok`),
+  ADD KEY `id_user` (`id_user`);
+
+--
 -- Indexes for table `students`
 --
 ALTER TABLE `students`
@@ -135,6 +224,18 @@ ALTER TABLE `topics`
 --
 
 --
+-- AUTO_INCREMENT for table `kelompok`
+--
+ALTER TABLE `kelompok`
+  MODIFY `id_kelompok` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- AUTO_INCREMENT for table `kelompok_anggota`
+--
+ALTER TABLE `kelompok_anggota`
+  MODIFY `id_anggota` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+
+--
 -- AUTO_INCREMENT for table `students`
 --
 ALTER TABLE `students`
@@ -145,6 +246,17 @@ ALTER TABLE `students`
 --
 ALTER TABLE `topics`
   MODIFY `id_topic` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `kelompok_anggota`
+--
+ALTER TABLE `kelompok_anggota`
+  ADD CONSTRAINT `kelompok_anggota_ibfk_1` FOREIGN KEY (`id_kelompok`) REFERENCES `kelompok` (`id_kelompok`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `kelompok_anggota_ibfk_2` FOREIGN KEY (`id_user`) REFERENCES `students` (`id_user`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

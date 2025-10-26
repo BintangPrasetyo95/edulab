@@ -647,7 +647,7 @@ let currentFilterGuru = 'all';
 
 function renderTopicsGuru(filter = 'all') {
     const container = document.getElementById('topics-container');
-    if (!container) return; // Tidak di halaman guru
+    if (!container) return;
 
     container.innerHTML = '';
 
