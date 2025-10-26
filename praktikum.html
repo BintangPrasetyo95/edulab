@@ -48,7 +48,10 @@
         <aside class="panel right">
             <button onclick="window.location.href='./start-praktikum.html'">Kembali </button>
             <button id="selesaiBtn">Selesai</button>
-            <h3 style="margin:0 0 12px 0">📊 Instrumen</h3>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px">
+                <h3 style="margin:0">📊 Instrumen</h3>
+                <button id="resetBtn2" class="btn" style="padding:6px 12px; font-size:13px">🔄 Reset</button>
+            </div>
             <div class="meter">
                 <div style="font-size:14px; color:var(--muted)">pH Saat Ini</div>
                 <div class="value" id="phValue"></div>

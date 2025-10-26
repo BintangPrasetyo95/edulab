@@ -107,7 +107,7 @@ itemsData.forEach(it => {
     node.style.alignItems = 'center';
     node.style.justifyContent = 'space-between';
     node.style.padding = '8px';
-    node.style.cursor = 'default';
+    node.style.cursor = 'pointer';  // Changed from 'default' to 'pointer'
 
     const detail = it.type === 'reagent' ? `pH ${it.pH} • ${it.vol}ml` : 'Alat Ukur';
 
@@ -122,10 +122,17 @@ itemsData.forEach(it => {
     <button class="btn" style="padding:4px 10px; font-size:12px; margin-left:8px">+</button>
   `;
 
+    // Make entire div clickable
+    node.addEventListener('click', (e) => {
+        addToBeaker(it);
+    });
+
+    // Keep button click handler for consistency
     node.querySelector('.btn').addEventListener('click', (e) => {
         e.stopPropagation();
         addToBeaker(it);
     });
+
     tray.appendChild(node);
 });
 
@@ -139,6 +146,10 @@ function makeDraggable(domNode, item) {
     let ghost = null; let dragging = false;
 
     function start(ev) {
+        // Don't drag if inside tray on mobile
+        if (window.innerWidth <= 900 && domNode.closest('.tray')) {
+            return;
+        }
         ev.preventDefault();
         ev.stopPropagation();
         dragging = true;
@@ -614,6 +625,49 @@ resetBtn.addEventListener('click', () => {
         flashMessage('Beaker sudah kosong!');
     }
 });
+
+// Second reset button (next to Instrumen)
+const resetBtn2 = document.getElementById('resetBtn2');
+if (resetBtn2) {
+    resetBtn2.addEventListener('click', () => {
+        if (state.contents.length > 0) {
+            const confirmReset = document.createElement('div');
+            confirmReset.style.position = 'fixed';
+            confirmReset.style.left = '50%';
+            confirmReset.style.top = '50%';
+            confirmReset.style.transform = 'translate(-50%, -50%)';
+            confirmReset.style.background = 'rgba(255, 255, 255, 0.98)';
+            confirmReset.style.backdropFilter = 'blur(10px)';
+            confirmReset.style.padding = '24px';
+            confirmReset.style.borderRadius = '12px';
+            confirmReset.style.border = '1px solid rgba(255,255,255,0.1)';
+            confirmReset.style.boxShadow = '0 8px 32px rgba(0,0,0,0.5)';
+            confirmReset.style.zIndex = '9999';
+            confirmReset.style.textAlign = 'center';
+            confirmReset.style.maxWidth = '300px';
+
+            confirmReset.innerHTML = `
+            <div style="font-size:18px;font-weight:700;margin-bottom:12px;color:var(--text-dark)">Reset Beaker?</div>
+            <div style="color:var(--text-muted);margin-bottom:20px;font-size:14px">Semua reagent akan dihapus dan beaker dikembalikan ke kondisi awal</div>
+            <div style="display:flex;gap:10px;justify-content:center">
+            <button id="cancelReset2" style="padding:10px 20px;border-radius:8px;background:rgba(102,126,234,0.1);border:1px solid rgba(102,126,234,0.2);color:var(--primary-purple);font-weight:600;cursor:pointer">Batal</button>
+            <button id="confirmReset2" style="padding:10px 20px;border-radius:8px;background:linear-gradient(90deg,#ef4444,#dc2626);border:none;color:white;font-weight:600;cursor:pointer">Reset</button>
+          </div>
+        `;
+
+            document.body.appendChild(confirmReset);
+
+            document.getElementById('cancelReset2').addEventListener('click', () => confirmReset.remove());
+            document.getElementById('confirmReset2').addEventListener('click', () => {
+                performReset();
+                confirmReset.remove();
+            });
+
+        } else {
+            flashMessage('Beaker sudah kosong!');
+        }
+    });
+}
 
 function performReset() {
     state.contents = []; // beaker kosong
