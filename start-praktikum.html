@@ -33,7 +33,10 @@
         <div class="header-right">
             <div class="notification" onclick="toggleNotification()">
                 <span class="notification-icon">🔔</span>
-                <div class="notification-dropdown" id="notification-dropdown"></div>
+                <div class="notification-dropdown" id="notification-dropdown">
+                    <h3>Notifikasi</h3>
+                    <p onclick="window.location.href='./topik.html?topic=asam-basa'">Quiz Asam Basa besok jam 08.00!</p>
+                </div>
             </div>
             <div class="profile" onclick="toggleProfile()">
                 <img src="./assets/images/profile-picture.jpeg" alt="Profil">
@@ -42,7 +45,7 @@
                     <p onclick="window.location.href='./profile.html'">Profil</p>
                     <p onclick="window.location.href='./profile.html#inprogress-topics'">Topik Praktikum</p>
                     <p>Pengaturan</p>
-                    <p class="logout">Log Out</p>
+                    <p onclick="window.location.href='./index.html'" class="logout">Log Out</p>
                 </div>
             </div>
         </div>
