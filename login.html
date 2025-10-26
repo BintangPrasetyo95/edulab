@@ -9,13 +9,13 @@
     <link rel="stylesheet" href="./assets/style.css">
     <link rel="shortcut icon" href="./assets/images/Logo.png" type="image/x-icon">
     <style>
-        /* Additional classes for login page */
+        /* Remove register-related styles, keep only login styles */
         .auth-main-container {
             position: relative;
             width: 100%;
             max-width: 450px;
             margin: 0 auto;
-            height: 600px;
+            height: 500px;
             perspective: 1000px;
         }
 
@@ -31,30 +31,9 @@
             top: 0;
             left: 0;
             overflow: hidden;
-            transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            opacity: 1;
-            transform: translateX(0) rotateY(0deg);
         }
 
         .login-container {
-            z-index: 2;
-        }
-
-        .register-container {
-            z-index: 1;
-            transform: translateX(100%) rotateY(15deg);
-            opacity: 0;
-        }
-
-        .auth-main-container.show-register .login-container {
-            transform: translateX(-100%) rotateY(-15deg);
-            opacity: 0;
-            z-index: 1;
-        }
-
-        .auth-main-container.show-register .register-container {
-            transform: translateX(0) rotateY(0deg);
-            opacity: 1;
             z-index: 2;
         }
 
@@ -65,30 +44,6 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
-        }
-
-        .register-container .auth-card {
-            justify-content: flex-start;
-            overflow-y: auto;
-            padding: 2rem 2.5rem;
-        }
-
-        .register-container .auth-card::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .register-container .auth-card::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 3px;
-        }
-
-        .register-container .auth-card::-webkit-scrollbar-thumb {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            border-radius: 3px;
-        }
-
-        .register-container .auth-card::-webkit-scrollbar-thumb:hover {
-            background: linear-gradient(135deg, #5a6fd8, #6a5b93);
         }
 
         .auth-header {
@@ -321,10 +276,6 @@
                 padding: 2rem 1.5rem;
             }
 
-            .register-container .auth-card {
-                padding: 1.5rem;
-            }
-
             .auth-header {
                 margin-bottom: 1.5rem;
             }
@@ -370,10 +321,6 @@
 
             .auth-card {
                 padding: 1.5rem 1.25rem;
-            }
-
-            .register-container .auth-card {
-                padding: 1.25rem 1rem;
             }
 
             .auth-header {
@@ -443,10 +390,6 @@
                 padding: 1.25rem 0.9rem;
             }
 
-            .register-container .auth-card {
-                padding: 1rem 0.8rem;
-            }
-
             .auth-header h1 {
                 font-size: 1.3rem;
             }
@@ -477,10 +420,6 @@
                 padding: 1rem;
             }
 
-            .register-container .auth-card {
-                padding: 0.75rem;
-            }
-
             .auth-header {
                 margin-bottom: 1rem;
             }
@@ -508,7 +447,7 @@
                 <div class="auth-header">
                     <img src="./assets/images/Logo.png" alt="EduLab">
                     <h1>EduLab</h1>
-                    <p>Selamat datang kembali! Masuk ke akun Anda.</p>
+                    <p>Selamat datang! Masuk ke akun Anda.</p>
                 </div>
 
                 <div class="message error-message" id="loginError"></div>
@@ -531,96 +470,12 @@
                     </div>
 
                     <button type="submit" class="auth-btn" id="loginBtn">Masuk</button>
-
-                    <div class="auth-toggle">
-                        Belum punya akun? <a onclick="switchToRegister()">Daftar sekarang</a>
-                    </div>
-                </form>
-            </div>
-        </div>
-
-        <!-- Register Container -->
-        <div class="auth-container register-container">
-            <div class="auth-card">
-                <div class="auth-header">
-                    <img src="./assets/images/Logo.png" alt="Logo EduLab">
-                    <h1>EduLab</h1>
-                    <p>Selamat datang! Buat akun baru Anda.</p>
-                </div>
-
-                <div class="message error-message" id="registerError"></div>
-                <div class="message success-message" id="registerSuccess"></div>
-
-                <form id="registerForm">
-                    <div class="form-group">
-                        <label for="registerNama">Nama Lengkap</label>
-                        <input type="text" id="registerNama" name="nama" placeholder="Masukkan nama lengkap" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="registerNis">Nomor Induk Siswa (NIS)</label>
-                        <input type="text" id="registerNis" name="nis" placeholder="Masukkan NIS Anda" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="registerSekolah">Asal Sekolah</label>
-                        <input type="text" id="registerSekolah" name="sekolah" placeholder="Masukkan nama sekolah"
-                            required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="registerKelas">Kelas</label>
-                        <select id="registerKelas" name="kelas" required>
-                            <option value="">Pilih kelas</option>
-                            <option value="10">Kelas 10</option>
-                            <option value="11">Kelas 11</option>
-                            <option value="12">Kelas 12</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="registerPassword">Kata Sandi</label>
-                        <div class="password-group">
-                            <input type="password" id="registerPassword" name="password" placeholder="Buat kata sandi"
-                                required>
-                            <button type="button" class="password-toggle"
-                                onclick="togglePassword('registerPassword')">👁️</button>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="confirmPassword">Konfirmasi Kata Sandi</label>
-                        <div class="password-group">
-                            <input type="password" id="confirmPassword" name="confirmPassword"
-                                placeholder="Konfirmasi kata sandi" required>
-                            <button type="button" class="password-toggle"
-                                onclick="togglePassword('confirmPassword')">👁️</button>
-                        </div>
-                    </div>
-
-                    <button type="submit" class="auth-btn" id="registerBtn">Daftar</button>
-
-                    <div class="auth-toggle">
-                        Sudah punya akun? <a onclick="switchToLogin()">Masuk di sini</a>
-                    </div>
                 </form>
             </div>
         </div>
     </div>
 
     <script>
-        function switchToRegister() {
-            const authMainContainer = document.querySelector('.auth-main-container');
-            authMainContainer.classList.add('show-register');
-            clearMessages();
-        }
-
-        function switchToLogin() {
-            const authMainContainer = document.querySelector('.auth-main-container');
-            authMainContainer.classList.remove('show-register');
-            clearMessages();
-        }
-
         function togglePassword(inputId) {
             const input = document.getElementById(inputId);
             const button = input.nextElementSibling;
@@ -662,7 +517,7 @@
             } else {
                 button.disabled = false;
                 button.style.opacity = '1';
-                button.textContent = buttonId === 'loginBtn' ? 'Masuk' : 'Daftar';
+                button.textContent = 'Masuk';
             }
         }
 
@@ -709,84 +564,6 @@
                     showMessage('loginError', 'NIS atau kata sandi salah. Silakan coba lagi.');
                 }
             }, 1500);
-        });
-
-        // Register form handler
-        document.getElementById('registerForm').addEventListener('submit', async function (e) {
-            e.preventDefault();
-            clearMessages();
-
-            const nama = document.getElementById('registerNama').value.trim();
-            const nis = document.getElementById('registerNis').value.trim();
-            const sekolah = document.getElementById('registerSekolah').value.trim();
-            const kelas = document.getElementById('registerKelas').value;
-            const password = document.getElementById('registerPassword').value;
-            const confirmPassword = document.getElementById('confirmPassword').value;
-
-            // Validation
-            if (!nama) {
-                showMessage('registerError', 'Nama lengkap harus diisi');
-                return;
-            }
-
-            if (!validateNIS(nis)) {
-                showMessage('registerError', 'NIS harus berupa angka dan minimal 1 digit');
-                return;
-            }
-
-            if (!sekolah) {
-                showMessage('registerError', 'Asal sekolah harus diisi');
-                return;
-            }
-
-            if (!kelas) {
-                showMessage('registerError', 'Kelas harus dipilih');
-                return;
-            }
-
-            if (!validatePassword(password)) {
-                showMessage('registerError', 'Kata sandi minimal 4 karakter');
-                return;
-            }
-
-            if (password !== confirmPassword) {
-                showMessage('registerError', 'Konfirmasi kata sandi tidak cocok');
-                return;
-            }
-
-            setButtonLoading('registerBtn', true);
-
-            // Simulate registration process
-            setTimeout(() => {
-                setButtonLoading('registerBtn', false);
-                showMessage('registerSuccess', 'Pendaftaran berhasil! Silakan masuk dengan akun baru Anda.', false);
-
-                // Auto switch to login after successful registration
-                setTimeout(() => {
-                    switchToLogin();
-                    document.getElementById('loginNis').value = nis;
-                }, 2000);
-            }, 2000);
-        });
-
-        // Real-time password confirmation validation
-        document.getElementById('confirmPassword').addEventListener('input', function () {
-            const password = document.getElementById('registerPassword').value;
-            const confirmPassword = this.value;
-
-            if (confirmPassword && password !== confirmPassword) {
-                this.style.borderColor = '#d32f2f';
-            } else if (confirmPassword && password === confirmPassword) {
-                this.style.borderColor = '#2e7d32';
-            } else {
-                this.style.borderColor = 'rgba(102, 126, 234, 0.2)';
-            }
-        });
-
-        // Add floating animation to background circles
-        const circles = document.querySelectorAll('.bg-circle');
-        circles.forEach((circle, index) => {
-            circle.style.animationDelay = `${index * 1.5}s`;
         });
     </script>
 </body>
