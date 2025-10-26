@@ -859,5 +859,47 @@ function showTestTubeAnimation(pH) {
     setTimeout(() => tube.remove(), 2400);
 }
 
+// ===== POST TEST FUNCTIONALITY =====
+const postTestPopup = document.getElementById('postTestPopup');
+const selesaiBtn = document.getElementById('selesaiBtn');
+const closePostTest = document.getElementById('closePostTest');
+const closePostTestBtn = document.getElementById('closePostTestBtn');
+
+// Open Post Test popup when "Selesai" button clicked
+selesaiBtn.addEventListener('click', () => {
+    postTestPopup.classList.add('active');
+    document.body.style.overflow = 'hidden'; // Prevent background scrolling
+    flashMessage('📋 Silakan baca soal Post Test');
+});
+
+// Close popup via X button
+closePostTest.addEventListener('click', () => {
+    postTestPopup.classList.remove('active');
+    document.body.style.overflow = 'auto';
+});
+
+// Close popup via footer button
+closePostTestBtn.addEventListener('click', () => {
+    postTestPopup.classList.remove('active');
+    document.body.style.overflow = 'auto';
+    flashMessage('✓ Terima kasih telah membaca Post Test');
+});
+
+// Close on background click
+postTestPopup.addEventListener('click', (e) => {
+    if (e.target === postTestPopup) {
+        postTestPopup.classList.remove('active');
+        document.body.style.overflow = 'auto';
+    }
+});
+
+// Close with Escape key
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && postTestPopup.classList.contains('active')) {
+        postTestPopup.classList.remove('active');
+        document.body.style.overflow = 'auto';
+    }
+});
+
 setTimeout(showHelpTooltip, 2000);
 document.addEventListener('pointerdown', () => hasInteracted = true, { once: true });
