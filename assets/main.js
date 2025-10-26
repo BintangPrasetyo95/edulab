@@ -703,8 +703,8 @@ function renderTopicsGuru(filter = 'all') {
                         <button class="btn-edit" onclick="editTopicGuru('${topic.id}', '${kelas}', '${subject}')">
                             <span>✏️</span> Edit
                         </button>
-                        <button class="btn-delete" onclick="deleteTopicGuru('${topic.id}', '${topic.title}')">
-                            <span>🗑️</span> Hapus
+                        <button class="btn-penilaian" onclick="penilaianTopicGuru('${topic.id}', '${topic.title}')">
+                            <span>📊</span> Penilaian
                         </button>
                     </div>
                 `;
@@ -769,12 +769,9 @@ function editTopicGuru(topicId, kelas, subject) {
     // Di implementasi nyata, ini akan membuka modal atau halaman edit
 }
 
-function deleteTopicGuru(topicId, topicTitle) {
-    if (confirm(`Apakah Anda yakin ingin menghapus topik "${topicTitle}"?\n\nTindakan ini tidak dapat dibatalkan.`)) {
-        alert(`Topik "${topicTitle}" berhasil dihapus!`);
-        // Di implementasi nyata, ini akan menghapus topik dari database
-        // dan merender ulang daftar topik
-    }
+function penilaianTopicGuru(topicId, topicTitle) {
+    // Redirect ke halaman penilaian dengan parameter topik
+    window.location.href = `./penilaian-guru.html?topic=${topicId}`;
 }
 
 function createNewTopicGuru() {

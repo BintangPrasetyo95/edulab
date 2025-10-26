@@ -296,6 +296,30 @@
             transform: translateY(-2px);
         }
 
+        .btn-penilaian {
+            flex: 1;
+            padding: 0.7rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            background: linear-gradient(135deg, #2e7d32, #1b5e20);
+            color: white;
+            box-shadow: 0 4px 15px rgba(46, 125, 50, 0.3);
+        }
+
+        .btn-penilaian:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(46, 125, 50, 0.4);
+        }
+
         .empty-state {
             text-align: center;
             padding: 3rem;
@@ -365,8 +389,6 @@
                 <span class="notification-icon">🔔</span>
                 <div class="notification-dropdown" id="notification-dropdown">
                     <h3>Notifikasi</h3>
-                    <p>5 siswa telah menyelesaikan praktikum Asam Basa</p>
-                    <p>Quiz Redoks akan dimulai besok</p>
                 </div>
             </div>
             <div class="profile" onclick="toggleProfile()">
