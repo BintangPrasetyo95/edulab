@@ -356,7 +356,7 @@ function highlightActiveNav() {
     navLinks.forEach(link => {
         link.classList.remove('active', 'disabled');
         const href = link.getAttribute('href').toLowerCase().replace(/^\.\//, '');
-        if (href !== 'index.html') {
+        if (href !== 'beranda.html') {
             if (topicId !== 'asam-basa') {
                 link.classList.add('disabled');
             } else {
@@ -379,7 +379,7 @@ function highlightActiveNav() {
         item.classList.remove('active', 'disabled');
 
         // Check which page we're on and set active accordingly
-        if (currentPath.includes('index.html') || currentPath === '/' || currentPath.endsWith('/')) {
+        if (currentPath.includes('beranda.html')) {
             if (item.textContent.trim().includes('Beranda')) {
                 item.classList.add('active');
             }
@@ -488,7 +488,7 @@ function renderModulContent(type) {
 
 document.addEventListener('DOMContentLoaded', () => {
     highlightActiveNav();
-    if (window.location.pathname.includes('index.html') || window.location.pathname === '/') {
+    if (window.location.pathname.includes('beranda.html')) {
         renderProgress();
     } else if (window.location.pathname.includes('topik.html') || window.location.pathname.includes('start-praktikum.html') || window.location.pathname.includes('modul.html')) {
         renderTopicContent();

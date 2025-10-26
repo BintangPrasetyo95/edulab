@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Topik - EduLab</title>
+    <title>EduLab</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./assets/style.css">
     <link rel="shortcut icon" href="./assets/images/Logo.png" type="image/x-icon">
@@ -24,13 +24,6 @@
             <h1 onclick="window.location.href='./beranda.html'">EduLab</h1>
         </div>
         <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">☰</button>
-        <nav class="navbar">
-            <a href="./beranda.html" class="normal">Beranda</a>
-            <a href="./topik.html" class="active">Topik</a>
-            <a href="./modul.html" class="normal">Modul</a>
-            <a href="./start-praktikum.html" class="normal">Praktikum</a>
-            <a href="./kelompok.html" class="disabled">Tugas Kelompok</a>
-        </nav>
         <div class="header-right">
             <div class="notification" onclick="toggleNotification()">
                 <span class="notification-icon">🔔</span>
@@ -47,7 +40,7 @@
                     <p onclick="window.location.href='./profile.html'">Profil</p>
                     <p onclick="window.location.href='./profile.html#inprogress-topics'">Topik Praktikum</p>
                     <p>Pengaturan</p>
-                    <p class="logout">Log Out</p>
+                    <p onclick="window.location.href='./landing-page.html'" class="logout">Log Out</p>
                 </div>
             </div>
         </div>
@@ -58,34 +51,13 @@
             <img src="./assets/images/Logo.png" alt="Logo EduLab" onclick="window.location.href='./beranda.html'">
             <h2 onclick="window.location.href='./beranda.html'">EduLab</h2>
         </div>
-
-        <!-- Mobile Navigation Menu -->
-        <div class="mobile-nav">
-            <div class="nav-item" onclick="window.location.href='./beranda.html'">
-                🏠 Beranda
-            </div>
-            <div class="nav-item active" onclick="window.location.href='./topik.html'">
-                📚 Topik
-            </div>
-            <div class="nav-item" onclick="window.location.href='./modul.html'">
-                📖 Modul
-            </div>
-            <div class="nav-item" onclick="window.location.href='./start-praktikum.html'">
-                🧪 Praktikum
-            </div>
-            <div class="nav-item disabled" onclick="window.location.href='./kelompok.html'">
-                🤝 Tugas Kelompok
-            </div>
-        </div>
-
         <hr>
-
         <div class="level" onclick="toggleLevel(this)"><span class="arrow">▶</span> Pengenalan</div>
         <div class="sub-level">
             <div class="topic" onclick="window.location.href='./pengenalan.html?section=alat-laboratorium'">Alat
                 Laboratorium</div>
-            <div class="topic" onclick="window.location.href='./pengenalan.html#keselamatan-dasar'">Keselamatan Dasar
-            </div>
+            <div class="topic" onclick="window.location.href='./pengenalan.html#keselamatan-dasar'">Keselamatan
+                Dasar</div>
         </div>
 
         <div class="level" onclick="toggleLevel(this)"><span class="arrow">▶</span> Simbol Bahaya</div>
@@ -96,7 +68,6 @@
         </div>
 
         <hr>
-
         <div class="level" onclick="toggleLevel(this)"><span class="arrow">▶</span> Kelas 10</div>
         <div class="sub-level">
             <div class="mata-pelajaran" onclick="toggleTopic(this)"><span class="arrow">▶</span> Kimia</div>
@@ -135,22 +106,26 @@
 
     <main>
         <div class="main-card">
-            <section class="topic-detail-card">
-                <h2 id="topic-title">Topik: Asam Basa</h2>
-                <img id="topic-image" src="./assets/images/image-asam-basa.jpg" alt="Asam Basa">
-                <p id="topic-desc">Belajar tentang pH dan reaksi kimia! Ini adalah topik dasar dalam kimia yang mencakup
-                    konsep asam, basa, indikator, dan reaksi netralisasi. Siswa akan mempelajari skala pH, sifat
-                    larutan, dan aplikasi dalam kehidupan sehari-hari seperti pengaturan pH tanah atau obat-obatan.</p>
+            <section class="progress-overview">
+                <h2>Progress Kelas Praktikum</h2>
+                <div class="progress-container">
+                    <div class="progress-item">
+                        <h3>Kelas 10</h3>
+                        <div class="progress-circle" id="progress-kelas-10">0%</div>
+                    </div>
+                    <div class="progress-item">
+                        <h3>Kelas 11</h3>
+                        <div class="progress-circle" id="progress-kelas-11">0%</div>
+                    </div>
+                    <div class="progress-item">
+                        <h3>Kelas 12</h3>
+                        <div class="progress-circle" id="progress-kelas-12">0%</div>
+                    </div>
+                </div>
             </section>
-            <section class="progress">
-                <h2 style="margin-bottom: 10px; text-align: center;">Progress Belajar</h2>
-                <div class="progress-circle" id="progress-circle">75%</div>
-            </section>
-            <section class="quick-buttons" id="quick-buttons">
-                <button class="pre-lab normal"><span>📚</span> Pre-Lab</button>
-                <button class="quiz normal"><span>❓</span> Quiz</button>
-                <button class="praktikum normal"><span>🧪</span> Praktikum</button>
-                <button class="tugas-kelompok disabled"><span>🤝</span> Tugas Kelompok</button>
+            <section class="topic-grid">
+                <h2>Topik Praktikum</h2>
+                <div class="grid-container" id="topic-grid-container"></div>
             </section>
         </div>
     </main>
