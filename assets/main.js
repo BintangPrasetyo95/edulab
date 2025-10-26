@@ -486,6 +486,73 @@ function renderModulContent(type) {
     }
 }
 
+// Sample data for topics
+const topicsData = {
+    completed: [
+        { title: 'Pengenalan Alat Lab', subject: 'Kimia', progress: 100 },
+        { title: 'Simbol Bahaya', subject: 'Kimia', progress: 100 }
+    ],
+    inProgress: [
+        { title: 'Asam Basa', subject: 'Kimia', progress: 65 },
+        { title: 'Redoks', subject: 'Kimia', progress: 30 }
+    ]
+};
+
+// Function to populate topics
+function populateTopics() {
+    const completedContainer = document.querySelector('#completed-topics .grid-container');
+    const inProgressContainer = document.querySelector('#inprogress-topics-container');
+    
+    if (!completedContainer || !inProgressContainer) return;
+
+    // Calculate overall progress
+    const completedProgress = 100;
+    const inProgressAvg = topicsData.inProgress.reduce((acc, curr) => acc + curr.progress, 0) / topicsData.inProgress.length;
+
+    // Update progress circles
+    updateProgressCircle('completed-topics', completedProgress);
+    updateProgressCircle('inprogress-topics', inProgressAvg);
+
+    // Populate completed topics
+    completedContainer.innerHTML = topicsData.completed.map(topic => `
+        <div class="topic-card">
+            <h4>${topic.title}</h4>
+            <p>${topic.subject}</p>
+            <div class="progress-bar">
+                <div class="progress" style="width: ${topic.progress}%"></div>
+            </div>
+            <span class="progress-text">${topic.progress}%</span>
+        </div>
+    `).join('');
+
+    // Populate in-progress topics
+    inProgressContainer.innerHTML = topicsData.inProgress.map(topic => `
+        <div class="topic-card">
+            <h4>${topic.title}</h4>
+            <p>${topic.subject}</p>
+            <div class="progress-bar">
+                <div class="progress" style="width: ${topic.progress}%"></div>
+            </div>
+            <span class="progress-text">${topic.progress}%</span>
+        </div>
+    `).join('');
+}
+
+// Function to update progress circles
+function updateProgressCircle(sectionId, percentage) {
+    const section = document.getElementById(sectionId);
+    if (!section) return;
+    
+    const progressCircle = section.querySelector('.progress-circle');
+    if (progressCircle) {
+        progressCircle.style.background = `conic-gradient(#2e7d32 ${percentage}%, #ccc 0%)`;
+        progressCircle.textContent = `${Math.round(percentage)}%`;
+    }
+}
+
+// Call populateTopics when page loads
+document.addEventListener('DOMContentLoaded', populateTopics);
+
 document.addEventListener('DOMContentLoaded', () => {
     highlightActiveNav();
     if (window.location.pathname.includes('beranda.html')) {
@@ -518,3 +585,27 @@ document.addEventListener('click', function (event) {
         aside.classList.remove('show');
     }
 });
+
+// Add this new function
+function filterTopics(filter) {
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    filterBtns.forEach(btn => btn.classList.remove('active'));
+    document.querySelector(`.filter-btn[onclick*='${filter}']`).classList.add('active');
+
+    const completedSection = document.getElementById('completed-topics');
+    const inProgressSection = document.getElementById('inprogress-topics');
+
+    switch (filter) {
+        case 'completed':
+            completedSection.style.display = 'block';
+            inProgressSection.style.display = 'none';
+            break;
+        case 'ongoing':
+            completedSection.style.display = 'none';
+            inProgressSection.style.display = 'block';
+            break;
+        default:
+            completedSection.style.display = 'block';
+            inProgressSection.style.display = 'block';
+    }
+}

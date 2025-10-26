@@ -139,26 +139,79 @@
             <section class="school-info">
                 <h2>Informasi Sekolah</h2>
                 <div class="info-grid">
-                    <div class="info-item"><strong>NIS:</strong> 123456</div>
-                    <div class="info-item"><strong>NISN:</strong> 9988776655</div>
-                    <div class="info-item"><strong>Nama:</strong> Budi Santoso</div>
-                    <div class="info-item"><strong>Kelas:</strong> 10A</div>
-                    <div class="info-item"><strong>Jenis Kelamin:</strong> Laki-laki</div>
-                    <div class="info-item"><strong>Tempat Lahir:</strong> Jakarta</div>
-                    <div class="info-item"><strong>Tanggal Lahir:</strong> 15 Mei 2009</div>
-                    <div class="info-item"><strong>Alamat:</strong> Jl. Merdeka No. 10, Jakarta</div>
-                    <div class="info-item"><strong>Nomor Telepon:</strong> +62 812-3456-7890</div>
+                    <div class="info-item">
+                        <strong>NIS</strong>
+                        <span>123456</span>
+                    </div>
+                    <div class="info-item">
+                        <strong>NISN</strong>
+                        <span>9988776655</span>
+                    </div>
+                    <div class="info-item">
+                        <strong>Nama</strong>
+                        <span>Budi Santoso</span>
+                    </div>
+                    <div class="info-item">
+                        <strong>Kelas</strong>
+                        <span>10A</span>
+                    </div>
+                    <div class="info-item">
+                        <strong>Jenis Kelamin</strong>
+                        <span>Laki-laki</span>
+                    </div>
+                    <div class="info-item">
+                        <strong>Tempat Lahir</strong>
+                        <span>Jakarta</span>
+                    </div>
+                    <div class="info-item">
+                        <strong>Tanggal Lahir</strong>
+                        <span>15 Mei 2009</span>
+                    </div>
+                    <div class="info-item">
+                        <strong>Alamat</strong>
+                        <span>Jl. Merdeka No. 10, Jakarta</span>
+                    </div>
+                    <div class="info-item">
+                        <strong>Nomor Telepon</strong>
+                        <span>+62 812-3456-7890</span>
+                    </div>
                 </div>
             </section>
             <section class="topics-status">
                 <h2>Status Topik Praktikum</h2>
-                <div class="status-section">
-                    <h3>Topik Selesai</h3>
-                    <div class="grid-container" id="completed-topics">Belum ada topik yang selesai.</div>
+
+                <div class="topics-filter">
+                    <button class="filter-btn active" onclick="filterTopics('all')">Semua</button>
+                    <button class="filter-btn" onclick="filterTopics('completed')">Selesai</button>
+                    <button class="filter-btn" onclick="filterTopics('ongoing')">Sedang Dijalani</button>
                 </div>
-                <div class="status-section" id="inprogress-topics">
-                    <h3>Topik Sedang Dijalani</h3>
-                    <div class="grid-container" id="inprogress-topics-container"></div>
+
+                <div class="status-section" id="all-topics">
+                    <div class="topics-grid" id="completed-topics">
+                        <div class="topics-header">
+                            <h3>✅ Topik Selesai</h3>
+                            <div class="progress-indicator">
+                                <div class="progress-circle" style="background: conic-gradient(#2e7d32 100%, #ccc 0%)">
+                                    100%</div>
+                            </div>
+                        </div>
+                        <div class="grid-container">
+                            <!-- Will be populated by JavaScript -->
+                        </div>
+                    </div>
+
+                    <div class="topics-grid" id="inprogress-topics">
+                        <div class="topics-header">
+                            <h3>🔄 Sedang Dijalani</h3>
+                            <div class="progress-indicator">
+                                <div class="progress-circle" style="background: conic-gradient(#2e7d32 30%, #ccc 0%)">
+                                    30%</div>
+                            </div>
+                        </div>
+                        <div class="grid-container" id="inprogress-topics-container">
+                            <!-- Will be populated by JavaScript -->
+                        </div>
+                    </div>
                 </div>
             </section>
         </div>
