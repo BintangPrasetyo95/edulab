@@ -502,7 +502,7 @@ const topicsData = {
 function populateTopics() {
     const completedContainer = document.querySelector('#completed-topics .grid-container');
     const inProgressContainer = document.querySelector('#inprogress-topics-container');
-    
+
     if (!completedContainer || !inProgressContainer) return;
 
     // Calculate overall progress
@@ -542,7 +542,7 @@ function populateTopics() {
 function updateProgressCircle(sectionId, percentage) {
     const section = document.getElementById(sectionId);
     if (!section) return;
-    
+
     const progressCircle = section.querySelector('.progress-circle');
     if (progressCircle) {
         progressCircle.style.background = `conic-gradient(#2e7d32 ${percentage}%, #ccc 0%)`;
@@ -608,4 +608,188 @@ function filterTopics(filter) {
             completedSection.style.display = 'block';
             inProgressSection.style.display = 'block';
     }
+}
+
+// ============================================
+// GURU DASHBOARD FUNCTIONS
+// ============================================
+
+// Data topik guru (sama seperti data siswa tapi dengan info tambahan)
+const topicsDataGuru = {
+    '10': {
+        'kimia': [
+            { id: 'asam-basa', title: 'Asam Basa', image: './assets/images/image-asam-basa.jpg', students: 45, completed: 38, avgScore: 85 },
+            { id: 'redoks', title: 'Redoks', image: './assets/images/image_redoks.jpg', students: 0, completed: 0, avgScore: 0 }
+        ],
+        'fisika': [
+            { id: 'gerak', title: 'Gerak Lurus', image: './assets/images/image-gerak-lurus.jpg', students: 0, completed: 0, avgScore: 0 }
+        ]
+    },
+    '11': {
+        'kimia': [
+            { id: 'stoikiometri', title: 'Stoikiometri', image: './assets/images/image-stoikiometri.jpg', students: 0, completed: 0, avgScore: 0 }
+        ],
+        'fisika': [
+            { id: 'energi', title: 'Energi', image: './assets/images/image-energi.jpg', students: 0, completed: 0, avgScore: 0 }
+        ]
+    },
+    '12': {
+        'kimia': [
+            { id: 'polimer', title: 'Polimer', image: './assets/images/image-polimer.jpg', students: 0, completed: 0, avgScore: 0 }
+        ],
+        'fisika': [
+            { id: 'listrik', title: 'Listrik', image: './assets/images/image-listrik.jpg', students: 0, completed: 0, avgScore: 0 }
+        ]
+    }
+};
+
+let currentFilterGuru = 'all';
+
+function renderTopicsGuru(filter = 'all') {
+    const container = document.getElementById('topics-container');
+    if (!container) return; // Tidak di halaman guru
+
+    container.innerHTML = '';
+
+    let totalTopics = 0;
+    let hasTopics = false;
+
+    for (let kelas in topicsDataGuru) {
+        for (let subject in topicsDataGuru[kelas]) {
+            topicsDataGuru[kelas][subject].forEach(topic => {
+                totalTopics++;
+
+                // Apply filter
+                if (filter !== 'all') {
+                    if (filter === kelas || filter === subject) {
+                        // Show this topic
+                    } else {
+                        return; // Skip this topic
+                    }
+                }
+
+                hasTopics = true;
+                const completionRate = Math.round((topic.completed / topic.students) * 100);
+
+                const topicCard = document.createElement('div');
+                topicCard.className = 'topic-card-admin';
+                topicCard.setAttribute('data-kelas', kelas);
+                topicCard.setAttribute('data-subject', subject);
+
+                topicCard.innerHTML = `
+                    <img src="${topic.image}" alt="${topic.title}">
+                    <div class="topic-info">
+                        <h3>${topic.title}</h3>
+                        <div class="topic-meta">
+                            <span class="meta-badge kelas">Kelas ${kelas}</span>
+                            <span class="meta-badge subject">${subject.charAt(0).toUpperCase() + subject.slice(1)}</span>
+                        </div>
+                    </div>
+                    <div class="topic-stats">
+                        <div class="topic-stat-item">
+                            <div class="value">${topic.students}</div>
+                            <div class="label">Siswa</div>
+                        </div>
+                        <div class="topic-stat-item">
+                            <div class="value">${completionRate}%</div>
+                            <div class="label">Selesai</div>
+                        </div>
+                        <div class="topic-stat-item">
+                            <div class="value">${topic.avgScore}</div>
+                            <div class="label">Rata-rata</div>
+                        </div>
+                    </div>
+                    <div class="topic-actions">
+                        <button class="btn-edit" onclick="editTopicGuru('${topic.id}', '${kelas}', '${subject}')">
+                            <span>✏️</span> Edit
+                        </button>
+                        <button class="btn-delete" onclick="deleteTopicGuru('${topic.id}', '${topic.title}')">
+                            <span>🗑️</span> Hapus
+                        </button>
+                    </div>
+                `;
+
+                container.appendChild(topicCard);
+            });
+        }
+    }
+
+    // Update total topics counter
+    const totalTopicsEl = document.getElementById('total-topics');
+    if (totalTopicsEl) {
+        totalTopicsEl.textContent = totalTopics;
+    }
+
+    if (!hasTopics) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-state-icon">📚</div>
+                <div class="empty-state-text">Tidak ada topik yang sesuai dengan filter</div>
+            </div>
+        `;
+    }
+}
+
+function filterTopicsGuru(filter) {
+    currentFilterGuru = filter;
+
+    // Update active tab
+    document.querySelectorAll('.filter-tab').forEach(tab => {
+        tab.classList.remove('active');
+    });
+    event.target.classList.add('active');
+
+    renderTopicsGuru(filter);
+}
+
+function filterByKelasGuru(kelas) {
+    const filterTab = Array.from(document.querySelectorAll('.filter-tab')).find(tab =>
+        tab.textContent.includes(`Kelas ${kelas}`)
+    );
+    if (filterTab) {
+        document.querySelectorAll('.filter-tab').forEach(tab => tab.classList.remove('active'));
+        filterTab.classList.add('active');
+    }
+    renderTopicsGuru(kelas);
+}
+
+function filterBySubjectGuru(subject) {
+    const filterTab = Array.from(document.querySelectorAll('.filter-tab')).find(tab =>
+        tab.textContent.toLowerCase().includes(subject)
+    );
+    if (filterTab) {
+        document.querySelectorAll('.filter-tab').forEach(tab => tab.classList.remove('active'));
+        filterTab.classList.add('active');
+    }
+    renderTopicsGuru(subject);
+}
+
+function editTopicGuru(topicId, kelas, subject) {
+    alert(`Edit topik: ${topicId}\nKelas: ${kelas}\nMata Pelajaran: ${subject}\n\nFitur edit akan membuka form untuk mengubah detail topik.`);
+    // Di implementasi nyata, ini akan membuka modal atau halaman edit
+}
+
+function deleteTopicGuru(topicId, topicTitle) {
+    if (confirm(`Apakah Anda yakin ingin menghapus topik "${topicTitle}"?\n\nTindakan ini tidak dapat dibatalkan.`)) {
+        alert(`Topik "${topicTitle}" berhasil dihapus!`);
+        // Di implementasi nyata, ini akan menghapus topik dari database
+        // dan merender ulang daftar topik
+    }
+}
+
+function createNewTopicGuru() {
+    alert('Membuka form pembuatan topik baru...\n\nForm akan meminta:\n- Judul topik\n- Kelas\n- Mata pelajaran\n- Deskripsi\n- Gambar\n- Konten modul');
+    // Di implementasi nyata, ini akan membuka modal atau halaman untuk membuat topik baru
+}
+
+// Initialize guru dashboard when DOM is ready
+if (document.addEventListener) {
+    const originalDOMContentLoaded = document.addEventListener;
+    document.addEventListener('DOMContentLoaded', function () {
+        // Check if we're on guru dashboard page
+        if (window.location.pathname.includes('beranda-guru.html') ||
+            window.location.pathname.includes('dashboard-guru.html')) {
+            renderTopicsGuru('all');
+        }
+    });
 }

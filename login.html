@@ -538,7 +538,7 @@
             const password = document.getElementById('loginPassword').value;
 
             // Basic validation
-            if (!validateNIS(nis)) {
+            if (!validateNIS(nis) && (nis !== 'sayaguru' && password !== '6969')) {
                 showMessage('loginError', 'NIS harus berupa angka dan minimal 1 digit');
                 return;
             }
@@ -554,8 +554,15 @@
             setTimeout(() => {
                 setButtonLoading('loginBtn', false);
 
-                // Redirect to beranda.html for any valid credentials (demo purposes)
-                if (validateNIS(nis) && validatePassword(password)) {
+                // Check for special guru account
+                if (nis === 'sayaguru' && password === '6969') {
+                    showMessage('loginSuccess', 'Login sebagai Guru berhasil! Mengalihkan...', false);
+                    setTimeout(() => {
+                        window.location.href = 'beranda-guru.html';
+                    }, 1500);
+                }
+                // Regular student login
+                else if (validateNIS(nis) && validatePassword(password)) {
                     showMessage('loginSuccess', 'Login berhasil! Mengalihkan...', false);
                     setTimeout(() => {
                         window.location.href = 'beranda.html';

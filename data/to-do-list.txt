@@ -1,15 +1,5 @@
 TO-DO-LIST
 
-- Bug
-    - Scroll Tools (Praktikum)
-    - Open Menu Mobile di modul
-
-- Praktikum Fix
-    - Praktikum Update with newer tools
-    - Post-Test (half - done)
-    - Jumlah ml
-    - Jumlah History ml
-
 - Json implementation
     - Account Flexibility
     - Saving Progress
@@ -17,10 +7,7 @@ TO-DO-LIST
     - Feedback
 
 - Additional Features
-    - Landing Page
     - Framer
-    - Tampilan Menu Topik
     - Guru Input Materi
     - Dashboard Guru
     - Chat Diskusi (Guru dapat melihat chat diskusi)
-    - 
