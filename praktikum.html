@@ -389,17 +389,6 @@
             will-change: transform, left, top;
         }
 
-        footer {
-            font-size: 13px;
-            color: white;
-            padding: 1rem;
-            text-align: center;
-            background: rgba(21, 101, 192, 0.95);
-            backdrop-filter: blur(10px);
-            font-weight: 600;
-            border-top: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
         .legend {
             display: flex;
             gap: 8px;
@@ -482,6 +471,33 @@
             border: 1px solid var(--glass-border);
             margin-top: 8px;
         }
+
+        .tool .volume-badge {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
+        }
+
+        #breakdownList::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        #breakdownList::-webkit-scrollbar-track {
+            background: rgba(102, 126, 234, 0.05);
+            border-radius: 2px;
+        }
+
+        #breakdownList::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, var(--primary-purple), var(--secondary-purple));
+            border-radius: 2px;
+        }
     </style>
 </head>
 
@@ -516,7 +532,41 @@
             <h3 style="margin:0 0 12px 0">📊 Instrumen</h3>
             <div class="meter">
                 <div style="font-size:14px; color:var(--muted)">pH Saat Ini</div>
-                <div class="value" id="phValue">7.00</div>
+                <div class="value" id="phValue"></div>
+            </div>
+
+            <div class="meter" style="margin-top:10px">
+                <div style="font-size:14px; color:var(--muted)">Total Volume Cairan</div>
+                <div class="value" id="volumeValue"
+                    style="background:linear-gradient(135deg, #60a5fa, #3b82f6); color:white; font-size:24px">
+                    0 <span style="font-size:16px; opacity:0.9">ml</span>
+                </div>
+
+                <!-- Progress Bar -->
+                <div style="margin-top:8px; font-size:12px; color:var(--muted); text-align:center">
+                    <span id="volumeBar"
+                        style="display:inline-block; width:100%; height:6px; background:rgba(96,165,250,0.2); border-radius:3px; overflow:hidden">
+                        <span id="volumeFill"
+                            style="display:block; height:100%; width:0%; background:linear-gradient(90deg, #60a5fa, #3b82f6); transition:width 0.3s ease; border-radius:3px"></span>
+                    </span>
+                </div>
+
+                <div style="margin-top:4px; font-size:11px; color:var(--muted); text-align:center">
+                    Kapasitas: <span id="volumePercent">0%</span> / 200ml
+                </div>
+
+                <!-- BREAKDOWN PER REAGENT -->
+                <div id="volumeBreakdown"
+                    style="margin-top:12px; padding-top:10px; border-top:1px dashed rgba(102,126,234,0.2)">
+                    <div style="font-size:12px; color:var(--muted); margin-bottom:6px; font-weight:600">📋 Komposisi:
+                    </div>
+                    <div id="breakdownList"
+                        style="display:flex; flex-direction:column; gap:4px; max-height:150px; overflow-y:auto">
+                        <div style="font-size:11px; color:#94a3b8; font-style:italic; text-align:center; padding:8px">
+                            Belum ada cairan
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div style="margin-top:10px">
@@ -555,20 +605,24 @@
         </aside>
     </div>
 
-    <footer>Simulasi Virtual Lab: Asam & Basa — Responsif Mobile & Desktop</footer>
-
     <script>
         /* Virtual Lab - Complete Fixed Version */
 
         // Reagents and tools data
         const itemsData = [
-            { id: 'vinegar', name: 'Cuka', type: 'reagent', pH: 2.5, color: '#ff6b6b', vol: 20 },
-            { id: 'lemon', name: 'Air Jeruk', type: 'reagent', pH: 2.0, color: '#ff4d4d', vol: 15 },
-            { id: 'baking', name: 'Soda Kue', type: 'reagent', pH: 8.3, color: '#99f6e4', vol: 20 },
-            { id: 'soap', name: 'Sabun', type: 'reagent', pH: 9.0, color: '#6ee7b7', vol: 10 },
+            // BAHAN (Reagents)
             { id: 'river', name: 'Air Sungai', type: 'reagent', pH: 7.0, color: '#60a5fa', vol: 30 },
+            { id: 'lemon', name: 'Air Jeruk', type: 'reagent', pH: 2.2, color: '#ffd93d', vol: 20 },
+            { id: 'beckline', name: 'Air Beckline', type: 'reagent', pH: 8.5, color: '#4dd0e1', vol: 25 },
+            { id: 'vinegar', name: 'Air Cuka', type: 'reagent', pH: 2.8, color: '#ff8a80', vol: 20 },
+            { id: 'rose', name: 'Air Mawar', type: 'reagent', pH: 5.5, color: '#ffb3d9', vol: 15 },
+            { id: 'turmeric', name: 'Air Kunyit', type: 'reagent', pH: 6.5, color: '#ffab00', vol: 20 },
+
+            // ALAT (Tools)
+            { id: 'beaker', name: 'Gelas', type: 'tool', mode: 'container', color: '#e0e0e0' },
             { id: 'litmus', name: 'Kertas Lakmus', type: 'tool', mode: 'paper', color: '#ffffff' },
-            { id: 'phprobe', name: 'pH Meter', type: 'tool', mode: 'probe' },
+            { id: 'pipette', name: 'Pipet Lab', type: 'tool', mode: 'pipette', color: '#90caf9' },
+            { id: 'testtube', name: 'Tabung Reaksi', type: 'tool', mode: 'tube', color: '#b0bec5' },
         ];
 
         const toolsContainer = document.getElementById('tools');
@@ -582,6 +636,11 @@
         const resetBtn = document.getElementById('resetBtn');
         const lab = document.getElementById('lab');
 
+        const volumeValueEl = document.getElementById('volumeValue');
+        const volumeFillEl = document.getElementById('volumeFill');
+        const volumePercentEl = document.getElementById('volumePercent');
+        const breakdownListEl = document.getElementById('breakdownList');
+
         let state = {
             contents: [], // baseline water
         }
@@ -592,15 +651,21 @@
             el.dataset.id = item.id;
             el.tabIndex = 0;
             el.setAttribute('role', 'button');
-            el.setAttribute('aria-label', `${item.name} - ${item.type === 'reagent' ? 'pH ' + item.pH : 'Alat ukur'}`);
+            el.setAttribute('aria-label', `${item.name} - ${item.type === 'reagent' ? 'pH ' + item.pH + ', ' + item.vol + 'ml' : 'Alat ukur'}`);
+
+            // Badge volume untuk reagent
+            const volumeBadge = item.type === 'reagent' ? `<div class="volume-badge">${item.vol}ml</div>` : '';
 
             el.innerHTML = `
-    <div style="height:46px; display:flex; align-items:center; justify-content:center">
-      ${getIconSVG(item)}
-    </div>
-    <div class="name">${item.name}</div>
-    <div class="label">${item.type === 'reagent' ? 'pH ~' + item.pH : 'Alat Ukur'}</div>
-  `;
+                <div style="position:relative">
+                ${volumeBadge}
+                <div style="height:46px; display:flex; align-items:center; justify-content:center">
+                    ${getIconSVG(item)}
+                </div>
+                </div>
+                <div class="name">${item.name}</div>
+                <div class="label">${item.type === 'reagent' ? 'pH ~' + item.pH : 'Alat Ukur'}</div>
+            `;
 
             makeDraggable(el, item);
             return el;
@@ -613,12 +678,43 @@
       <rect x="7" y="6" width="10" height="2" fill="rgba(255,255,255,0.3)"/>
     </svg>`
             }
+
+            // Icon untuk Kertas Lakmus
             if (item.id === 'litmus') {
                 return `<svg width="44" height="44" viewBox="0 0 24 24">
       <rect x="7" y="4" width="5" height="16" rx="1" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>
       <rect x="12" y="4" width="5" height="16" rx="1" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>
     </svg>`
             }
+
+            // Icon untuk Gelas/Beaker
+            if (item.id === 'beaker') {
+                return `<svg width="44" height="44" viewBox="0 0 24 24">
+      <path d="M8 4h8v14a2 2 0 01-2 2h-4a2 2 0 01-2-2V4z" fill="${item.color}" stroke="#37474f" stroke-width="1.5"/>
+      <line x1="8" y1="4" x2="16" y2="4" stroke="#37474f" stroke-width="2"/>
+      <path d="M9 10h6" stroke="rgba(255,255,255,0.5)" stroke-width="1"/>
+    </svg>`
+            }
+
+            // Icon untuk Pipet
+            if (item.id === 'pipette') {
+                return `<svg width="44" height="44" viewBox="0 0 24 24">
+      <line x1="12" y1="3" x2="12" y2="16" stroke="${item.color}" stroke-width="2" stroke-linecap="round"/>
+      <circle cx="12" cy="3" r="1.5" fill="#37474f"/>
+      <path d="M10 16l2 5 2-5z" fill="${item.color}" stroke="#37474f" stroke-width="1"/>
+    </svg>`
+            }
+
+            // Icon untuk Tabung Reaksi
+            if (item.id === 'testtube') {
+                return `<svg width="44" height="44" viewBox="0 0 24 24">
+      <rect x="9" y="3" width="6" height="18" rx="3" fill="rgba(176,190,197,0.3)" stroke="${item.color}" stroke-width="2"/>
+      <rect x="9" y="15" width="6" height="6" rx="3" fill="${item.color}" opacity="0.7"/>
+      <circle cx="12" cy="5" r="1" fill="#37474f"/>
+    </svg>`
+            }
+
+            // Default icon (pH meter atau lainnya)
             return `<svg width="44" height="44" viewBox="0 0 24 24">
     <rect x="9" y="3" width="6" height="18" rx="2" fill="#cbd5e1"/>
     <circle cx="12" cy="8" r="2" fill="#60a5fa"/>
@@ -801,7 +897,7 @@
         function onDropIntoBeaker(item) {
             if (item.type === 'reagent') {
                 state.contents.push({ id: item.id, pH: item.pH, vol: item.vol });
-                logEvent(`<span style="color:#60a5fa">✓</span> Ditambahkan: <strong>${item.name}</strong> (pH ${item.pH}, ${item.vol}ml)`);
+                logEvent(`<span style="color:#60a5fa">✔</span> Ditambahkan: <strong>${item.name}</strong> (pH ${item.pH}, ${item.vol}ml)`);
                 updateBeakerAppearance();
                 computePH();
                 flashMessage(`${item.name} ditambahkan!`);
@@ -809,7 +905,6 @@
             } else if (item.id === 'litmus') {
                 const currentPH = computePH(true);
 
-                // TAMBAHKAN CEK KOSONG:
                 if (currentPH === null) {
                     logEvent(`<span style="color:#94a3b8">⚠️</span> Kertas lakmus: <strong>Tidak ada cairan untuk diuji</strong>`);
                     flashMessage(`Beaker kosong - tambahkan reagent dahulu`);
@@ -831,25 +926,62 @@
                 logEvent(`<span style="color:${color}">🧪</span> Kertas lakmus: <strong style="color:${color}">${result}</strong> (pH ${currentPH.toFixed(2)})`);
                 flashMessage(`Kertas lakmus: ${result}`);
 
-            } else if (item.id === 'phprobe') {
+            } else if (item.id === 'beaker') {
+                // Gelas: Buat wadah tambahan
+                if (document.querySelectorAll('.beaker').length >= 3) {
+                    flashMessage('❌ Maksimal 3 beaker di bench!');
+                    return;
+                }
+
+                const newBeaker = createExtraBeaker();
+                bench.appendChild(newBeaker);
+                logEvent(`<span style="color:#90caf9">🥤</span> <strong>Gelas baru</strong> ditambahkan ke bench`);
+                flashMessage('✔ Gelas baru siap digunakan!');
+
+            } else if (item.id === 'pipette') {
+                // Pipet: Transfer cairan
                 const currentPH = computePH(true);
 
-                // TAMBAHKAN CEK KOSONG:
                 if (currentPH === null) {
-                    logEvent(`<span style="color:#94a3b8">⚠️</span> pH Meter: <strong>Tidak ada cairan untuk diukur</strong>`);
+                    logEvent(`<span style="color:#94a3b8">⚠️</span> Pipet: <strong>Tidak ada cairan untuk ditransfer</strong>`);
+                    flashMessage(`Beaker kosong - tidak ada yang bisa dipindahkan`);
+                    return;
+                }
+
+                if (state.contents.length === 0) {
+                    flashMessage('❌ Tidak ada cairan untuk ditransfer');
+                    return;
+                }
+
+                // Ambil 5ml dari cairan terakhir
+                const lastContent = state.contents[state.contents.length - 1];
+                if (lastContent.vol > 5) {
+                    lastContent.vol -= 5;
+                    logEvent(`<span style="color:#90caf9">💧</span> Pipet: <strong>5ml ${itemsData.find(x => x.id === lastContent.id)?.name}</strong> ditransfer`);
+                    flashMessage(`💧 5ml ditransfer dengan pipet`);
+                    updateBeakerAppearance();
+                    computePH();
+                } else {
+                    flashMessage('❌ Volume terlalu sedikit untuk ditransfer');
+                }
+
+            } else if (item.id === 'testtube') {
+                // Tabung Reaksi: Uji skala kecil
+                const currentPH = computePH(true);
+
+                if (currentPH === null) {
+                    logEvent(`<span style="color:#94a3b8">⚠️</span> Tabung reaksi: <strong>Tidak ada cairan untuk diuji</strong>`);
                     flashMessage(`Beaker kosong - tambahkan reagent dahulu`);
                     return;
                 }
 
-                let condition;
-                if (currentPH < 3) condition = 'Asam Kuat';
-                else if (currentPH < 6.5) condition = 'Asam Lemah';
-                else if (currentPH <= 7.5) condition = 'Netral';
-                else if (currentPH <= 9) condition = 'Basa Lemah';
-                else condition = 'Basa Kuat';
+                const totalVol = state.contents.reduce((sum, c) => sum + c.vol, 0);
 
-                logEvent(`<span style="color:#60a5fa">📊</span> pH Meter: <strong>${currentPH.toFixed(2)}</strong> (${condition})`);
-                flashMessage(`pH = ${currentPH.toFixed(2)} - ${condition}`);
+                logEvent(`<span style="color:#b0bec5">🧬</span> Tabung reaksi: <strong>Sampel ${totalVol}ml</strong> diambil untuk uji coba (pH ${currentPH.toFixed(2)})`);
+                flashMessage(`🧬 Sampel diuji: pH ${currentPH.toFixed(2)}`);
+
+                // Animasi tabung reaksi muncul sebentar
+                showTestTubeAnimation(currentPH);
             }
         }
 
@@ -894,7 +1026,8 @@
         // Compute pH
         function computePH(short = false) {
             if (state.contents.length === 0) {
-                if (!short) updatePHUI(null); // null = beaker kosong
+                if (!short) updatePHUI(null);
+                updateVolumeUI();
                 return null;
             }
 
@@ -903,7 +1036,10 @@
             const Hconc = Htotal / V;
             const pH = -Math.log10(Hconc);
 
-            if (!short) updatePHUI(pH);
+            if (!short) {
+                updatePHUI(pH);
+                updateVolumeUI();
+            }
             return pH;
         }
 
@@ -957,6 +1093,92 @@
             const totalVol = state.contents.reduce((s, c) => s + c.vol, 0);
             const pct = Math.min(90, 20 + (totalVol / 3));
             liquidEl.style.height = pct + '%';
+        }
+
+        function updateVolumeUI() {
+            const totalVol = state.contents.reduce((sum, c) => sum + c.vol, 0);
+            const maxCapacity = 200; // ml
+            const percentage = Math.min(100, (totalVol / maxCapacity) * 100);
+
+            // Update angka volume
+            if (totalVol === 0) {
+                volumeValueEl.innerHTML = `0 <span style="font-size:16px; opacity:0.9">ml</span>`;
+            } else {
+                volumeValueEl.innerHTML = `${totalVol.toFixed(0)} <span style="font-size:16px; opacity:0.9">ml Total</span>`;
+            }
+
+            // Update progress bar
+            volumeFillEl.style.width = percentage + '%';
+            volumePercentEl.textContent = percentage.toFixed(0) + '%';
+
+            // Ubah warna berdasarkan kapasitas
+            let barColor;
+            if (percentage < 50) {
+                barColor = 'linear-gradient(90deg, #6ee7b7, #34d399)'; // Hijau
+            } else if (percentage < 80) {
+                barColor = 'linear-gradient(90deg, #fbbf24, #f59e0b)'; // Kuning
+            } else {
+                barColor = 'linear-gradient(90deg, #ef4444, #dc2626)'; // Merah
+            }
+
+            volumeFillEl.style.background = barColor;
+
+            // Animasi saat hampir penuh
+            if (percentage >= 90) {
+                volumeValueEl.style.animation = 'pulse 1s infinite';
+            } else {
+                volumeValueEl.style.animation = 'none';
+            }
+
+            // ===== UPDATE BREAKDOWN LIST =====
+            updateBreakdownList();
+        }
+
+        // Fungsi baru untuk update breakdown per reagent
+        function updateBreakdownList() {
+            if (state.contents.length === 0) {
+                breakdownListEl.innerHTML = `
+                    <div style="font-size:11px; color:#94a3b8; font-style:italic; text-align:center; padding:8px">
+                        Belum ada cairan
+                    </div>
+                `;
+                return;
+            }
+
+            // Gabungkan reagent yang sama
+            const summary = {};
+            state.contents.forEach(c => {
+                if (!summary[c.id]) {
+                    summary[c.id] = { vol: 0, pH: c.pH };
+                }
+                summary[c.id].vol += c.vol;
+            });
+
+            // Render breakdown
+            let html = '';
+            Object.keys(summary).forEach(id => {
+                const item = itemsData.find(x => x.id === id);
+                const vol = summary[id].vol;
+                const pH = summary[id].pH;
+                const percentage = ((vol / state.contents.reduce((s, c) => s + c.vol, 0)) * 100).toFixed(0);
+
+                if (item) {
+                    html += `
+                        <div style="display:flex; align-items:center; gap:6px; padding:4px 6px; background:rgba(102,126,234,0.05); border-radius:6px; font-size:11px; animation:slideIn 0.3s ease-out">
+                            <div style="width:12px; height:12px; border-radius:3px; background:${item.color}; box-shadow:0 2px 4px rgba(0,0,0,0.2); flex-shrink:0"></div>
+                            <div style="flex:1; display:flex; justify-content:space-between; align-items:center">
+                                <span style="font-weight:600; color:var(--text-dark)">${item.name}</span>
+                                <span style="color:var(--muted); font-weight:500">${vol.toFixed(0)}ml</span>
+                            </div>
+                            <div style="font-size:10px; color:var(--muted); background:rgba(255,255,255,0.5); padding:2px 6px; border-radius:8px">
+                                ${percentage}%
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+
+            breakdownListEl.innerHTML = html;
         }
 
         function adjustBrightness(hex, factor) {
@@ -1066,7 +1288,8 @@
             state.contents = []; // beaker kosong
             historyEl.innerHTML = '';
             updateBeakerAppearance();
-            updatePHUI(null); // null = tidak ada pH (kosong)
+            updatePHUI(null);
+            updateVolumeUI();
             logEvent('<span style="color:#94a3b8">🔄</span> Beaker direset ke kondisi awal (kosong)');
             flashMessage('✓ Beaker dikosongkan!');
         }
@@ -1074,6 +1297,7 @@
         // Initialize
         updateBeakerAppearance();
         computePH();
+        updateVolumeUI();
 
         // Keyboard accessibility
         document.querySelectorAll('.tool').forEach(t => {
@@ -1144,6 +1368,103 @@
             document.body.appendChild(tooltip);
 
             setTimeout(() => tooltip.remove(), 8000);
+        }
+
+        function createExtraBeaker() {
+            const newBeaker = document.createElement('div');
+            newBeaker.className = 'beaker';
+            newBeaker.style.position = 'absolute';
+            newBeaker.style.left = Math.random() * 60 + 20 + '%';
+            newBeaker.style.top = Math.random() * 40 + 30 + '%';
+            newBeaker.style.width = '150px';
+            newBeaker.style.height = '200px';
+            newBeaker.style.cursor = 'move';
+
+            newBeaker.innerHTML = `
+                <div class="liquid" style="background:transparent; height:0%"></div>
+                <div class="label">Gelas Ekstra</div>
+            `;
+
+            // Buat draggable untuk reposisi
+            makeBeakerDraggable(newBeaker);
+
+            return newBeaker;
+        }
+
+        // Fungsi untuk membuat beaker bisa di-drag
+        function makeBeakerDraggable(beakerEl) {
+            let isDragging = false;
+            let offsetX, offsetY;
+
+            beakerEl.addEventListener('pointerdown', (e) => {
+                if (e.target === beakerEl || e.target.classList.contains('label')) {
+                    isDragging = true;
+                    const rect = beakerEl.getBoundingClientRect();
+                    offsetX = e.clientX - rect.left;
+                    offsetY = e.clientY - rect.top;
+                    beakerEl.style.cursor = 'grabbing';
+                }
+            });
+
+            document.addEventListener('pointermove', (e) => {
+                if (!isDragging) return;
+                const benchRect = bench.getBoundingClientRect();
+                let newX = e.clientX - benchRect.left - offsetX;
+                let newY = e.clientY - benchRect.top - offsetY;
+
+                // Batas agar tidak keluar bench
+                newX = Math.max(0, Math.min(newX, benchRect.width - beakerEl.offsetWidth));
+                newY = Math.max(0, Math.min(newY, benchRect.height - beakerEl.offsetHeight));
+
+                beakerEl.style.left = newX + 'px';
+                beakerEl.style.top = newY + 'px';
+            });
+
+            document.addEventListener('pointerup', () => {
+                if (isDragging) {
+                    isDragging = false;
+                    beakerEl.style.cursor = 'move';
+                }
+            });
+        }
+
+        // Animasi tabung reaksi muncul
+        function showTestTubeAnimation(pH) {
+            const tube = document.createElement('div');
+            tube.style.position = 'fixed';
+            tube.style.left = '50%';
+            tube.style.top = '50%';
+            tube.style.transform = 'translate(-50%, -50%) scale(0.5)';
+            tube.style.width = '80px';
+            tube.style.height = '160px';
+            tube.style.background = 'rgba(176, 190, 197, 0.9)';
+            tube.style.borderRadius = '8px 8px 30px 30px';
+            tube.style.border = '2px solid #37474f';
+            tube.style.zIndex = '9999';
+            tube.style.transition = 'all 0.4s ease-out';
+            tube.style.boxShadow = '0 8px 32px rgba(0,0,0,0.3)';
+
+            // Isi cairan
+            let color;
+            if (pH < 4) color = '#ff6b6b';
+            else if (pH < 6.5) color = '#ffb86b';
+            else if (pH <= 7.5) color = '#60a5fa';
+            else if (pH <= 9) color = '#99f6e4';
+            else color = '#6ee7b7';
+
+            tube.innerHTML = `
+                <div style="position:absolute; bottom:10px; left:50%; transform:translateX(-50%); width:70%; height:40%; background:${color}; border-radius:4px 4px 20px 20px; box-shadow:inset 0 -2px 8px rgba(0,0,0,0.2)"></div>
+                <div style="position:absolute; bottom:4px; left:50%; transform:translateX(-50%); font-size:10px; color:#37474f; font-weight:600">pH ${pH.toFixed(1)}</div>
+            `;
+
+            document.body.appendChild(tube);
+
+            setTimeout(() => tube.style.transform = 'translate(-50%, -50%) scale(1)', 10);
+            setTimeout(() => {
+                tube.style.opacity = '0';
+                tube.style.transform = 'translate(-50%, -50%) scale(0.5)';
+            }, 2000);
+            setTimeout(() => tube.remove(), 2400);
         }
 
         setTimeout(showHelpTooltip, 2000);
