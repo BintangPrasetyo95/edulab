@@ -2840,7 +2840,7 @@ img.u-pull-left {
  * -------------------------------------------------------------------- */
 .s-intro__content {
     z-index: 2;
-    align-items: flex-end;
+    align-items: flex-start;
     max-width: 1400px;
     height: 100%;
     color: white;
