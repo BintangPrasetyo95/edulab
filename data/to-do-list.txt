@@ -7,5 +7,4 @@ TO-DO-LIST
     - Feedback
 
 - Additional Features
-    - Framer
     - Chat Diskusi (Guru dapat melihat chat diskusi)
