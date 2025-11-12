@@ -290,7 +290,7 @@ function renderProfile() {
                 completedTopics.appendChild(topicCard);
                 const progressCircle = document.getElementById(`progress-${topic.id}`);
                 if (progressCircle) {
-                    progressCircle.style.background = `conic-gradient(#2e7d32 ${topik.progress}%, #ccc ${topik.progress}% 100%)`;
+                    progressCircle.style.background = `conic-gradient(#2e7d32 ${topic.progress}%, #ccc ${topic.progress}% 100%)`;
                 }
             });
         }
@@ -313,12 +313,10 @@ function renderProfile() {
                 inProgressTopics.appendChild(topicCard);
                 const progressCircle = document.getElementById(`progress-${topic.id}`);
                 if (progressCircle) {
-                    progressCircle.style.background = `conic-gradient(#2e7d32 ${topik.progress}%, #ccc ${topik.progress}% 100%)`;
+                    progressCircle.style.background = `conic-gradient(#2e7d32 ${topic.progress}%, #ccc ${topic.progress}% 100%)`;
                 }
             });
         }
-    } else {
-        console.error('Completed or in-progress topics elements not found');
     }
 }
 
