@@ -412,82 +412,135 @@ function highlightActiveNav() {
     });
 }
 
+/**
+ * Check if page requires a topic parameter
+ * Pages that need topic parameter: modul.html, start-praktikum.html, kelompok.html
+ */
+function checkTopicParameterRequired() {
+    const currentPath = window.location.pathname.toLowerCase();
+    const urlParams = new URLSearchParams(window.location.search);
+    const topicId = urlParams.get('topic');
+
+    // Pages that require topic parameter
+    const pagesRequiringTopic = ['modul.html', 'start-praktikum.html', 'kelompok.html', 'praktikum.html'];
+
+    const requiresTopic = pagesRequiringTopic.some(page => currentPath.includes(page));
+
+    if (requiresTopic && !topicId) {
+        // Redirect to beranda or show empty state
+        const contentArea = document.querySelector('main .main-card');
+        if (contentArea) {
+            contentArea.innerHTML = `
+                <div style="text-align: center; padding: 3rem; min-height: 400px; display: flex; align-items: center; justify-content: center;">
+                    <div>
+                        <h2>⚠️ Pilih Topik Terlebih Dahulu</h2>
+                        <p style="margin-top: 1rem; color: #666;">Silakan pilih topik dari menu Beranda atau navigasi untuk mengakses halaman ini.</p>
+                        <a href="./beranda.html" style="margin-top: 1.5rem; display: inline-block; padding: 0.75rem 1.5rem; background-color: #2e7d32; color: white; text-decoration: none; border-radius: 4px; cursor: pointer;">
+                            Kembali ke Beranda
+                        </a>
+                    </div>
+                </div>
+            `;
+            // Hide other content
+            const otherElements = document.querySelectorAll('main .main-card > div:not(.empty-state-message)');
+            otherElements.forEach(el => {
+                if (el.style.display !== 'flex') {
+                    el.style.display = 'none';
+                }
+            });
+        }
+        return false;
+    }
+    return true;
+}
+
+/**
+ * Load topic-specific JavaScript file dynamically
+ */
+function loadTopicScript() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const topicId = urlParams.get('topic');
+
+    if (!topicId) return;
+
+    // Map topic IDs to their script files
+    const topicScriptMap = {
+        'asam-basa': './assets/javascript/asam-basa.js',
+        'redoks': './assets/javascript/redoks.js',
+        'gerak': './assets/javascript/gerak.js',
+        'stoikiometri': './assets/javascript/stoikiometri.js',
+        'energi': './assets/javascript/energi.js',
+        'polimer': './assets/javascript/polimer.js',
+        'listrik': './assets/javascript/listrik.js'
+    };
+
+    const scriptPath = topicScriptMap[topicId];
+    if (scriptPath) {
+        const script = document.createElement('script');
+        script.src = scriptPath;
+        script.async = true;
+        document.head.appendChild(script);
+    }
+}
+
+/**
+ * Render module content - delegated to topic-specific scripts
+ */
 function renderModulContent(type) {
     console.log('renderModulContent running, type:', type);
-    const contentCard = document.getElementById('content-card');
-    if (!contentCard) {
-        console.error('Content card not found');
-        return;
-    }
-
-    const headerBoxes = document.querySelectorAll('.header-box');
-    headerBoxes.forEach(box => box.classList.remove('active'));
-    const clickedBox = document.querySelector(`.header-box.${type}`);
-    if (clickedBox) {
-        clickedBox.classList.add('active');
-    }
-
     const urlParams = new URLSearchParams(window.location.search);
-    const topicId = urlParams.get('topic') || 'asam-basa';
+    const topicId = urlParams.get('topic');
 
-    if (type === 'modul') {
-        if (topicId === 'asam-basa') {
-            // Check if it's mobile device (more reliable detection)
-            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768;
-
-            if (isMobile) {
-                // Mobile-friendly PDF display
-                contentCard.innerHTML = `
-                    <div class="mobile-pdf-container">
-                        <div class="pdf-info">
-                            <h3>📄 Modul Asam Basa</h3>
-                            <p>Untuk pengalaman terbaik membaca modul, silakan download PDF atau buka di desktop.</p>
-                        </div>
-                        <div class="pdf-actions">
-                            <a href="./data/MODUL ASAM BASA_merged.pdf" target="_blank" class="pdf-button view-pdf">
-                                👁️ Lihat PDF
-                            </a>
-                            <a href="./data/MODUL ASAM BASA_merged.pdf" download class="pdf-button download-pdf">
-                                📥 Download PDF
-                            </a>
-                        </div>
-                        <div class="pdf-fallback">
-                            <iframe src="./data/MODUL ASAM BASA_merged.pdf" 
-                                    width="100%" 
-                                    height="500px" 
-                                    style="border: none; border-radius: 8px;">
-                                <p>Browser Anda tidak mendukung tampilan PDF. 
-                                   <a href="./data/MODUL ASAM BASA_merged.pdf" target="_blank">Klik di sini untuk membuka PDF</a>
-                                </p>
-                            </iframe>
-                        </div>
-                    </div>
-                `;
-            } else {
-                // Desktop PDF display - use embed
-                contentCard.innerHTML = `
-                    <embed src="./data/MODUL ASAM BASA_merged.pdf" type="application/pdf" width="100%" height="600px" style="border-radius: 8px;">
-                `;
-            }
-        } else {
+    // Show empty message if no topic is selected
+    if (!topicId) {
+        const contentCard = document.getElementById('content-card');
+        if (contentCard) {
             contentCard.innerHTML = `
                 <div style="text-align: center; padding: 2rem;">
-                    <p>Modul untuk topik ini belum tersedia. Silakan pilih topik lain.</p>
+                    <p>Pilih topik terlebih dahulu untuk melihat modul.</p>
                 </div>
             `;
         }
-    } else if (type === 'video') {
-        contentCard.innerHTML = `
-            <video controls width="100%" height="400px" style="border-radius: 8px;">
-                <source src="./assets/videos/VideoModul.mp4" type="video/mp4">
-                Your browser does not support the video tag.
-            </video>
-        `;
+        return;
+    }
+
+    // Call the appropriate topic content handler
+    // Each topic file should have a global variable like asamBasaContent, redoksContent, etc.
+    const topicContentMap = {
+        'asam-basa': () => window.asamBasaContent,
+        'redoks': () => window.redoksContent,
+        'gerak': () => window.gerakContent,
+        'stoikiometri': () => window.stoikiometriContent,
+        'energi': () => window.energiContent,
+        'polimer': () => window.polomerContent,
+        'listrik': () => window.listrikaContent
+    };
+
+    const getTopicContent = topicContentMap[topicId];
+    if (getTopicContent) {
+        const topicContent = getTopicContent();
+        if (topicContent && type === 'modul') {
+            topicContent.renderModul?.();
+        } else if (topicContent && type === 'video') {
+            topicContent.renderVideo?.();
+        }
     }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
     highlightActiveNav();
+
+    // Check if page requires topic parameter
+    checkTopicParameterRequired();
+
+    // Load topic-specific script if on module page
+    if (window.location.pathname.includes('modul.html') ||
+        window.location.pathname.includes('start-praktikum.html') ||
+        window.location.pathname.includes('kelompok.html') ||
+        window.location.pathname.includes('praktikum.html')) {
+        loadTopicScript();
+    }
+
     if (window.location.pathname.includes('beranda.html')) {
         renderProgress();
     } else if (window.location.pathname.includes('topik.html') || window.location.pathname.includes('start-praktikum.html') || window.location.pathname.includes('modul.html')) {
@@ -498,9 +551,7 @@ document.addEventListener('DOMContentLoaded', () => {
     } else if (window.location.pathname.includes('profile.html')) {
         renderProfile();
     }
-});
-
-// Add to your main.js file
+});// Add to your main.js file
 function toggleMobileMenu() {
     const aside = document.querySelector('aside');
     aside.classList.toggle('show');
