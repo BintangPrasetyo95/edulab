@@ -24,10 +24,17 @@
     <link rel="apple-touch-icon" sizes="180x180" href="./assets/images/Logo.png">
     <link rel="icon" type="image/png" sizes="32x32" href="./assets/images/Logo.png">
     <link rel="icon" type="image/png" sizes="16x16" href="./assets/images/Logo.png">
-    <link rel="manifest" href="site.webmanifest">
+
+    <link rel="manifest" href="/edulab/manifest.json">
+    <meta name="theme-color" content="#000000">
+    <!-- iOS specific tags -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="Edulab">
+    <link rel="apple-touch-icon" href="/assets/images/Logo.png">
+
 
 </head>
-
 
 <body id="top">
 
@@ -291,6 +298,20 @@
     ================================================== -->
         <script src="assets/plugins.js"></script>
         <script src="assets/landing-page.js"></script>
+
+        <script>
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', () => {
+                    navigator.serviceWorker.register('/service-worker.js')
+                        .then((registration) => {
+                            console.log('Service Worker registered successfully:', registration.scope);
+                        })
+                        .catch((error) => {
+                            console.log('Service Worker registration failed:', error);
+                        });
+                });
+            }
+        </script>
 
 </body>
 

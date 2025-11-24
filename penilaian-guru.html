@@ -8,277 +8,285 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./assets/style.css">
     <link rel="shortcut icon" href="./assets/images/Logo.png" type="image/x-icon">
+
+    <link rel="manifest" href="/edulab/manifest.json">
+    <meta name="theme-color" content="#000000">
+    <!-- iOS specific tags -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="Edulab">
+    <link rel="apple-touch-icon" href="/assets/images/Logo.png">
     <style>
-    .penilaian-header {
-        background: rgba(255, 255, 255, 0.95);
-        backdrop-filter: blur(10px);
-        border-radius: 20px;
-        padding: 2rem;
-        margin-bottom: 2rem;
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-        border: 1px solid rgba(102, 126, 234, 0.1);
-    }
+        .penilaian-header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(102, 126, 234, 0.1);
+        }
 
-    .penilaian-header h1 {
-        font-size: 2rem;
-        font-weight: 700;
-        color: #2c3e50;
-        margin-bottom: 0.5rem;
-        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    }
-
-    .penilaian-header p {
-        color: #667eea;
-        font-weight: 600;
-        font-size: 1rem;
-    }
-
-    .stats-cards {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 1.5rem;
-        margin-bottom: 2rem;
-    }
-
-    .stat-card {
-        background: rgba(255, 255, 255, 0.95);
-        backdrop-filter: blur(10px);
-        border-radius: 16px;
-        padding: 1.5rem;
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-        border: 1px solid rgba(102, 126, 234, 0.1);
-        text-align: center;
-        transition: all 0.3s ease;
-    }
-
-    .stat-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
-    }
-
-    .stat-card .icon {
-        font-size: 2.5rem;
-        margin-bottom: 0.5rem;
-    }
-
-    .stat-card .number {
-        font-size: 2rem;
-        font-weight: 700;
-        color: #2c3e50;
-        margin-bottom: 0.3rem;
-    }
-
-    .stat-card .label {
-        color: #666;
-        font-weight: 600;
-        font-size: 0.9rem;
-    }
-
-    .filter-section {
-        background: rgba(255, 255, 255, 0.95);
-        backdrop-filter: blur(10px);
-        border-radius: 16px;
-        padding: 1.5rem;
-        margin-bottom: 2rem;
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-        border: 1px solid rgba(102, 126, 234, 0.1);
-    }
-
-    .filter-controls {
-        display: flex;
-        gap: 1rem;
-        flex-wrap: wrap;
-        align-items: center;
-    }
-
-    .filter-controls select,
-    .filter-controls input {
-        padding: 0.7rem 1rem;
-        border: 2px solid rgba(102, 126, 234, 0.2);
-        border-radius: 10px;
-        font-family: 'Montserrat', sans-serif;
-        font-weight: 600;
-        background: rgba(255, 255, 255, 0.9);
-        transition: all 0.3s ease;
-    }
-
-    .filter-controls select:focus,
-    .filter-controls input:focus {
-        outline: none;
-        border-color: rgba(102, 126, 234, 0.5);
-        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-    }
-
-    .btn-export {
-        padding: 0.7rem 1.5rem;
-        border: none;
-        border-radius: 10px;
-        background: linear-gradient(135deg, #2e7d32, #1b5e20);
-        color: white;
-        font-family: 'Montserrat', sans-serif;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        box-shadow: 0 4px 15px rgba(46, 125, 50, 0.3);
-    }
-
-    .btn-export:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(46, 125, 50, 0.4);
-    }
-
-    .students-table-container {
-        background: rgba(255, 255, 255, 0.95);
-        backdrop-filter: blur(10px);
-        border-radius: 20px;
-        padding: 2rem;
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-        border: 1px solid rgba(102, 126, 234, 0.1);
-        overflow-x: auto;
-    }
-
-    .students-table-container h2 {
-        font-size: 1.8rem;
-        font-weight: 700;
-        color: #2c3e50;
-        margin-bottom: 1.5rem;
-        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    }
-
-    .students-table {
-        width: 100%;
-        border-collapse: collapse;
-        min-width: 900px;
-    }
-
-    .students-table thead {
-        background: linear-gradient(135deg, #667eea, #764ba2);
-        color: white;
-    }
-
-    .students-table th {
-        padding: 1rem;
-        text-align: left;
-        font-weight: 700;
-        font-size: 0.9rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-
-    .students-table th:first-child {
-        border-radius: 12px 0 0 0;
-    }
-
-    .students-table th:last-child {
-        border-radius: 0 12px 0 0;
-    }
-
-    .students-table tbody tr {
-        background: rgba(255, 255, 255, 0.9);
-        border-bottom: 1px solid rgba(102, 126, 234, 0.1);
-        transition: all 0.3s ease;
-    }
-
-    .students-table tbody tr:hover {
-        background: rgba(102, 126, 234, 0.05);
-        transform: scale(1.01);
-    }
-
-    .students-table td {
-        padding: 1rem;
-        color: #2c3e50;
-    }
-
-    .students-table input[type="number"] {
-        width: 70px;
-        padding: 0.5rem;
-        border: 2px solid rgba(102, 126, 234, 0.2);
-        border-radius: 8px;
-        text-align: center;
-        font-weight: 600;
-        font-family: 'Montserrat', sans-serif;
-    }
-
-    .students-table input[type="number"]:focus {
-        outline: none;
-        border-color: #667eea;
-        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-    }
-
-    .status-badge {
-        padding: 0.4rem 0.8rem;
-        border-radius: 20px;
-        font-size: 0.8rem;
-        font-weight: 600;
-        display: inline-block;
-    }
-
-    .status-selesai {
-        background: rgba(46, 125, 50, 0.15);
-        color: #2e7d32;
-    }
-
-    .status-belum {
-        background: rgba(211, 47, 47, 0.15);
-        color: #d32f2f;
-    }
-
-    .status-progress {
-        background: rgba(251, 140, 0, 0.15);
-        color: #f57c00;
-    }
-
-    .btn-save {
-        background: linear-gradient(135deg, #667eea, #764ba2);
-        color: white;
-        border: none;
-        padding: 0.6rem 1.2rem;
-        border-radius: 8px;
-        cursor: pointer;
-        font-family: 'Montserrat', sans-serif;
-        font-weight: 600;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-    }
-
-    .btn-save:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
-    }
-
-    .nilai-total {
-        font-weight: 700;
-        font-size: 1.1rem;
-        color: #2e7d32;
-    }
-
-    @media (max-width: 768px) {
         .penilaian-header h1 {
-            font-size: 1.5rem;
+            font-size: 2rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .penilaian-header p {
+            color: #667eea;
+            font-weight: 600;
+            font-size: 1rem;
         }
 
         .stats-cards {
-            grid-template-columns: repeat(2, 1fr);
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(102, 126, 234, 0.1);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .stat-card .icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card .number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 0.3rem;
+        }
+
+        .stat-card .label {
+            color: #666;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .filter-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(102, 126, 234, 0.1);
         }
 
         .filter-controls {
-            flex-direction: column;
-            align-items: stretch;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
         }
 
         .filter-controls select,
-        .filter-controls input,
+        .filter-controls input {
+            padding: 0.7rem 1rem;
+            border: 2px solid rgba(102, 126, 234, 0.2);
+            border-radius: 10px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            background: rgba(255, 255, 255, 0.9);
+            transition: all 0.3s ease;
+        }
+
+        .filter-controls select:focus,
+        .filter-controls input:focus {
+            outline: none;
+            border-color: rgba(102, 126, 234, 0.5);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
         .btn-export {
-            width: 100%;
+            padding: 0.7rem 1.5rem;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #2e7d32, #1b5e20);
+            color: white;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 4px 15px rgba(46, 125, 50, 0.3);
+        }
+
+        .btn-export:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(46, 125, 50, 0.4);
         }
 
         .students-table-container {
-            padding: 1rem;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(102, 126, 234, 0.1);
+            overflow-x: auto;
         }
-    }
+
+        .students-table-container h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 1.5rem;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .students-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 900px;
+        }
+
+        .students-table thead {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .students-table th {
+            padding: 1rem;
+            text-align: left;
+            font-weight: 700;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .students-table th:first-child {
+            border-radius: 12px 0 0 0;
+        }
+
+        .students-table th:last-child {
+            border-radius: 0 12px 0 0;
+        }
+
+        .students-table tbody tr {
+            background: rgba(255, 255, 255, 0.9);
+            border-bottom: 1px solid rgba(102, 126, 234, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .students-table tbody tr:hover {
+            background: rgba(102, 126, 234, 0.05);
+            transform: scale(1.01);
+        }
+
+        .students-table td {
+            padding: 1rem;
+            color: #2c3e50;
+        }
+
+        .students-table input[type="number"] {
+            width: 70px;
+            padding: 0.5rem;
+            border: 2px solid rgba(102, 126, 234, 0.2);
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 600;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .students-table input[type="number"]:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .status-badge {
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .status-selesai {
+            background: rgba(46, 125, 50, 0.15);
+            color: #2e7d32;
+        }
+
+        .status-belum {
+            background: rgba(211, 47, 47, 0.15);
+            color: #d32f2f;
+        }
+
+        .status-progress {
+            background: rgba(251, 140, 0, 0.15);
+            color: #f57c00;
+        }
+
+        .btn-save {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-save:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .nilai-total {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #2e7d32;
+        }
+
+        @media (max-width: 768px) {
+            .penilaian-header h1 {
+                font-size: 1.5rem;
+            }
+
+            .stats-cards {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .filter-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .filter-controls select,
+            .filter-controls input,
+            .btn-export {
+                width: 100%;
+            }
+
+            .students-table-container {
+                padding: 1rem;
+            }
+        }
     </style>
 </head>
 
@@ -434,8 +442,20 @@
 
     <script src="./assets/main.js"></script>
     <script>
-    // Data siswa dummy
-    const studentsData = [{
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js')
+                    .then((registration) => {
+                        console.log('Service Worker registered successfully:', registration.scope);
+                    })
+                    .catch((error) => {
+                        console.log('Service Worker registration failed:', error);
+                    });
+            });
+        }
+
+        // Data siswa dummy
+        const studentsData = [{
             nis: '1001',
             nama: 'Ahmad Fauzi',
             prelab: 85,
@@ -505,20 +525,20 @@
             praktikum: 89,
             kelompok: 85
         }
-    ];
+        ];
 
-    function renderStudents(data = studentsData) {
-        const tbody = document.getElementById('students-tbody');
-        tbody.innerHTML = '';
+        function renderStudents(data = studentsData) {
+            const tbody = document.getElementById('students-tbody');
+            tbody.innerHTML = '';
 
-        data.forEach((student, index) => {
-            const total = Math.round((student.prelab + student.praktikum + student.kelompok) / 3);
-            const status = total > 0 ? 'selesai' : 'belum';
-            const statusText = total > 0 ? 'Sudah Dinilai' : 'Belum Dinilai';
-            const statusClass = total > 0 ? 'status-selesai' : 'status-belum';
+            data.forEach((student, index) => {
+                const total = Math.round((student.prelab + student.praktikum + student.kelompok) / 3);
+                const status = total > 0 ? 'selesai' : 'belum';
+                const statusText = total > 0 ? 'Sudah Dinilai' : 'Belum Dinilai';
+                const statusClass = total > 0 ? 'status-selesai' : 'status-belum';
 
-            const row = document.createElement('tr');
-            row.innerHTML = `
+                const row = document.createElement('tr');
+                row.innerHTML = `
                     <td>${index + 1}</td>
                     <td>${student.nis}</td>
                     <td>${student.nama}</td>
@@ -532,94 +552,94 @@
                     <td><span class="status-badge ${statusClass}">${statusText}</span></td>
                     <td><button class="btn-save" onclick="saveScore('${student.nis}')">Simpan</button></td>
                 `;
-            tbody.appendChild(row);
-        });
+                tbody.appendChild(row);
+            });
 
-        updateStats();
-    }
-
-    function updateScore(nis, field, value) {
-        const student = studentsData.find(s => s.nis === nis);
-        if (student) {
-            student[field] = parseInt(value) || 0;
+            updateStats();
         }
-    }
 
-    function saveScore(nis) {
-        const student = studentsData.find(s => s.nis === nis);
-        if (student) {
+        function updateScore(nis, field, value) {
+            const student = studentsData.find(s => s.nis === nis);
+            if (student) {
+                student[field] = parseInt(value) || 0;
+            }
+        }
+
+        function saveScore(nis) {
+            const student = studentsData.find(s => s.nis === nis);
+            if (student) {
+                alert(
+                    `Nilai ${student.nama} berhasil disimpan!\n\nPre-Lab: ${student.prelab}\nPraktikum: ${student.praktikum}\nTugas Kelompok: ${student.kelompok}`);
+                renderStudents();
+            }
+        }
+
+        function updateStats() {
+            const totalStudents = studentsData.length;
+            const completedStudents = studentsData.filter(s => s.prelab > 0 || s.praktikum > 0 || s.kelompok > 0).length;
+            const avgScore = Math.round(studentsData.reduce((acc, s) => {
+                const total = (s.prelab + s.praktikum + s.kelompok) / 3;
+                return acc + total;
+            }, 0) / totalStudents);
+            const completionRate = Math.round((completedStudents / totalStudents) * 100);
+
+            document.getElementById('total-students').textContent = totalStudents;
+            document.getElementById('completed-students').textContent = completedStudents;
+            document.getElementById('avg-score').textContent = avgScore;
+            document.getElementById('completion-rate').textContent = completionRate + '%';
+        }
+
+        function filterStudents() {
+            const filter = document.getElementById('filter-status').value;
+            let filtered = studentsData;
+
+            if (filter === 'selesai') {
+                filtered = studentsData.filter(s => s.prelab > 0 || s.praktikum > 0 || s.kelompok > 0);
+            } else if (filter === 'belum') {
+                filtered = studentsData.filter(s => s.prelab === 0 && s.praktikum === 0 && s.kelompok === 0);
+            }
+
+            renderStudents(filtered);
+        }
+
+        function searchStudent() {
+            const query = document.getElementById('search-student').value.toLowerCase();
+            const filtered = studentsData.filter(s =>
+                s.nama.toLowerCase().includes(query) || s.nis.includes(query)
+            );
+            renderStudents(filtered);
+        }
+
+        function exportData() {
             alert(
-                `Nilai ${student.nama} berhasil disimpan!\n\nPre-Lab: ${student.prelab}\nPraktikum: ${student.praktikum}\nTugas Kelompok: ${student.kelompok}`);
+                'Fitur export ke Excel akan segera tersedia!\n\nData akan diekspor dalam format:\n- Nama file: Penilaian_AsamBasa_2025.xlsx\n- Isi: NIS, Nama, Pre-Lab, Praktikum, Tugas Kelompok, Total');
+        }
+
+        // Get topic from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const topicId = urlParams.get('topic') || 'asam-basa';
+
+        // Update title based on topic
+        const topicTitles = {
+            'asam-basa': 'Asam Basa',
+            'redoks': 'Redoks',
+            'gerak': 'Gerak Lurus',
+            'stoikiometri': 'Stoikiometri',
+            'energi': 'Energi',
+            'polimer': 'Polimer',
+            'listrik': 'Listrik'
+        };
+
+        document.getElementById('topic-title').textContent = `Penilaian: ${topicTitles[topicId] || 'Topik'}`;
+
+        // Initialize
+        window.onload = function () {
+            const loader = document.querySelector('.loader');
+            if (loader) {
+                loader.style.display = 'none';
+            }
             renderStudents();
-        }
-    }
-
-    function updateStats() {
-        const totalStudents = studentsData.length;
-        const completedStudents = studentsData.filter(s => s.prelab > 0 || s.praktikum > 0 || s.kelompok > 0).length;
-        const avgScore = Math.round(studentsData.reduce((acc, s) => {
-            const total = (s.prelab + s.praktikum + s.kelompok) / 3;
-            return acc + total;
-        }, 0) / totalStudents);
-        const completionRate = Math.round((completedStudents / totalStudents) * 100);
-
-        document.getElementById('total-students').textContent = totalStudents;
-        document.getElementById('completed-students').textContent = completedStudents;
-        document.getElementById('avg-score').textContent = avgScore;
-        document.getElementById('completion-rate').textContent = completionRate + '%';
-    }
-
-    function filterStudents() {
-        const filter = document.getElementById('filter-status').value;
-        let filtered = studentsData;
-
-        if (filter === 'selesai') {
-            filtered = studentsData.filter(s => s.prelab > 0 || s.praktikum > 0 || s.kelompok > 0);
-        } else if (filter === 'belum') {
-            filtered = studentsData.filter(s => s.prelab === 0 && s.praktikum === 0 && s.kelompok === 0);
-        }
-
-        renderStudents(filtered);
-    }
-
-    function searchStudent() {
-        const query = document.getElementById('search-student').value.toLowerCase();
-        const filtered = studentsData.filter(s =>
-            s.nama.toLowerCase().includes(query) || s.nis.includes(query)
-        );
-        renderStudents(filtered);
-    }
-
-    function exportData() {
-        alert(
-            'Fitur export ke Excel akan segera tersedia!\n\nData akan diekspor dalam format:\n- Nama file: Penilaian_AsamBasa_2025.xlsx\n- Isi: NIS, Nama, Pre-Lab, Praktikum, Tugas Kelompok, Total');
-    }
-
-    // Get topic from URL
-    const urlParams = new URLSearchParams(window.location.search);
-    const topicId = urlParams.get('topic') || 'asam-basa';
-
-    // Update title based on topic
-    const topicTitles = {
-        'asam-basa': 'Asam Basa',
-        'redoks': 'Redoks',
-        'gerak': 'Gerak Lurus',
-        'stoikiometri': 'Stoikiometri',
-        'energi': 'Energi',
-        'polimer': 'Polimer',
-        'listrik': 'Listrik'
-    };
-
-    document.getElementById('topic-title').textContent = `Penilaian: ${topicTitles[topicId] || 'Topik'}`;
-
-    // Initialize
-    window.onload = function() {
-        const loader = document.querySelector('.loader');
-        if (loader) {
-            loader.style.display = 'none';
-        }
-        renderStudents();
-    };
+        };
     </script>
 </body>
 
