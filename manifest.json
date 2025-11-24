@@ -2,7 +2,7 @@
   "name": "EduLab",
   "short_name": "EduLab",
   "description": "Your educational web app",
-  "start_url": "https://bintangprasetyo95.github.io/edulab/",
+  "start_url": "/edulab/",
   "scope": "/edulab/",
   "display": "standalone",
   "background_color": "#ffffff",
