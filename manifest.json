@@ -2,7 +2,7 @@
   "name": "Edulab",
   "short_name": "Edulab",
   "description": "Platform Virtual Lab inovatif untuk belajar sains dalam virtual laboratorium.",
-  "start_url": "/",
+  "start_url": "/edulab/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#000000",
