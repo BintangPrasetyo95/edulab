@@ -1,11 +1,12 @@
 {
-  "name": "Edulab",
-  "short_name": "Edulab",
-  "description": "Platform Virtual Lab inovatif untuk belajar sains dalam virtual laboratorium.",
+  "name": "EduLab",
+  "short_name": "EduLab",
+  "description": "Your educational web app",
   "start_url": "/edulab/",
+  "scope": "/edulab/",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#000000",
+  "theme_color": "#4285f4",
   "orientation": "portrait-primary",
   "icons": [
     {
