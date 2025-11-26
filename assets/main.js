@@ -159,10 +159,10 @@ function renderTopicContent() {
             if (quickButtons) {
                 if (topik.id === 'asam-basa') {
                     quickButtons.innerHTML = `
-                        <button class="modul normal" onclick="window.location.href='./modul.html'"><span>📖</span> Modul</button>
-                        <button class="pre-lab normal" onclick="window.location.href='./start-praktikum.html'"><span>📚</span> Pre-Lab</button>
-                        <button class="praktikum normal" onclick="window.location.href='./start-praktikum.html'"><span>🧪</span> Praktikum</button>
-                        <button class="tugas-kelompok normal" onclick="window.location.href='./kelompok.html'"><span>🤝</span> Tugas Kelompok</button>
+                        <button class="modul normal" onclick="window.location.href='./modul.html?topic=asam-basa'"><span>📖</span> Modul</button>
+                        <button class="pre-lab normal" onclick="window.location.href='./start-praktikum.html?topic=asam-basa'"><span>📚</span> Pre-Lab</button>
+                        <button class="praktikum normal" onclick="window.location.href='./start-praktikum.html?topic=asam-basa'"><span>🧪</span> Praktikum</button>
+                        <button class="tugas-kelompok normal" onclick="window.location.href='./kelompok.html?topic=asam-basa'"><span>🤝</span> Tugas Kelompok</button>
                     `;
                 } else {
                     quickButtons.innerHTML = '<div class="coming-soon">COMING SOON</div>';
