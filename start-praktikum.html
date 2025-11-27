@@ -164,7 +164,7 @@
             <div class="praktikum-start">
                 <h2>Mulai Praktikum</h2>
                 <p>Silakan klik tombol di bawah ini untuk memulai praktikum.</p>
-                <button onclick="window.location.href='./praktikum.html'" class="praktikum normal">
+                <button onclick="window.location.href='./praktikum-asam-basa.html'" class="praktikum normal">
                     <span>🧪</span> Mulai Praktikum
                 </button>
             </div>
@@ -215,6 +215,27 @@
                     });
             });
         }
+
+        function getTopicFromURL() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('topic');
+        }
+
+        function setDynamicPraktikumLink() {
+            const topic = getTopicFromURL();
+
+            if (topic) {
+                const praktikumButton = document.querySelector('.praktikum-start button');
+
+                if (praktikumButton) {
+                    praktikumButton.onclick = function () {
+                        window.location.href = `./praktikum-${topic}.html`;
+                    };
+                }
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', setDynamicPraktikumLink);
     </script>
 </body>
 

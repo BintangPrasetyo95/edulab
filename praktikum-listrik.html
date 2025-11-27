@@ -1,0 +1,587 @@
+<!doctype html>
+<html lang="id">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Simulasi PLTMH - Penerapan Rangkaian Listrik pada Kearifan Lokal Sungai</title>
+    <style>
+        /* Reset & base */
+        :root {
+            --bg1: #b7e0d9;
+            --bg2: #9dd7ff;
+            --accent: #ffb74d;
+            --card: #ffffff;
+            --shadow: rgba(0, 0, 0, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial
+        }
+
+        body {
+            margin: 0;
+            background: linear-gradient(180deg, var(--bg1), var(--bg2));
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px
+        }
+
+        /* Container */
+        .lab {
+            width: 100%;
+            max-width: 1100px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.95));
+            border-radius: 12px;
+            box-shadow: 0 10px 30px var(--shadow);
+            overflow: hidden;
+            display: grid;
+            grid-template-columns: 1fr 360px;
+            gap: 16px
+        }
+
+        /* Responsive */
+        @media (max-width:900px) {
+            .lab {
+                grid-template-columns: 1fr;
+                max-width: 720px
+            }
+
+            .side {
+                order: 2
+            }
+        }
+
+        /* Left: visual */
+        .scene {
+            position: relative;
+            padding: 18px;
+            min-height: 420px
+        }
+
+        .sky {
+            height: 140px;
+            border-radius: 8px;
+            background: linear-gradient(180deg, #cdefff 0%, #8fd0ff 70%);
+            box-shadow: inset 0 -20px 40px rgba(0, 0, 0, 0.03);
+        }
+
+        /* Sungai (river) */
+        #sungai {
+            position: relative;
+            margin-top: -30px;
+            height: 220px;
+            border-radius: 10px;
+            overflow: hidden;
+            background: linear-gradient(180deg, #4db6f5 0%, #0288d1 60%);
+            box-shadow: inset 0 -10px 40px rgba(0, 0, 0, 0.12)
+        }
+
+        /* simple flowing texture with repeating-gradient */
+        #sungai::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: repeating-linear-gradient(-60deg, rgba(255, 255, 255, 0.12) 0 10px, rgba(255, 255, 255, 0.02) 10px 20px);
+            opacity: 0.8;
+            animation: flow 12s linear infinite;
+            background-size: 200% 200%;
+            animation: flow var(--flow-duration, 12s) linear infinite;
+        }
+
+        @keyframes flow {
+            from {
+                background-position: 0 0
+            }
+
+            to {
+                background-position: 200% 0
+            }
+        }
+
+        /* Turbin area */
+        .bank {
+            position: absolute;
+            left: 2%;
+            bottom: 25%;
+            display: flex;
+            gap: 8px;
+            align-items: flex-end
+        }
+
+        .turbinWrap {
+            width: clamp(100px, 15vw, 160px);
+            height: clamp(100px, 15vw, 160px);
+            background: linear-gradient(180deg, #6d4c41, #4e342e);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12)
+        }
+
+        #turbin {
+            width: 75%;
+            height: 75%;
+            position: relative
+        }
+
+        .blade {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: 8px;
+            height: 60px;
+            background: linear-gradient(180deg, #ffd54f, #ffb74d);
+            border-radius: 6px;
+            transform-origin: 50% 80%
+        }
+
+        .blade.b1 {
+            transform: translate(-50%, -80%) rotate(0deg)
+        }
+
+        .blade.b2 {
+            transform: translate(-50%, -80%) rotate(90deg)
+        }
+
+        .blade.b3 {
+            transform: translate(-50%, -80%) rotate(180deg)
+        }
+
+        .blade.b4 {
+            transform: translate(-50%, -80%) rotate(270deg)
+        }
+
+        /* Generator box */
+        .generator {
+            position: absolute;
+            left: 25%;
+            bottom: 50%;
+            width: clamp(90px, 12vw, 120px);
+            height: clamp(50px, 8vw, 70px);
+            background: linear-gradient(180deg, #eceff1, #cfd8dc);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+            font-size: clamp(10px, 1.2vw, 12px);
+            font-weight: 600;
+            color: #424242;
+        }
+
+        .cable {
+            position: absolute;
+            height: 6px;
+            background: #333;
+            border-radius: 6px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15)
+        }
+
+        /* Kabel dari generator ke lampu */
+        .cable.genToLamp {
+            left: 38%;
+            bottom: 57%;
+            width: 50%;
+            height: 4px;
+        }
+
+        /* Lamp */
+        .lampWrap {
+            position: absolute;
+            right: 5%;
+            bottom: 30%;
+            display: flex;
+            flex-direction: column;
+            align-items: center
+        }
+
+        #lamp {
+            width: clamp(60px, 8vw, 80px);
+            height: clamp(90px, 12vw, 120px);
+            border-radius: 50px 50px 8px 8px;
+            background: linear-gradient(180deg, #fff9c4, #fff176);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+            transition: filter 0.2s, box-shadow 0.2s;
+            font-size: clamp(24px, 4vw, 32px);
+        }
+
+        .lampOff {
+            filter: grayscale(1) brightness(0.6);
+            opacity: 0.4
+        }
+
+        .lampGlow {
+            position: absolute;
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            filter: blur(18px);
+            opacity: 0;
+            transition: opacity 0.2s
+        }
+
+        /* Switch */
+        #saklar {
+            position: relative;
+            padding: 10px 16px;
+            border-radius: 10px;
+            background: linear-gradient(180deg, #ffffff, #f1f1f1);
+            cursor: pointer;
+            border: 1px solid rgba(0, 0, 0, 0.06);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px
+        }
+
+        #saklar .dot {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #bdbdbd;
+            transition: all 0.18s
+        }
+
+        #saklar.on .dot {
+            background: #4caf50;
+            transform: translateX(4px)
+        }
+
+        /* Side panel */
+        .side {
+            padding: 18px;
+            background: linear-gradient(180deg, #ffffff, #fafafa);
+            border-left: 1px solid rgba(0, 0, 0, 0.03)
+        }
+
+        .panel {
+            background: var(--card);
+            padding: 12px;
+            border-radius: 10px;
+            box-shadow: 0 6px 18px var(--shadow);
+            margin-bottom: 12px
+        }
+
+        .panel h3 {
+            margin: 0 0 8px 0;
+            font-size: 16px
+        }
+
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 12px
+        }
+
+        /* gauge / values */
+        .values {
+            display: flex;
+            gap: 8px;
+            align-items: center
+        }
+
+        .value {
+            flex: 1;
+            padding: 10px;
+            border-radius: 8px;
+            background: linear-gradient(180deg, #fff, #f7f7f7);
+            text-align: center
+        }
+
+        .value strong {
+            display: block;
+            font-size: 18px
+        }
+
+        .label {
+            font-size: 12px;
+            color: #555
+        }
+
+        /* slider */
+        .rangeRow {
+            display: flex;
+            align-items: center;
+            gap: 12px
+        }
+
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%
+        }
+
+        input[type=range]::-webkit-slider-runnable-track {
+            height: 6px;
+            background: linear-gradient(90deg, #81d4fa, #0288d1);
+            border-radius: 6px
+        }
+
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            background: #fff;
+            border: 4px solid #0288d1;
+            border-radius: 50%;
+            margin-top: -6px
+        }
+
+        /* footer notes */
+        .note {
+            font-size: 13px;
+            color: #444
+        }
+
+        /* small screens tweak */
+        @media (max-width:768px) and (min-width:421px) {
+            .bank {
+                left: 2%;
+                bottom: 22%;
+            }
+
+            .turbinWrap {
+                width: 130px;
+                height: 130px;
+            }
+
+            .generator {
+                left: 24%;
+                bottom: 50%;
+                width: 100px;
+                height: 60px;
+                font-size: 11px;
+            }
+
+            .cable.genToLamp {
+                left: 35%;
+                bottom: 56%;
+                width: 30%;
+            }
+
+            .lampWrap {
+                right: 4%;
+                bottom: 50%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lab" role="application" aria-label="Simulasi PLTMH">
+        <div class="scene">
+            <div class="sky"></div>
+            <div id="sungai" aria-hidden="true">
+                <!-- bank and turbine -->
+                <div class="bank">
+                    <div class="turbinWrap" aria-hidden="true">
+                        <div id="turbin" aria-label="Turbin (kincir air)">
+                            <div class="blade b1"></div>
+                            <div class="blade b2"></div>
+                            <div class="blade b3"></div>
+                            <div class="blade b4"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="generator" id="generator" aria-label="Generator">Generator</div>
+                <div class="cable genToLamp" aria-hidden="true"></div>
+
+                <!-- lamp -->
+                <div class="lampWrap">
+                    <div id="lamp" class="lampOff" aria-live="polite" aria-label="Lampu">
+                        <div style="font-weight:700">💡</div>
+                    </div>
+                    <div id="glow" class="lampGlow"></div>
+                </div>
+            </div>
+
+            <!-- Decorative village and notes -->
+            <div style="padding:12px;display:flex;gap:10px;align-items:center;justify-content:flex-start">
+                <div style="flex:1">
+                    <h2 style="margin:6px 0 0 0">PLTMH - Energi Air Lokal → Energi Listrik</h2>
+                    <p style="margin:6px 0 0 0;font-size:13px;color:#333">Simulasi ini menunjukkan hubungan antara debit
+                        air (kearifan lokal) dan besarnya tegangan & arus yang dihasilkan.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="side">
+            <div class="panel">
+                <h3>Kontrol & Kearifan Lokal</h3>
+                <div class="controls">
+                    <div class="rangeRow">
+                        <label for="debit">Debit Air Lokal</label>
+                        <input id="debit" type="range" min="0" max="100" value="50" aria-label="Debit Air Lokal" />
+                        <div id="debitVal" style="width:44px;text-align:right">50</div>
+                    </div>
+
+                    <div style="display:flex;gap:10px;align-items:center">
+                        <div id="saklar" role="button" tabindex="0" aria-pressed="false" class=""
+                            title="Klik untuk menyalakan atau mematikan">
+                            <div class="dot"></div>
+                            <div style="font-size:13px">Saklar</div>
+                        </div>
+                        <div style="font-size:13px;color:#666">(Rangkaian: Terbuka / Tertutup)</div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="panel" id="panelKontrol" aria-live="polite" style="display:none">
+                <h3>Panel Kontrol</h3>
+                <div class="values">
+                    <div class="value"><strong id="volt">-- V</strong><span class="label">Tegangan (Volt)</span></div>
+                    <div class="value"><strong id="ampere">-- A</strong><span class="label">Arus (Ampere)</span></div>
+                    <div class="value"><strong id="ohm">-- Ω</strong><span class="label">Hambatan (Ohm)</span></div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <h3>Penjelasan Singkat</h3>
+                <p class="note">Ketika debit air meningkat (kearifan lokal: memanfaatkan aliran sungai), turbin berputar
+                    lebih cepat → generator menghasilkan tegangan lebih besar. Dengan hambatan lampu yang relatif tetap,
+                    arus meningkat sesuai hukum Ohm: <em>I = V / R</em>.</p>
+            </div>
+
+            <div class="panel">
+                <h3>Instruksi</h3>
+                <ol style="margin:6px 0 0 0;padding-left:18px;font-size:13px">
+                    <li>Atur <strong>Debit Air Lokal</strong> menggunakan slider.</li>
+                    <li>Tekan <strong>Saklar</strong> untuk menutup rangkaian dan menyalakan lampu.</li>
+                    <li>Perhatikan perubahan Tegangan, Arus, dan kecerahan lampu.</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Element references
+        const debit = document.getElementById('debit');
+        const debitVal = document.getElementById('debitVal');
+        const saklar = document.getElementById('saklar');
+        const panelKontrol = document.getElementById('panelKontrol');
+        const voltEl = document.getElementById('volt');
+        const ampEl = document.getElementById('ampere');
+        const ohmEl = document.getElementById('ohm');
+        const lamp = document.getElementById('lamp');
+        const glow = document.getElementById('glow');
+        const turbin = document.getElementById('turbin');
+
+        // Physical model constants (simple pedagogical model)
+        const V0 = 220;       // Tegangan referensi pada debit tengah (slider=50)
+        const Rlamp = 440;    // Hambatan lampu (ohm) - dianggap konstan untuk menunjukkan Ohm law
+        const baseSlider = 50; // titik tengah
+
+        let isOn = false;
+
+        // Update visuals for turbine rotation speed and generator output
+        function updateFromSlider() {
+            const s = Number(debit.value);
+            debitVal.textContent = s;
+
+            // Map slider to voltage linearly: when s = baseSlider -> V0
+            const multiplier = s / baseSlider; // 0..2 (if slider 0..100)
+            const V = +(V0 * multiplier).toFixed(1); // tegangan
+
+            // With fixed load R: I = V / R
+            const I = +((Rlamp === 0) ? 0 : (V / Rlamp)).toFixed(3);
+            const R = Rlamp; // tampilkan nilai hambatan
+
+            // Turbine rotation speed (CSS animation duration inversely proportional to speed)
+            const speed = Math.max(0.1, multiplier); // avoid zero division
+            // We set rotation by changing transform via JS for smooth control
+            turbin.style.transition = 'transform 0.1s linear';
+            // We'll rotate continuously using requestAnimationFrame loop below based on speed
+
+            // If circuit is ON, update panel & lamp brightness
+            if (isOn) {
+                voltEl.textContent = V + ' V';
+                ampEl.textContent = I + ' A';
+                ohmEl.textContent = R + ' Ω';
+
+                // Lamp brightness: map current to brightness factor
+                const brightness = Math.min(3, 0.5 + (I * 3)); // scale for visible effect
+                lamp.classList.remove('lampOff');
+                lamp.style.filter = `brightness(${brightness})`;
+                lamp.style.boxShadow = `0 8px 30px rgba(255,200,50,${Math.min(0.6, I * 1.8)})`;
+                glow.style.background = 'radial-gradient(circle at center, rgba(255,235,59,0.8), rgba(255,193,7,0.2), transparent)';
+                glow.style.opacity = Math.min(0.9, I * 1.6);
+            } else {
+                // show placeholders when off
+                voltEl.textContent = '-- V';
+                ampEl.textContent = '-- A';
+                ohmEl.textContent = '-- Ω';
+                lamp.classList.add('lampOff');
+                lamp.style.filter = '';
+                lamp.style.boxShadow = '';
+                glow.style.opacity = 0;
+            }
+
+            // store for animation loop
+            currentSpeed = speed;
+        }
+
+        // Saklar handlers
+        function toggleSaklar() {
+            isOn = !isOn;
+            saklar.setAttribute('aria-pressed', String(isOn));
+            if (isOn) {
+                saklar.classList.add('on');
+                panelKontrol.style.display = 'block';
+            } else {
+                saklar.classList.remove('on');
+                panelKontrol.style.display = 'none';
+            }
+            updateFromSlider();
+        }
+
+        saklar.addEventListener('click', toggleSaklar);
+        saklar.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleSaklar(); } });
+
+        debit.addEventListener('input', () => {
+            updateFromSlider();
+        });
+
+        // Turbine continuous rotation using requestAnimationFrame to reflect speed
+        let currentAngle = 0;
+        let currentSpeed = 1; // multiplier
+        function rotateLoop() {
+            const degreesPerFrame = 0.5 * currentSpeed; // Kurangi dari 0.8 ke 0.5 untuk lebih lambat
+            currentAngle = currentAngle + degreesPerFrame; // Hapus modulo agar truly infinite
+            turbin.style.transform = `rotate(${currentAngle}deg)`;
+            requestAnimationFrame(rotateLoop);
+        }
+        rotateLoop();
+
+        // init
+        updateFromSlider();
+
+        // Accessibility: short explanation when user toggles
+        saklar.addEventListener('click', () => {
+            if (isOn) saklar.setAttribute('title', 'Saklar: ON (Klik untuk mematikan)');
+            else saklar.setAttribute('title', 'Saklar: OFF (Klik untuk menyalakan)');
+        });
+
+        // Make the river flow animation slightly faster based on slider too
+        const sungai = document.getElementById('sungai');
+        function updateFlowSpeed() {
+            const s = Number(debit.value);
+            const flowDuration = 20 - (s / 100) * 15; // 20s ketika slider=0, 5s ketika slider=100
+            sungai.style.setProperty('--flow-duration', flowDuration + 's');
+        }
+        debit.addEventListener('input', updateFlowSpeed);
+        updateFlowSpeed();
+
+        // Short explanation tooltip if user inspects values
+        // No external data; this is purely front-end educational simulation.
+    </script>
+</body>
+
+</html>

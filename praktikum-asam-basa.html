@@ -1,0 +1,2176 @@
+<!doctype html>
+<html lang="id">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Praktikum - EduLab</title>
+
+    <!-- Fonts & shared stylesheet to match other pages -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="shortcut icon" href="./assets/images/Logo.png" type="image/x-icon">
+
+    <link rel="manifest" href="/edulab/manifest.json">
+    <meta name="theme-color" content="#000000">
+    <!-- iOS specific tags -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="Edulab">
+    <link rel="apple-touch-icon" href="/assets/images/Logo.png">
+
+    <style>
+        :root {
+            --primary-purple: #667eea;
+            --secondary-purple: #764ba2;
+            --accent-blue: #1565c0;
+            --text-dark: #2c3e50;
+            --text-muted: #666;
+            --glass-bg: rgba(255, 255, 255, 0.95);
+            --glass-border: rgba(102, 126, 234, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html,
+        body {
+            height: 100%;
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: var(--text-dark);
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Background decoration matching style.css */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 118, 117, 0.15) 0%, transparent 50%);
+            z-index: -1;
+        }
+
+        .app {
+            display: grid;
+            grid-template-columns: 320px 1fr 320px;
+            gap: 14px;
+            padding: 12px;
+            min-height: 100vh;
+            height: auto;
+        }
+
+        aside {
+            display: block;
+        }
+
+        @media (max-width:900px) {
+            .app {
+                grid-template-columns: 1fr;
+                grid-template-rows: 1fr auto;
+                padding: 8px;
+                height: auto;
+                min-height: 100vh;
+            }
+
+            /* HIDE LEFT PANEL (ASIDE.LEFT) ON MOBILE */
+            aside.left {
+                display: none !important;
+            }
+
+            /* KEEP RIGHT PANEL VISIBLE */
+            aside.right {
+                display: flex;
+                order: 2;
+            }
+
+            .workspace {
+                order: 1;
+            }
+
+            .tray {
+                overflow-y: auto !important;
+                -webkit-overflow-scrolling: touch;
+                touch-action: pan-y !important;
+            }
+
+            .tray .tool {
+                touch-action: auto !important;
+                pointer-events: auto;
+            }
+        }
+
+        button {
+            background-color: #f0f0f0;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 4px;
+        }
+
+        button:hover {
+            background-color: #e0e0e0;
+        }
+
+        #selesaiBtn {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        #selesaiBtn:hover {
+            background: linear-gradient(135deg, #059669, #047857);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+        }
+
+        .panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--glass-border);
+            min-height: 80px;
+            height: fit-content;
+            align-self: start;
+        }
+
+        .panel h3 {
+            margin: 0 0 1rem 0;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .left {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: calc(100vh - 24px);
+            overflow-y: auto;
+        }
+
+        .tools {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+        }
+
+        .tool {
+            background: rgba(102, 126, 234, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 10px;
+            text-align: center;
+            cursor: grab;
+            user-select: none;
+            touch-action: none;
+            transition: transform 0.2s ease;
+            will-change: transform;
+        }
+
+        .tool:hover {
+            background: rgba(102, 126, 234, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .tool:active {
+            cursor: grabbing;
+            transform: scale(0.98);
+        }
+
+        .tool .label {
+            font-size: 13px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .tool .name {
+            font-weight: 700;
+            margin-top: 6px;
+            font-size: 14px;
+            color: var(--text-dark);
+        }
+
+        .workspace {
+            position: relative;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            height: 95vh;
+            overflow-y: auto;
+        }
+
+        .lab-area {
+            width: 100%;
+            height: 100%;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid var(--glass-border);
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            /* UBAH dari default ke column */
+            gap: 12px;
+            overflow-y: auto;
+            /* TAMBAHKAN untuk scrolling */
+        }
+
+        @media (max-width:900px) {
+            .lab-area {
+                height: 100%;
+                min-height: 400px;
+            }
+        }
+
+        .bench {
+            flex: 0 0 80%;
+            /* UBAH: 80% tinggi dari lab-area */
+            position: relative;
+            border-radius: 12px;
+            padding: 12px;
+            overflow: hidden;
+            min-height: 400px;
+            /* UBAH dari 500px */
+            border: 1px solid var(--glass-border);
+            z-index: 1;
+        }
+
+        /* Background dengan blur */
+        .bench::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                linear-gradient(135deg, rgba(102, 126, 234, 0.08), rgba(118, 75, 162, 0.08)),
+                url('./assets/images/BG-Lab.png');
+            background-size: cover;
+            background-position: center;
+            filter: blur(3px);
+            /* Blur disini */
+            z-index: -1;
+            transform: scale(1.1);
+            /* Hindari garis tepi blur */
+        }
+
+        @media (max-width:900px) {
+            .bench {
+                height: 100%;
+                min-height: 400px;
+            }
+        }
+
+        .lab-pretest {
+            flex: 0 0 20%;
+            /* 20% tinggi dari lab-area */
+            background: rgba(102, 126, 234, 0.05);
+            border: 2px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 16px;
+            overflow-y: auto;
+            min-height: 150px;
+        }
+
+        .lab-pretest-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+            padding-bottom: 10px;
+            border-bottom: 2px dashed rgba(102, 126, 234, 0.3);
+        }
+
+        .lab-pretest-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--primary-purple);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .lab-pretest-badge {
+            background: linear-gradient(135deg, var(--primary-purple), var(--secondary-purple));
+            color: white;
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 11px;
+            font-weight: 700;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+        }
+
+        .lab-question-card {
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            border-radius: 10px;
+            padding: 14px;
+            margin-bottom: 12px;
+            display: flex;
+            gap: 12px;
+        }
+
+        .lab-question-image {
+            flex: 0 0 20%;
+            min-width: 80px;
+            max-width: 150px;
+            border-radius: 8px;
+            overflow: hidden;
+            background: rgba(102, 126, 234, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(102, 126, 234, 0.2);
+        }
+
+        .lab-question-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .lab-question-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .lab-question-text {
+            color: var(--text-dark);
+            font-size: 13px;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .lab-question-context {
+            background: rgba(96, 165, 250, 0.1);
+            padding: 10px;
+            border-radius: 8px;
+            border-left: 3px solid #60a5fa;
+            font-size: 12px;
+            line-height: 1.5;
+            color: var(--text-dark);
+            margin-top: 8px;
+        }
+
+        .lab-pretest::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .lab-pretest::-webkit-scrollbar-track {
+            background: rgba(102, 126, 234, 0.05);
+            border-radius: 3px;
+        }
+
+        .lab-pretest::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, var(--primary-purple), var(--secondary-purple));
+            border-radius: 3px;
+        }
+
+        @media (max-width:900px) {
+            .lab-question-card {
+                flex-direction: column;
+            }
+
+            .lab-question-image {
+                flex: 0 0 auto;
+                width: 100%;
+                max-width: 100%;
+                height: 150px;
+            }
+
+            .lab-area {
+                flex-direction: column;
+            }
+
+            .bench {
+                flex: 0 0 70%;
+                min-height: 350px;
+            }
+
+            .lab-pretest {
+                flex: 0 0 30%;
+                min-height: 200px;
+            }
+
+            .lab-question-text {
+                font-size: 12px;
+            }
+
+            .lab-question-context {
+                font-size: 11px;
+            }
+        }
+
+
+
+        .beaker {
+            position: absolute;
+            left: 50%;
+            top: 30%;
+            transform: translate(-50%, 0);
+            width: 210px;
+            height: 260px;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 12px;
+            border: 2px solid var(--glass-border);
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            pointer-events: none;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        @media (max-width:900px) {
+            .beaker {
+                top: 50%;
+                transform: translate(-50%, -50%);
+            }
+        }
+
+        .liquid {
+            width: 86%;
+            height: 40%;
+            border-radius: 8px 8px 30px 30px;
+            margin-bottom: 18px;
+            transition: background 350ms, height 350ms;
+            box-shadow: inset 0 -2px 8px rgba(0, 0, 0, 0.2), 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .beaker .label {
+            position: absolute;
+            bottom: 8px;
+            font-size: 12px;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .tray-toggle {
+            position: absolute;
+            right: 12px;
+            top: 12px;
+            background: linear-gradient(135deg, var(--primary-purple), var(--secondary-purple));
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 0.8rem 1.2rem;
+            font-weight: 700;
+            font-family: 'Montserrat', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .tray-toggle:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+        }
+
+        .tray {
+            position: absolute;
+            right: 12px;
+            top: 60px;
+            display: none;
+            flex-direction: column;
+            gap: 8px;
+            width: 220px;
+            max-height: 400px;
+            overflow-y: auto;
+            background: var(--glass-bg);
+            padding: 12px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+            border: 1px solid var(--glass-border);
+        }
+
+        .tray.open {
+            display: flex;
+        }
+
+        .tray::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .tray::-webkit-scrollbar-track {
+            background: rgba(102, 126, 234, 0.05);
+            border-radius: 3px;
+        }
+
+        .tray::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, var(--primary-purple), var(--secondary-purple));
+            border-radius: 3px;
+        }
+
+        .inventory {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .right {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: calc(100vh - 24px);
+            overflow-y: auto;
+        }
+
+        .left::-webkit-scrollbar,
+        .right::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .left::-webkit-scrollbar-track,
+        .right::-webkit-scrollbar-track {
+            background: rgba(102, 126, 234, 0.05);
+            border-radius: 3px;
+        }
+
+        .left::-webkit-scrollbar-thumb,
+        .right::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, var(--primary-purple), var(--secondary-purple));
+            border-radius: 3px;
+        }
+
+        .meter {
+            padding: 1rem;
+            border-radius: 12px;
+            background: rgba(102, 126, 234, 0.05);
+            border: 1px solid var(--glass-border);
+        }
+
+        .meter .value {
+            font-size: 28px;
+            font-weight: 700;
+            padding: 12px 16px;
+            border-radius: 12px;
+            display: inline-block;
+            margin-top: 6px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .history {
+            max-height: 220px;
+            overflow: auto;
+            padding: 8px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.5);
+            border: 1px solid var(--glass-border);
+        }
+
+        .history::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .history::-webkit-scrollbar-track {
+            background: rgba(102, 126, 234, 0.05);
+            border-radius: 3px;
+        }
+
+        .history::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, var(--primary-purple), var(--secondary-purple));
+            border-radius: 3px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 8px 12px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--primary-purple), var(--secondary-purple));
+            color: white;
+            font-weight: 700;
+            font-family: 'Montserrat', sans-serif;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .floating {
+            position: fixed;
+            z-index: 1000;
+        }
+
+        .tool-ghost {
+            opacity: 0.9;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            will-change: transform, left, top;
+        }
+
+        .legend {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-wrap: wrap;
+            font-size: 12px;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        @keyframes ripple {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.02);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.7;
+            }
+        }
+
+        @keyframes glow {
+
+            0%,
+            100% {
+                box-shadow: 0 0 20px rgba(102, 126, 234, 0.4);
+            }
+
+            50% {
+                box-shadow: 0 0 30px rgba(102, 126, 234, 0.6);
+            }
+        }
+
+        /* Strong elements styling */
+        strong {
+            color: var(--primary-purple);
+            font-weight: 700;
+        }
+
+        /* Instruction text */
+        .instruction-text {
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.6;
+            background: rgba(102, 126, 234, 0.05);
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid var(--glass-border);
+            margin-top: 8px;
+        }
+
+        .tool .volume-badge {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
+        }
+
+        #breakdownList::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        #breakdownList::-webkit-scrollbar-track {
+            background: rgba(102, 126, 234, 0.05);
+            border-radius: 2px;
+        }
+
+        #breakdownList::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, var(--primary-purple), var(--secondary-purple));
+            border-radius: 2px;
+        }
+
+        /* Preloader styles (ditambahkan) */
+        .loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.95), rgba(118, 75, 162, 0.95));
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .loader p {
+            margin-top: 1rem;
+            font-size: 1.2rem;
+            color: white;
+            font-weight: 700;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* ===== POST TEST POPUP STYLES ===== */
+        .post-test-popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            z-index: 10000;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .post-test-popup.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .post-test-content {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border-radius: 16px;
+            max-width: 900px;
+            width: 100%;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--glass-border);
+            animation: slideUp 0.4s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(30px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .post-test-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px 28px;
+            border-bottom: 2px solid rgba(102, 126, 234, 0.2);
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+        }
+
+        .post-test-header h2 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary-purple);
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .close-btn {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #ef4444;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            font-size: 20px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+        }
+
+        .close-btn:hover {
+            background: rgba(239, 68, 68, 0.2);
+            transform: rotate(90deg);
+        }
+
+        .post-test-body {
+            padding: 24px 28px;
+            overflow-y: auto;
+            max-height: calc(90vh - 180px);
+        }
+
+        .post-test-body::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .post-test-body::-webkit-scrollbar-track {
+            background: rgba(102, 126, 234, 0.05);
+            border-radius: 4px;
+        }
+
+        .post-test-body::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, var(--primary-purple), var(--secondary-purple));
+            border-radius: 4px;
+        }
+
+        .test-intro {
+            background: rgba(96, 165, 250, 0.1);
+            padding: 16px;
+            border-radius: 12px;
+            border-left: 4px solid #60a5fa;
+            margin-bottom: 24px;
+        }
+
+        .question-card {
+            background: rgba(255, 255, 255, 0.6);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .question-card:hover {
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .question-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .question-number {
+            background: linear-gradient(135deg, var(--primary-purple), var(--secondary-purple));
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 14px;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .question-tag {
+            background: rgba(102, 126, 234, 0.1);
+            color: var(--primary-purple);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 13px;
+            border: 1px solid rgba(102, 126, 234, 0.2);
+        }
+
+        .question-context {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 14px;
+            border-radius: 8px;
+            margin-bottom: 14px;
+            line-height: 1.6;
+            color: var(--text-dark);
+            font-size: 14px;
+            border-left: 3px solid rgba(102, 126, 234, 0.5);
+        }
+
+        .question-text {
+            color: var(--text-dark);
+            line-height: 1.7;
+            font-size: 14px;
+        }
+
+        .question-text p {
+            margin-bottom: 10px;
+        }
+
+        .question-text ol {
+            margin-left: 20px;
+            margin-top: 8px;
+            line-height: 1.8;
+        }
+
+        .question-text ol li {
+            margin-bottom: 10px;
+            padding-left: 8px;
+        }
+
+        .post-test-footer {
+            padding: 20px 28px;
+            border-top: 2px solid rgba(102, 126, 234, 0.2);
+            display: flex;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        .close-test-btn {
+            padding: 14px 40px;
+            font-size: 16px;
+            background: linear-gradient(135deg, var(--primary-purple), var(--secondary-purple));
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .close-test-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 35px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Mobile responsive */
+        @media (max-width: 900px) {
+            .post-test-popup {
+                padding: 10px;
+            }
+
+            .post-test-content {
+                max-height: 95vh;
+            }
+
+            .post-test-header {
+                padding: 16px 20px;
+            }
+
+            .post-test-header h2 {
+                font-size: 18px;
+            }
+
+            .post-test-body {
+                padding: 16px 20px;
+                max-height: calc(95vh - 160px);
+            }
+
+            .question-card {
+                padding: 16px;
+            }
+
+            .question-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+
+            .question-text ol {
+                margin-left: 16px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="loader">
+        <div class="spinner"></div>
+        <p>Loading...</p>
+    </div>
+    <div class="app">
+        <aside class="panel left">
+            <h3 style="margin:0 0 12px 0">🧪 Palet Alat & Bahan</h3>
+            <div class="tools" id="tools">
+                <!-- tools will be generated by JS -->
+            </div>
+            <div style="margin-top:8px; font-size:13px; color:var(--muted); line-height:1.4">
+                <strong>Petunjuk:</strong> Seret alat/bahan ke beaker untuk bereaksi. Di mobile, tap area lab
+                untuk
+                quick menu.
+            </div>
+        </aside>
+
+        <main class="panel workspace">
+            <div class="lab-area" id="lab">
+                <div class="bench" id="bench">
+                    <div class="beaker" id="beaker" aria-label="Beaker">
+                        <div class="liquid" id="liquid" style="background:transparent; height:0%">
+                        </div>
+                        <div class="label">Beaker / Wadah</div>
+                    </div>
+                    <button class="tray-toggle" id="trayToggle">🧪 Alat & Bahan</button>
+                    <div class="tray" id="tray"></div>
+                </div>
+
+                <!-- PRE-TEST SOAL DI LAB AREA -->
+                <div class="lab-pretest">
+                    <div class="lab-pretest-header">
+                        <div class="lab-pretest-title">
+                            📝 Sudi Kasus
+                        </div>
+                        <span class="lab-pretest-badge">Asam Basa</span>
+                    </div>
+
+                    <div class="lab-question-card">
+                        <div class="lab-question-image">
+                            <img src="./assets/images/petani-sawah.jpg" alt="Ilustrasi Tanah Asam">
+                        </div>
+
+                        <div class="lab-question-content">
+                            <div class="lab-question-text">
+                                <strong>Pertanyaan:</strong><br>
+                                Seorang petani di desa memiliki tanah dengan pH 5,2 (asam). Ia ingin menetralkan
+                                keasaman
+                                tanah tersebut agar cocok untuk menanam sayuran. Bahan apa yang sebaiknya digunakan
+                                petani
+                                tersebut, dan mengapa bahan itu efektif untuk menetralkan tanah asam?
+                            </div>
+
+                            <div class="lab-question-context">
+                                💡 <strong>Petunjuk:</strong> Pikirkan tentang sifat asam-basa dan bagaimana zat basa
+                                dapat
+                                menetralisir asam. Kaitkan dengan bahan-bahan yang tersedia di sekitar desa.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <aside class="panel right">
+            <button onclick="window.location.href='./start-praktikum.html'">Kembali </button>
+            <button id="selesaiBtn">Selesai</button>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px">
+                <h3 style="margin:0">📊 Instrumen</h3>
+                <button id="resetBtn2" class="btn" style="padding:6px 12px; font-size:13px">🔄 Reset</button>
+            </div>
+            <div class="meter">
+                <div style="font-size:14px; color:var(--muted)">pH Saat Ini</div>
+                <div class="value" id="phValue"></div>
+            </div>
+
+            <div class="meter" style="margin-top:10px">
+                <div style="font-size:14px; color:var(--muted)">Total Volume Cairan</div>
+                <div class="value" id="volumeValue"
+                    style="background:linear-gradient(135deg, #60a5fa, #3b82f6); color:white; font-size:24px">
+                    0 <span style="font-size:16px; opacity:0.9">ml</span>
+                </div>
+
+                <!-- Progress Bar -->
+                <div style="margin-top:8px; font-size:12px; color:var(--muted); text-align:center">
+                    <span id="volumeBar"
+                        style="display:inline-block; width:100%; height:6px; background:rgba(96,165,250,0.2); border-radius:3px; overflow:hidden">
+                        <span id="volumeFill"
+                            style="display:block; height:100%; width:0%; background:linear-gradient(90deg, #60a5fa, #3b82f6); transition:width 0.3s ease; border-radius:3px"></span>
+                    </span>
+                </div>
+
+                <div style="margin-top:4px; font-size:11px; color:var(--muted); text-align:center">
+                    Kapasitas: <span id="volumePercent">0%</span> / 200ml
+                </div>
+
+                <!-- BREAKDOWN PER REAGENT -->
+                <div id="volumeBreakdown"
+                    style="margin-top:12px; padding-top:10px; border-top:1px dashed rgba(102,126,234,0.2)">
+                    <div style="font-size:12px; color:var(--muted); margin-bottom:6px; font-weight:600">📋
+                        Komposisi:
+                    </div>
+                    <div id="breakdownList"
+                        style="display:flex; flex-direction:column; gap:4px; max-height:150px; overflow-y:auto">
+                        <div style="font-size:11px; color:#94a3b8; font-style:italic; text-align:center; padding:8px">
+                            Belum ada cairan
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-top:10px">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px">
+                    <strong>📜 Riwayat Reaksi</strong>
+                    <button id="resetBtn" class="btn" style="padding:6px 10px; font-size:13px">Reset</button>
+                </div>
+                <div class="history" id="history"></div>
+            </div>
+
+            <div style="margin-top:10px">
+                <strong>📖 pH</strong>
+                <div class="legend" style="margin-top:8px">
+                    <div style="display:flex; align-items:center; gap:6px">
+                        <div class="dot" style="background:#ff6b6b"></div>
+                        <div style="color:var(--muted); font-size:12px">Asam Kuat</div>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:6px">
+                        <div class="dot" style="background:#ffb86b"></div>
+                        <div style="color:var(--muted); font-size:12px">Asam Lemah</div>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:6px">
+                        <div class="dot" style="background:#60a5fa"></div>
+                        <div style="color:var(--muted); font-size:12px">Netral</div>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:6px">
+                        <div class="dot" style="background:#99f6e4"></div>
+                        <div style="color:var(--muted); font-size:12px">Basa Lemah</div>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:6px">
+                        <div class="dot" style="background:#6ee7b7"></div>
+                        <div style="color:var(--muted); font-size:12px">Basa Kuat</div>
+                    </div>
+                </div>
+            </div>
+
+        </aside>
+        <div id="postTestPopup" class="post-test-popup">
+            <div class="post-test-content">
+                <div class="post-test-header">
+                    <h2>📋 Post Test - Evaluasi Praktikum</h2>
+                    <button id="closePostTest" class="close-btn">✕</button>
+                </div>
+
+                <div class="post-test-body" id="postTestBody">
+                    <div class="test-intro">
+                        <p style="margin-bottom: 16px; color: var(--text-muted); line-height: 1.6;">
+                            Selamat! Anda telah menyelesaikan praktikum virtual. Berikut adalah 5 soal analisis
+                            untuk menguji pemahaman Anda tentang konsep asam-basa.
+                        </p>
+                    </div>
+
+                    <!-- Soal 1 -->
+                    <div class="question-card">
+                        <div class="question-header">
+                            <span class="question-number">Soal 1</span>
+                            <span class="question-tag">Air Sumur dan Rasa Asam</span>
+                        </div>
+                        <div class="question-context">
+                            Di sebuah desa pesisir, warga menyadari bahwa air sumur mereka terasa agak asam setelah
+                            hujan deras. Seorang siswa ingin mengetahui penyebabnya. Ia mengukur pH air sumur dan
+                            mendapatkan nilai <strong>pH = 5,5</strong>.
+                        </div>
+                        <div class="question-text">
+                            <p><strong>Pertanyaan:</strong></p>
+                            <ol>
+                                <li>Berdasarkan hasil tersebut, termasuk jenis apakah air sumur itu (asam, basa,
+                                    atau netral)?</li>
+                                <li>Analisislah mengapa air sumur bisa menjadi asam setelah hujan deras! Jelaskan
+                                    dengan mengaitkan dengan konsep asam-basa dan lingkungan sekitar.</li>
+                            </ol>
+                        </div>
+                    </div>
+
+                    <!-- Soal 2 -->
+                    <div class="question-card">
+                        <div class="question-header">
+                            <span class="question-number">Soal 2</span>
+                            <span class="question-tag">Abu Dapur dan Tanah</span>
+                        </div>
+                        <div class="question-context">
+                            Di desa pegunungan, banyak warga masih menggunakan kayu bakar untuk memasak. Setelah
+                            memasak, sisa abu dapur sering digunakan untuk menetralisir keasaman tanah di kebun.
+                        </div>
+                        <div class="question-text">
+                            <p><strong>Pertanyaan:</strong></p>
+                            <ol>
+                                <li>Jelaskan mengapa abu dapur bisa menetralkan tanah yang asam!</li>
+                                <li>Analisis jenis zat kimia apa yang kemungkinan terkandung dalam abu dapur
+                                    sehingga dapat bersifat basa.</li>
+                            </ol>
+                        </div>
+                    </div>
+
+                    <!-- Soal 3 -->
+                    <div class="question-card">
+                        <div class="question-header">
+                            <span class="question-number">Soal 3</span>
+                            <span class="question-tag">Fermentasi dan Keasaman</span>
+                        </div>
+                        <div class="question-context">
+                            Penduduk di sebuah desa suka membuat tape singkong dan tempe secara tradisional. Dalam
+                            prosesnya, makanan menjadi lebih asam seiring waktu fermentasi.
+                        </div>
+                        <div class="question-text">
+                            <p><strong>Pertanyaan:</strong></p>
+                            <ol>
+                                <li>Jelaskan apa yang menyebabkan makanan hasil fermentasi menjadi asam!</li>
+                                <li>Bagaimana pH bahan makanan berubah selama fermentasi? Jelaskan alasannya
+                                    berdasarkan konsep asam-basa.</li>
+                            </ol>
+                        </div>
+                    </div>
+
+                    <!-- Soal 4 -->
+                    <div class="question-card">
+                        <div class="question-header">
+                            <span class="question-number">Soal 4</span>
+                            <span class="question-tag">Jeruk Nipis dan Sabun Cuci</span>
+                        </div>
+                        <div class="question-context">
+                            Seorang ibu di desa mencuci piring menggunakan campuran air, sabun cuci, dan sedikit
+                            perasan jeruk nipis agar lebih bersih.
+                        </div>
+                        <div class="question-text">
+                            <p><strong>Pertanyaan:</strong></p>
+                            <ol>
+                                <li>Berdasarkan sifat kimianya, sabun termasuk zat asam atau basa?</li>
+                                <li>Analisislah mengapa penambahan jeruk nipis (zat asam) dapat membantu
+                                    membersihkan lemak lebih baik saat mencuci.</li>
+                            </ol>
+                        </div>
+                    </div>
+
+                    <!-- Soal 5 -->
+                    <div class="question-card">
+                        <div class="question-header">
+                            <span class="question-number">Soal 5</span>
+                            <span class="question-tag">Uji Sederhana di Rumah</span>
+                        </div>
+                        <div class="question-context">
+                            Siswa ingin mengetahui zat apa saja di rumahnya yang bersifat asam atau basa. Ia
+                            menggunakan air rebusan bunga kembang sepatu (indikator alami) untuk mengujinya. Warna
+                            indikator berubah menjadi <strong style="color: #ef4444;">merah</strong> saat dicampur
+                            dengan cuka, dan <strong style="color: #10b981;">hijau kebiruan</strong> saat dicampur
+                            dengan abu dapur.
+                        </div>
+                        <div class="question-text">
+                            <p><strong>Pertanyaan:</strong></p>
+                            <ol>
+                                <li>Berdasarkan hasil uji tersebut, klasifikasikan sifat asam atau basa dari kedua
+                                    bahan itu.</li>
+                                <li>Analisis bagaimana indikator alami bekerja dalam menentukan sifat asam-basa
+                                    suatu zat.</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="post-test-footer">
+                    <button id="closePostTestBtn" class="btn close-test-btn">
+                        ✓ Selesai Membaca
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Reagents and tools data
+        const itemsData = [
+            // BAHAN (Reagents)
+            { id: 'river', name: 'Air Sungai', type: 'reagent', pH: 7.0, color: '#60a5fa', vol: 30 },
+            { id: 'lemon', name: 'Air Jeruk', type: 'reagent', pH: 2.2, color: '#ffd93d', vol: 20 },
+            { id: 'beckline', name: 'Air Beckline', type: 'reagent', pH: 8.5, color: '#4dd0e1', vol: 25 },
+            { id: 'vinegar', name: 'Air Cuka', type: 'reagent', pH: 2.8, color: '#ff8a80', vol: 20 },
+            { id: 'rose', name: 'Air Mawar', type: 'reagent', pH: 5.5, color: '#ffb3d9', vol: 15 },
+            { id: 'turmeric', name: 'Air Kunyit', type: 'reagent', pH: 6.5, color: '#ffab00', vol: 20 },
+
+            // ALAT (Tools)
+            { id: 'litmus', name: 'Kertas Lakmus', type: 'tool', mode: 'paper', color: '#ffffff' },
+            { id: 'testtube', name: 'Tabung Reaksi', type: 'tool', mode: 'tube', color: '#b0bec5' },
+        ];
+
+        const toolsContainer = document.getElementById('tools');
+        const bench = document.getElementById('bench');
+        const beaker = document.getElementById('beaker');
+        const liquidEl = document.getElementById('liquid');
+        const phValueEl = document.getElementById('phValue');
+        const historyEl = document.getElementById('history');
+        const tray = document.getElementById('tray');
+        const trayToggle = document.getElementById('trayToggle');
+        const resetBtn = document.getElementById('resetBtn');
+        const lab = document.getElementById('lab');
+
+        const volumeValueEl = document.getElementById('volumeValue');
+        const volumeFillEl = document.getElementById('volumeFill');
+        const volumePercentEl = document.getElementById('volumePercent');
+        const breakdownListEl = document.getElementById('breakdownList');
+
+        let state = {
+            contents: [], // baseline water
+        }
+
+        function createToolCard(item) {
+            const el = document.createElement('div');
+            el.className = 'tool';
+            el.dataset.id = item.id;
+            el.tabIndex = 0;
+            el.setAttribute('role', 'button');
+            el.setAttribute('aria-label', `${item.name} - ${item.type === 'reagent' ? 'pH ' + item.pH + ', ' + item.vol + 'ml' : 'Alat ukur'}`);
+
+            // Badge volume untuk reagent
+            const volumeBadge = item.type === 'reagent' ? `<div class="volume-badge">${item.vol}ml</div>` : '';
+
+            el.innerHTML = `
+                <div style="position:relative">
+                ${volumeBadge}
+                <div style="height:46px; display:flex; align-items:center; justify-content:center">
+                    ${getIconSVG(item)}
+                </div>
+                </div>
+                <div class="name">${item.name}</div>
+                <div class="label">${item.type === 'reagent' ? 'pH ~' + item.pH : 'Alat Ukur'}</div>
+            `;
+
+            makeDraggable(el, item);
+            return el;
+        }
+
+        function getIconSVG(item) {
+            if (item.type === 'reagent') {
+                return `<svg width="44" height="44" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="5" y="4" width="14" height="16" rx="2" fill="${item.color}" fill-opacity="0.95" stroke="rgba(0,0,0,0.2)" stroke-width="1"/>
+      <rect x="7" y="6" width="10" height="2" fill="rgba(255,255,255,0.3)"/>
+    </svg>`
+            }
+
+            // Icon untuk Kertas Lakmus
+            if (item.id === 'litmus') {
+                return `<svg width="44" height="44" viewBox="0 0 24 24">
+      <rect x="7" y="4" width="5" height="16" rx="1" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>
+      <rect x="12" y="4" width="5" height="16" rx="1" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>
+    </svg>`
+            }
+
+            // Icon untuk Tabung Reaksi
+            if (item.id === 'testtube') {
+                return `<svg width="44" height="44" viewBox="0 0 24 24">
+      <rect x="9" y="3" width="6" height="18" rx="3" fill="rgba(176,190,197,0.3)" stroke="${item.color}" stroke-width="2"/>
+      <rect x="9" y="15" width="6" height="6" rx="3" fill="${item.color}" opacity="0.7"/>
+      <circle cx="12" cy="5" r="1" fill="#37474f"/>
+    </svg>`
+            }
+
+            // Default icon (pH meter atau lainnya)
+            return `<svg width="44" height="44" viewBox="0 0 24 24">
+    <rect x="9" y="3" width="6" height="18" rx="2" fill="#cbd5e1"/>
+    <circle cx="12" cy="8" r="2" fill="#60a5fa"/>
+    <rect x="10" y="12" width="4" height="6" rx="1" fill="#1e293b"/>
+  </svg>`
+        }
+
+        // Populate tools
+        itemsData.forEach(it => {
+            const node = createToolCard(it);
+            toolsContainer.appendChild(node);
+        });
+
+        // Add quick items to tray
+        itemsData.forEach(it => {
+            const node = document.createElement('div');
+            node.className = 'tool';
+            node.style.width = '100%';
+            node.style.display = 'flex';
+            node.style.alignItems = 'center';
+            node.style.justifyContent = 'space-between';
+            node.style.padding = '8px';
+            node.style.cursor = 'pointer';  // Changed from 'default' to 'pointer'
+
+            const detail = it.type === 'reagent' ? `pH ${it.pH} • ${it.vol}ml` : 'Alat Ukur';
+
+            node.innerHTML = `
+    <div style="display:flex; align-items:center; gap:8px; flex:1">
+      <div style="width:28px;height:20px;border-radius:6px;background:${it.color || '#cbd5e1'}; box-shadow:0 2px 6px rgba(0,0,0,0.3)"></div>
+      <div style="flex:1">
+        <div style="font-weight:600; font-size:13px">${it.name}</div>
+        <div style="font-size:11px;color:var(--muted)">${detail}</div>
+      </div>
+    </div>
+    <button class="btn" style="padding:4px 10px; font-size:12px; margin-left:8px">+</button>
+  `;
+
+            // Make entire div clickable
+            node.addEventListener('click', (e) => {
+                addToBeaker(it);
+            });
+
+            // Keep button click handler for consistency
+            node.querySelector('.btn').addEventListener('click', (e) => {
+                e.stopPropagation();
+                addToBeaker(it);
+            });
+
+            tray.appendChild(node);
+        });
+
+        // Toggle tray
+        trayToggle.addEventListener('click', () => {
+            tray.classList.toggle('open');
+        });
+
+        // Make draggable
+        function makeDraggable(domNode, item) {
+            let ghost = null; let dragging = false;
+
+            function start(ev) {
+                // Don't drag if inside tray on mobile
+                if (window.innerWidth <= 900 && domNode.closest('.tray')) {
+                    return;
+                }
+                ev.preventDefault();
+                ev.stopPropagation();
+                dragging = true;
+
+                const clientX = ev.clientX !== undefined ? ev.clientX : ev.touches?.[0]?.clientX;
+                const clientY = ev.clientY !== undefined ? ev.clientY : ev.touches?.[0]?.clientY;
+
+                ghost = domNode.cloneNode(true);
+                ghost.classList.add('floating', 'tool-ghost');
+                ghost.style.position = 'fixed';
+                ghost.style.left = clientX + 'px';
+                ghost.style.top = clientY + 'px';
+                ghost.style.width = Math.max(80, domNode.offsetWidth) + 'px';
+                ghost.style.pointerEvents = 'none';
+                ghost.style.zIndex = '1000';
+                document.body.appendChild(ghost);
+
+                document.addEventListener('pointermove', move, { passive: false });
+                document.addEventListener('pointerup', end);
+                document.addEventListener('touchmove', move, { passive: false });
+                document.addEventListener('touchend', end);
+            }
+
+            function move(ev) {
+                if (!dragging) return;
+                ev.preventDefault();
+
+                const clientX = ev.clientX !== undefined ? ev.clientX : ev.touches?.[0]?.clientX;
+                const clientY = ev.clientY !== undefined ? ev.clientY : ev.touches?.[0]?.clientY;
+
+                ghost.style.left = clientX + 'px';
+                ghost.style.top = clientY + 'px';
+
+                // Collision check
+                const ghostRect = ghost.getBoundingClientRect();
+                const ghostCenterX = ghostRect.left + ghostRect.width / 2;
+                const ghostCenterY = ghostRect.top + ghostRect.height / 2;
+
+                const beakerRect = beaker.getBoundingClientRect();
+                const isOver = ghostCenterX >= beakerRect.left &&
+                    ghostCenterX <= beakerRect.right &&
+                    ghostCenterY >= beakerRect.top &&
+                    ghostCenterY <= beakerRect.bottom;
+
+                if (isOver) {
+                    ghost.style.transform = 'translate(-50%,-50%) scale(1.12)';
+                    beaker.style.border = '2px solid rgba(96,165,250,0.6)';
+                    beaker.style.animation = 'glow 1s infinite';
+                } else {
+                    ghost.style.transform = 'translate(-50%,-50%) scale(1)';
+                    beaker.style.border = '2px solid rgba(255,255,255,0.04)';
+                    beaker.style.animation = 'none';
+                }
+            }
+
+            function end(ev) {
+                if (!dragging) return;
+                dragging = false;
+
+                document.removeEventListener('pointermove', move);
+                document.removeEventListener('pointerup', end);
+                document.removeEventListener('touchmove', move);
+                document.removeEventListener('touchend', end);
+
+                if (ghost) {
+                    const ghostRect = ghost.getBoundingClientRect();
+                    const ghostCenterX = ghostRect.left + ghostRect.width / 2;
+                    const ghostCenterY = ghostRect.top + ghostRect.height / 2;
+
+                    const beakerRect = beaker.getBoundingClientRect();
+                    const isOver = ghostCenterX >= beakerRect.left &&
+                        ghostCenterX <= beakerRect.right &&
+                        ghostCenterY >= beakerRect.top &&
+                        ghostCenterY <= beakerRect.bottom;
+
+                    if (isOver) {
+                        animateAddition(ghostRect, () => onDropIntoBeaker(item));
+                    }
+
+                    beaker.style.border = '2px solid rgba(255,255,255,0.04)';
+                    beaker.style.animation = 'none';
+                    ghost.remove();
+                    ghost = null;
+                }
+            }
+
+            domNode.addEventListener('pointerdown', start);
+            domNode.addEventListener('touchstart', start, { passive: false });
+        }
+
+        function animateAddition(fromRect, callback) {
+            const particle = document.createElement('div');
+            particle.style.position = 'fixed';
+            particle.style.left = fromRect.left + fromRect.width / 2 + 'px';
+            particle.style.top = fromRect.top + fromRect.height / 2 + 'px';
+            particle.style.width = '20px';
+            particle.style.height = '20px';
+            particle.style.borderRadius = '50%';
+            particle.style.background = 'radial-gradient(circle, #60a5fa, #3b82f6)';
+            particle.style.transform = 'translate(-50%, -50%)';
+            particle.style.transition = 'all 0.4s ease-out';
+            particle.style.zIndex = '999';
+            particle.style.pointerEvents = 'none';
+            document.body.appendChild(particle);
+
+            const liquidRect = liquidEl.getBoundingClientRect();
+            setTimeout(() => {
+                particle.style.left = liquidRect.left + liquidRect.width / 2 + 'px';
+                particle.style.top = liquidRect.top + liquidRect.height / 2 + 'px';
+                particle.style.opacity = '0';
+                particle.style.transform = 'translate(-50%, -50%) scale(0.3)';
+            }, 10);
+
+            setTimeout(() => {
+                particle.remove();
+                callback();
+            }, 450);
+        }
+
+        // Add via tray button
+        function addToBeaker(item) {
+            onDropIntoBeaker(item);
+        }
+
+        // Handle drop
+        function onDropIntoBeaker(item) {
+            if (item.type === 'reagent') {
+                state.contents.push({ id: item.id, pH: item.pH, vol: item.vol });
+                logEvent(`<span style="color:#60a5fa">✔</span> Ditambahkan: <strong>${item.name}</strong> (pH ${item.pH}, ${item.vol}ml)`);
+                updateBeakerAppearance();
+                computePH();
+                flashMessage(`${item.name} ditambahkan!`);
+
+            } else if (item.id === 'litmus') {
+                const currentPH = computePH(true);
+
+                if (currentPH === null) {
+                    logEvent(`<span style="color:#94a3b8">⚠️</span> Kertas lakmus: <strong>Tidak ada cairan untuk diuji</strong>`);
+                    flashMessage(`Beaker kosong - tambahkan reagent dahulu`);
+                    return;
+                }
+
+                let result, color;
+                if (currentPH < 7) {
+                    result = 'merah (asam)';
+                    color = '#ff6b6b';
+                } else if (currentPH > 7) {
+                    result = 'biru (basa)';
+                    color = '#6ee7b7';
+                } else {
+                    result = 'ungu (netral)';
+                    color = '#a78bfa';
+                }
+
+                logEvent(`<span style="color:${color}">🧪</span> Kertas lakmus: <strong style="color:${color}">${result}</strong> (pH ${currentPH.toFixed(2)})`);
+                flashMessage(`Kertas lakmus: ${result}`);
+
+            } else if (item.id === 'testtube') {
+                // Tabung Reaksi: Uji skala kecil
+                const currentPH = computePH(true);
+
+                if (currentPH === null) {
+                    logEvent(`<span style="color:#94a3b8">⚠️</span> Tabung reaksi: <strong>Tidak ada cairan untuk diuji</strong>`);
+                    flashMessage(`Beaker kosong - tambahkan reagent dahulu`);
+                    return;
+                }
+
+                const totalVol = state.contents.reduce((sum, c) => sum + c.vol, 0);
+
+                logEvent(`<span style="color:#b0bec5">🧬</span> Tabung reaksi: <strong>Sampel ${totalVol}ml</strong> diambil untuk uji coba (pH ${currentPH.toFixed(2)})`);
+                flashMessage(`🧬 Sampel diuji: pH ${currentPH.toFixed(2)}`);
+
+                // Animasi tabung reaksi muncul sebentar
+                showTestTubeAnimation(currentPH);
+            }
+        }
+
+        function logEvent(text) {
+            const el = document.createElement('div');
+            el.style.padding = '8px';
+            el.style.borderBottom = '1px dashed rgba(255,255,255,0.08)';
+            el.style.fontSize = '13px';
+            el.style.animation = 'slideIn 0.3s ease-out';
+            el.innerHTML = `<div style="color:#94a3b8; font-size:11px">${new Date().toLocaleTimeString()}</div><div style="margin-top:2px">${text}</div>`;
+            historyEl.prepend(el);
+        }
+
+        function flashMessage(text) {
+            const f = document.createElement('div');
+            f.style.position = 'fixed';
+            f.style.left = '50%';
+            f.style.top = '20%';
+            f.style.transform = 'translateX(-50%) scale(0.8)';
+            f.style.background = 'var(--glass-bg)';
+            f.style.color = 'var(--text-dark)';
+            f.style.backdropFilter = 'blur(10px)';
+            f.style.padding = '16px 24px';
+            f.style.borderRadius = '12px';
+            f.style.zIndex = '9999';
+            f.style.fontSize = '16px';
+            f.style.fontWeight = '600';
+            f.style.boxShadow = '0 8px 32px rgba(0,0,0,0.5)';
+            f.style.border = '1px solid rgba(255,255,255,0.1)';
+            f.style.transition = 'all 0.3s ease-out';
+            f.innerText = text;
+            document.body.appendChild(f);
+
+            setTimeout(() => f.style.transform = 'translateX(-50%) scale(1)', 10);
+            setTimeout(() => {
+                f.style.opacity = '0';
+                f.style.transform = 'translateX(-50%) scale(0.8)';
+            }, 1500);
+            setTimeout(() => f.remove(), 1800);
+        }
+
+        // Compute pH
+        function computePH(short = false) {
+            if (state.contents.length === 0) {
+                if (!short) updatePHUI(null);
+                updateVolumeUI();
+                return null;
+            }
+
+            let V = 0; let Htotal = 0;
+            state.contents.forEach(c => { V += c.vol; Htotal += Math.pow(10, -c.pH) * c.vol; });
+            const Hconc = Htotal / V;
+            const pH = -Math.log10(Hconc);
+
+            if (!short) {
+                updatePHUI(pH);
+                updateVolumeUI();
+            }
+            return pH;
+        }
+
+        function updatePHUI(pH) {
+            // TAMBAHKAN di awal fungsi:
+            if (pH === null || pH === undefined) {
+                // Beaker kosong
+                phValueEl.style.background = 'rgba(255,255,255,0.05)';
+                phValueEl.style.color = '#94a3b8';
+                phValueEl.innerHTML = `--<div style="font-size:13px;margin-top:4px;opacity:0.9;font-weight:500">Beaker Kosong</div>`;
+
+                liquidEl.style.background = 'transparent';
+                liquidEl.style.height = '0%';
+                return;
+            }
+
+            // Sisa kode tetap sama untuk pH yang valid
+            const p = Number.isFinite(pH) ? pH : 7.0;
+
+            let bg, textColor, indicator;
+            if (p < 3) {
+                bg = '#ff6b6b';
+                textColor = '#ffffff';
+                indicator = 'Asam Kuat';
+            } else if (p < 6.5) {
+                bg = '#ffb86b';
+                textColor = '#1a1a1a';
+                indicator = 'Asam Lemah';
+            } else if (p <= 7.5) {
+                bg = '#60a5fa';
+                textColor = '#ffffff';
+                indicator = 'Netral';
+            } else if (p <= 9) {
+                bg = '#99f6e4';
+                textColor = '#1a1a1a';
+                indicator = 'Basa Lemah';
+            } else {
+                bg = '#6ee7b7';
+                textColor = '#1a1a1a';
+                indicator = 'Basa Kuat';
+            }
+
+            phValueEl.style.background = bg;
+            phValueEl.style.color = textColor;
+            phValueEl.innerHTML = `${p.toFixed(2)}<div style="font-size:13px;margin-top:4px;opacity:0.9;font-weight:500">${indicator}</div>`;
+
+            // Update liquid
+            const liquidBg = adjustBrightness(bg, p < 7 ? 1.1 : 1.2);
+            liquidEl.style.background = `linear-gradient(180deg, ${liquidBg}, ${shade(liquidBg, -15)})`;
+
+            const totalVol = state.contents.reduce((s, c) => s + c.vol, 0);
+            const pct = Math.min(90, 20 + (totalVol / 3));
+            liquidEl.style.height = pct + '%';
+        }
+
+        function updateVolumeUI() {
+            const totalVol = state.contents.reduce((sum, c) => sum + c.vol, 0);
+            const maxCapacity = 200; // ml
+            const percentage = Math.min(100, (totalVol / maxCapacity) * 100);
+
+            // Update angka volume
+            if (totalVol === 0) {
+                volumeValueEl.innerHTML = `0 <span style="font-size:16px; opacity:0.9">ml</span>`;
+            } else {
+                volumeValueEl.innerHTML = `${totalVol.toFixed(0)} <span style="font-size:16px; opacity:0.9">ml Total</span>`;
+            }
+
+            // Update progress bar
+            volumeFillEl.style.width = percentage + '%';
+            volumePercentEl.textContent = percentage.toFixed(0) + '%';
+
+            // Ubah warna berdasarkan kapasitas
+            let barColor;
+            if (percentage < 50) {
+                barColor = 'linear-gradient(90deg, #6ee7b7, #34d399)'; // Hijau
+            } else if (percentage < 80) {
+                barColor = 'linear-gradient(90deg, #fbbf24, #f59e0b)'; // Kuning
+            } else {
+                barColor = 'linear-gradient(90deg, #ef4444, #dc2626)'; // Merah
+            }
+
+            volumeFillEl.style.background = barColor;
+
+            // Animasi saat hampir penuh
+            if (percentage >= 90) {
+                volumeValueEl.style.animation = 'pulse 1s infinite';
+            } else {
+                volumeValueEl.style.animation = 'none';
+            }
+
+            // ===== UPDATE BREAKDOWN LIST =====
+            updateBreakdownList();
+        }
+
+        // Fungsi baru untuk update breakdown per reagent
+        function updateBreakdownList() {
+            if (state.contents.length === 0) {
+                breakdownListEl.innerHTML = `
+                    <div style="font-size:11px; color:#94a3b8; font-style:italic; text-align:center; padding:8px">
+                        Belum ada cairan
+                    </div>
+                `;
+                return;
+            }
+
+            // Gabungkan reagent yang sama
+            const summary = {};
+            state.contents.forEach(c => {
+                if (!summary[c.id]) {
+                    summary[c.id] = { vol: 0, pH: c.pH };
+                }
+                summary[c.id].vol += c.vol;
+            });
+
+            // Render breakdown
+            let html = '';
+            Object.keys(summary).forEach(id => {
+                const item = itemsData.find(x => x.id === id);
+                const vol = summary[id].vol;
+                const pH = summary[id].pH;
+                const percentage = ((vol / state.contents.reduce((s, c) => s + c.vol, 0)) * 100).toFixed(0);
+
+                if (item) {
+                    html += `
+                        <div style="display:flex; align-items:center; gap:6px; padding:4px 6px; background:rgba(102,126,234,0.05); border-radius:6px; font-size:11px; animation:slideIn 0.3s ease-out">
+                            <div style="width:12px; height:12px; border-radius:3px; background:${item.color}; box-shadow:0 2px 4px rgba(0,0,0,0.2); flex-shrink:0"></div>
+                            <div style="flex:1; display:flex; justify-content:space-between; align-items:center">
+                                <span style="font-weight:600; color:var(--text-dark)">${item.name}</span>
+                                <span style="color:var(--muted); font-weight:500">${vol.toFixed(0)}ml</span>
+                            </div>
+                            <div style="font-size:10px; color:var(--muted); background:rgba(255,255,255,0.5); padding:2px 6px; border-radius:8px">
+                                ${percentage}%
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+
+            breakdownListEl.innerHTML = html;
+        }
+
+        function adjustBrightness(hex, factor) {
+            const c = hexToRgb(hex);
+            return rgbToHex(
+                Math.min(255, Math.round(c.r * factor)),
+                Math.min(255, Math.round(c.g * factor)),
+                Math.min(255, Math.round(c.b * factor))
+            );
+        }
+
+        function updateBeakerAppearance() {
+            // TAMBAHKAN di awal:
+            if (state.contents.length === 0) {
+                liquidEl.style.background = 'transparent';
+                liquidEl.style.height = '0%';
+                return;
+            }
+
+            // Sisa kode tetap sama
+            const base = { r: 155, g: 231, b: 255, v: 30 };
+            const rgbList = [base];
+
+            state.contents.forEach(c => {
+                const it = itemsData.find(x => x.id === c.id);
+                if (it && it.color) {
+                    rgbList.push({ ...hexToRgb(it.color), v: c.vol });
+                }
+            });
+
+            let Vr = 0, Vg = 0, Vb = 0, Vt = 0;
+            rgbList.forEach(r => { Vr += r.r * r.v; Vg += r.g * r.v; Vb += r.b * r.v; Vt += r.v; });
+
+            const r = Math.min(255, Math.round(Vr / Vt * 1.1));
+            const g = Math.min(255, Math.round(Vg / Vt * 1.1));
+            const b = Math.min(255, Math.round(Vb / Vt * 1.1));
+            const hex = rgbToHex(r, g, b);
+
+            liquidEl.style.background = `linear-gradient(180deg, ${hex}, ${shade(hex, -15)})`;
+            liquidEl.style.animation = 'none';
+            setTimeout(() => liquidEl.style.animation = 'ripple 0.6s ease-out', 10);
+        }
+
+        // Color utilities
+        function hexToRgb(hex) {
+            hex = hex.replace('#', '');
+            if (hex.length === 3) hex = hex.split('').map(s => s + s).join('');
+            const n = parseInt(hex, 16);
+            return { r: (n >> 16) & 255, g: (n >> 8) & 255, b: n & 255 };
+        }
+
+        function rgbToHex(r, g, b) {
+            return '#' + [r, g, b].map(x => Math.round(x).toString(16).padStart(2, '0')).join('');
+        }
+
+        function shade(hex, percent) {
+            const c = hexToRgb(hex);
+            const amt = Math.round(2.55 * percent);
+            return rgbToHex(clamp(c.r + amt, 0, 255), clamp(c.g + amt, 0, 255), clamp(c.b + amt, 0, 255));
+        }
+
+        function clamp(a, b, c) {
+            return Math.max(b, Math.min(c, a));
+        }
+
+        // Reset with confirmation
+        resetBtn.addEventListener('click', () => {
+            if (state.contents.length > 0) {
+                const confirmReset = document.createElement('div');
+                confirmReset.style.position = 'fixed';
+                confirmReset.style.left = '50%';
+                confirmReset.style.top = '50%';
+                confirmReset.style.transform = 'translate(-50%, -50%)';
+                confirmReset.style.background = 'rgba(255, 255, 255, 0.98)';
+                confirmReset.style.backdropFilter = 'blur(10px)';
+                confirmReset.style.padding = '24px';
+                confirmReset.style.borderRadius = '12px';
+                confirmReset.style.border = '1px solid rgba(255,255,255,0.1)';
+                confirmReset.style.boxShadow = '0 8px 32px rgba(0,0,0,0.5)';
+                confirmReset.style.zIndex = '9999';
+                confirmReset.style.textAlign = 'center';
+                confirmReset.style.maxWidth = '300px';
+
+                confirmReset.innerHTML = `
+        <div style="font-size:18px;font-weight:700;margin-bottom:12px;color:var(--text-dark)">Reset Beaker?</div>
+        <div style="color:var(--text-muted);margin-bottom:20px;font-size:14px">Semua reagent akan dihapus dan beaker dikembalikan ke kondisi awal</div>
+        <div style="display:flex;gap:10px;justify-content:center">
+        <button id="cancelReset" style="padding:10px 20px;border-radius:8px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#e6eef8;font-weight:600;cursor:pointer">Batal</button>
+        <button id="confirmReset" style="padding:10px 20px;border-radius:8px;background:linear-gradient(90deg,#ef4444,#dc2626);border:none;color:white;font-weight:600;cursor:pointer">Reset</button>
+      </div>
+    `;
+
+                document.body.appendChild(confirmReset);
+
+                document.getElementById('cancelReset').addEventListener('click', () => confirmReset.remove());
+                document.getElementById('confirmReset').addEventListener('click', () => {
+                    performReset();
+                    confirmReset.remove();
+                });
+
+            } else {
+                flashMessage('Beaker sudah kosong!');
+            }
+        });
+
+        // Second reset button (next to Instrumen)
+        const resetBtn2 = document.getElementById('resetBtn2');
+        if (resetBtn2) {
+            resetBtn2.addEventListener('click', () => {
+                if (state.contents.length > 0) {
+                    const confirmReset = document.createElement('div');
+                    confirmReset.style.position = 'fixed';
+                    confirmReset.style.left = '50%';
+                    confirmReset.style.top = '50%';
+                    confirmReset.style.transform = 'translate(-50%, -50%)';
+                    confirmReset.style.background = 'rgba(255, 255, 255, 0.98)';
+                    confirmReset.style.backdropFilter = 'blur(10px)';
+                    confirmReset.style.padding = '24px';
+                    confirmReset.style.borderRadius = '12px';
+                    confirmReset.style.border = '1px solid rgba(255,255,255,0.1)';
+                    confirmReset.style.boxShadow = '0 8px 32px rgba(0,0,0,0.5)';
+                    confirmReset.style.zIndex = '9999';
+                    confirmReset.style.textAlign = 'center';
+                    confirmReset.style.maxWidth = '300px';
+
+                    confirmReset.innerHTML = `
+            <div style="font-size:18px;font-weight:700;margin-bottom:12px;color:var(--text-dark)">Reset Beaker?</div>
+            <div style="color:var(--text-muted);margin-bottom:20px;font-size:14px">Semua reagent akan dihapus dan beaker dikembalikan ke kondisi awal</div>
+            <div style="display:flex;gap:10px;justify-content:center">
+            <button id="cancelReset2" style="padding:10px 20px;border-radius:8px;background:rgba(102,126,234,0.1);border:1px solid rgba(102,126,234,0.2);color:var(--primary-purple);font-weight:600;cursor:pointer">Batal</button>
+            <button id="confirmReset2" style="padding:10px 20px;border-radius:8px;background:linear-gradient(90deg,#ef4444,#dc2626);border:none;color:white;font-weight:600;cursor:pointer">Reset</button>
+          </div>
+        `;
+
+                    document.body.appendChild(confirmReset);
+
+                    document.getElementById('cancelReset2').addEventListener('click', () => confirmReset.remove());
+                    document.getElementById('confirmReset2').addEventListener('click', () => {
+                        performReset();
+                        confirmReset.remove();
+                    });
+
+                } else {
+                    flashMessage('Beaker sudah kosong!');
+                }
+            });
+        }
+
+        function performReset() {
+            state.contents = []; // beaker kosong
+            historyEl.innerHTML = '';
+            updateBeakerAppearance();
+            updatePHUI(null);
+            updateVolumeUI();
+            logEvent('<span style="color:#94a3b8">🔄</span> Beaker direset ke kondisi awal (kosong)');
+            flashMessage('✓ Beaker dikosongkan!');
+        }
+
+        // Initialize
+        updateBeakerAppearance();
+        computePH();
+        updateVolumeUI();
+
+        // Keyboard accessibility
+        document.querySelectorAll('.tool').forEach(t => {
+            t.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    const id = t.dataset.id;
+                    const it = itemsData.find(x => x.id === id);
+                    if (it) {
+                        t.style.transform = 'scale(0.95)';
+                        setTimeout(() => t.style.transform = 'scale(1)', 100);
+                        onDropIntoBeaker(it);
+                    }
+                }
+            });
+
+            t.addEventListener('focus', () => t.style.outline = '2px solid #60a5fa');
+            t.addEventListener('blur', () => t.style.outline = 'none');
+        });
+
+        // Responsive adjustments
+        function touchHack() {
+            if (window.innerWidth < 600) {
+                document.querySelectorAll('.tool').forEach(t => {
+                    t.style.padding = '14px';
+                    t.style.minHeight = '100px';
+                });
+                beaker.style.width = '180px';
+                beaker.style.height = '230px';
+            } else {
+                document.querySelectorAll('.tool').forEach(t => {
+                    t.style.padding = '10px';
+                    t.style.minHeight = 'auto';
+                });
+                beaker.style.width = '210px';
+                beaker.style.height = '260px';
+            }
+        }
+        window.addEventListener('resize', touchHack);
+        touchHack();
+
+        // Welcome message + hide preloader when fully loaded
+        window.addEventListener('load', () => {
+            const loader = document.querySelector('.loader');
+            if (loader) loader.style.display = 'none';
+            flashMessage('🧪 Virtual Lab siap digunakan!');
+        });
+
+        // Help tooltip
+        let hasInteracted = false;
+        function showHelpTooltip() {
+            if (hasInteracted) return;
+
+            const tooltip = document.createElement('div');
+            tooltip.style.position = 'fixed';
+            tooltip.style.left = '50%';
+            tooltip.style.bottom = '20px';
+            tooltip.style.transform = 'translateX(-50%)';
+            tooltip.style.background = 'rgba(96,165,250,0.95)';
+            tooltip.style.color = '#04263b';
+            tooltip.style.padding = '12px 20px';
+            tooltip.style.borderRadius = '24px';
+            tooltip.style.fontWeight = '600';
+            tooltip.style.fontSize = '14px';
+            tooltip.style.zIndex = '9998';
+            tooltip.style.boxShadow = '0 4px 16px rgba(96,165,250,0.4)';
+            tooltip.style.animation = 'pulse 2s infinite';
+            tooltip.innerHTML = '💡 Seret alat/bahan ke beaker untuk memulai eksperimen!';
+
+            document.body.appendChild(tooltip);
+
+            setTimeout(() => tooltip.remove(), 8000);
+        }
+
+        // Animasi tabung reaksi muncul
+        function showTestTubeAnimation(pH) {
+            const tube = document.createElement('div');
+            tube.style.position = 'fixed';
+            tube.style.left = '50%';
+            tube.style.top = '50%';
+            tube.style.transform = 'translate(-50%, -50%) scale(0.5)';
+            tube.style.width = '80px';
+            tube.style.height = '160px';
+            tube.style.background = 'rgba(176, 190, 197, 0.9)';
+            tube.style.borderRadius = '8px 8px 30px 30px';
+            tube.style.border = '2px solid #37474f';
+            tube.style.zIndex = '9999';
+            tube.style.transition = 'all 0.4s ease-out';
+            tube.style.boxShadow = '0 8px 32px rgba(0,0,0,0.3)';
+
+            // Isi cairan
+            let color;
+            if (pH < 4) color = '#ff6b6b';
+            else if (pH < 6.5) color = '#ffb86b';
+            else if (pH <= 7.5) color = '#60a5fa';
+            else if (pH <= 9) color = '#99f6e4';
+            else color = '#6ee7b7';
+
+            tube.innerHTML = `
+                <div style="position:absolute; bottom:10px; left:50%; transform:translateX(-50%); width:70%; height:40%; background:${color}; border-radius:4px 4px 20px 20px; box-shadow:inset 0 -2px 8px rgba(0,0,0,0.2)"></div>
+                <div style="position:absolute; bottom:4px; left:50%; transform:translateX(-50%); font-size:10px; color:#37474f; font-weight:600">pH ${pH.toFixed(1)}</div>
+            `;
+
+            document.body.appendChild(tube);
+
+            setTimeout(() => tube.style.transform = 'translate(-50%, -50%) scale(1)', 10);
+            setTimeout(() => {
+                tube.style.opacity = '0';
+                tube.style.transform = 'translate(-50%, -50%) scale(0.5)';
+            }, 2000);
+            setTimeout(() => tube.remove(), 2400);
+        }
+
+        // ===== POST TEST FUNCTIONALITY =====
+        const postTestPopup = document.getElementById('postTestPopup');
+        const selesaiBtn = document.getElementById('selesaiBtn');
+        const closePostTest = document.getElementById('closePostTest');
+        const closePostTestBtn = document.getElementById('closePostTestBtn');
+
+        // Open Post Test popup when "Selesai" button clicked
+        selesaiBtn.addEventListener('click', () => {
+            postTestPopup.classList.add('active');
+            document.body.style.overflow = 'hidden'; // Prevent background scrolling
+            flashMessage('📋 Silakan baca soal Post Test');
+        });
+
+        // Close popup via X button
+        closePostTest.addEventListener('click', () => {
+            postTestPopup.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        });
+
+        // Close popup via footer button
+        closePostTestBtn.addEventListener('click', () => {
+            postTestPopup.classList.remove('active');
+            document.body.style.overflow = 'auto';
+            flashMessage('✓ Terima kasih telah membaca Post Test');
+        });
+
+        // Close on background click
+        postTestPopup.addEventListener('click', (e) => {
+            if (e.target === postTestPopup) {
+                postTestPopup.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
+        });
+
+        // Close with Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && postTestPopup.classList.contains('active')) {
+                postTestPopup.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
+        });
+
+        setTimeout(showHelpTooltip, 2000);
+        document.addEventListener('pointerdown', () => hasInteracted = true, { once: true });
+
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/edulab/service-worker.js', {
+                    scope: '/edulab/'
+                })
+                    .then((registration) => {
+                        console.log('Service Worker registered successfully:', registration.scope);
+                    })
+                    .catch((error) => {
+                        console.log('Service Worker registration failed:', error);
+                    });
+            });
+        }
+    </script>
+</body>
+
+</html>

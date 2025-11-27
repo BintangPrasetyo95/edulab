@@ -358,7 +358,7 @@ function highlightActiveNav() {
             if (topicId !== 'asam-basa') {
                 link.classList.add('disabled');
             } else {
-                if (currentPath.includes('start-praktikum.html') || currentPath.includes('praktikum.html')) {
+                if (currentPath.includes('start-praktikum.html')) {
                     if (href === 'start-praktikum.html') {
                         link.classList.add('active');
                     }
@@ -389,7 +389,7 @@ function highlightActiveNav() {
             if (item.textContent.trim().includes('Modul')) {
                 item.classList.add('active');
             }
-        } else if (currentPath.includes('start-praktikum.html') || currentPath.includes('praktikum.html')) {
+        } else if (currentPath.includes('start-praktikum.html')) {
             if (item.textContent.trim().includes('Praktikum')) {
                 item.classList.add('active');
             }

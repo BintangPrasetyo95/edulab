@@ -1,0 +1,478 @@
+<!doctype html>
+<html lang="id">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Simulasi Listrik Statis — Interaksi Muatan Sejenis</title>
+    <style>
+        :root {
+            --lab-bg: #ffffff;
+            --card: #f6f7fb;
+            --accent: #2b6cb0;
+            --danger: #e53e3e;
+        }
+
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            font-family: Inter, Roboto, Arial, sans-serif;
+            background: linear-gradient(180deg, #f0f4f8, #ffffff);
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 18px auto;
+            padding: 12px;
+        }
+
+        h1 {
+            font-size: 18px;
+            margin: 6px 0 12px;
+            color: #0f172a
+        }
+
+        .lab {
+            background: var(--lab-bg);
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            height: 65vh;
+            min-height: 420px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 6px 18px rgba(11, 24, 39, 0.06);
+            touch-action: none;
+        }
+
+        /* statif visual */
+        #statif {
+            position: absolute;
+            left: 18px;
+            top: 40px;
+            width: 80px;
+            height: 220px;
+            background: linear-gradient(180deg, #b38b5b, #855a32);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: 600;
+            transform: translateZ(0);
+        }
+
+        /* pita1 tergantung */
+        #pita1 {
+            position: absolute;
+            left: 56px;
+            top: 40px;
+            width: 4px;
+            height: 180px;
+            background: linear-gradient(180deg, #ffd166 0%, #ffb347 50%, #ffd166 100%);
+            border-radius: 2px;
+            box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1), -2px 0 4px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding-bottom: 6px;
+            font-size: 11px;
+            color: #111;
+            user-select: none;
+            cursor: default;
+            transition: transform 0.18s ease, left 0.18s ease, top 0.18s ease;
+        }
+
+        #pita1::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 12px;
+            height: 12px;
+            background: #ffd166;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        /* pita2 bisa digerakkan */
+        #pita2 {
+            position: absolute;
+            right: 24px;
+            top: 120px;
+            width: 4px;
+            height: 140px;
+            background: linear-gradient(180deg, #ffd166 0%, #ffb347 50%, #ffd166 100%);
+            border-radius: 2px;
+            box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1), -2px 0 4px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding-bottom: 6px;
+            font-size: 11px;
+            color: #111;
+            touch-action: none;
+            user-select: none;
+            cursor: grab;
+            transition: transform 0.12s ease;
+        }
+
+        #pita2::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 12px;
+            height: 12px;
+            background: #ffd166;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        #kainWol {
+            position: absolute;
+            right: 24px;
+            top: 40px;
+            width: 80px;
+            height: 60px;
+            background: linear-gradient(180deg, #f7fafc, #e2e8f0);
+            border-radius: 12px;
+            border: 2px dashed #cbd5e1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            color: #1a202c;
+            cursor: grab;
+            touch-action: none;
+            user-select: none;
+        }
+
+        /* label muatan */
+        .label {
+            position: absolute;
+            left: 8px;
+            bottom: 8px;
+            background: rgba(2, 6, 23, 0.06);
+            padding: 6px 10px;
+            border-radius: 8px;
+            font-size: 13px;
+            color: #111
+        }
+
+        .controls {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            padding: 10px 0;
+            flex-wrap: wrap
+        }
+
+        button {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer
+        }
+
+        button.secondary {
+            background: #edf2f7;
+            color: #0f172a
+        }
+
+        .info {
+            position: absolute;
+            left: 110px;
+            top: 12px;
+            font-size: 13px;
+            color: #475569
+        }
+
+        /* indikator muatan di elemen */
+        .charge-indicator {
+            position: absolute;
+            right: -60px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 10px;
+            padding: 4px 8px;
+            border-radius: 6px;
+            background: rgba(0, 0, 0, 0.06);
+            white-space: nowrap;
+        }
+
+        .neutral .charge-indicator {
+            background: rgba(2, 6, 23, 0.04);
+            color: #0f172a
+        }
+
+        .negative .charge-indicator {
+            background: rgba(59, 130, 246, 0.12);
+            color: #1e3a8a
+        }
+
+        /* animasi tolak-menolak: kecilkan saat tidak aktif */
+        .repelling {
+            animation: smallOsc 0.45s ease-in-out infinite;
+        }
+
+        @keyframes smallOsc {
+            0% {
+                transform: translateY(0) rotate(0deg)
+            }
+
+            50% {
+                transform: translateY(-6px) rotate(-2deg)
+            }
+
+            100% {
+                transform: translateY(0) rotate(0deg)
+            }
+        }
+
+        /* responsive */
+        @media(max-width:640px) {
+            .container {
+                padding: 8px
+            }
+
+            h1 {
+                font-size: 16px
+            }
+
+            .lab {
+                height: 62vh;
+                min-height: 480px
+            }
+
+            #statif {
+                left: 8px
+            }
+
+            #pita1 {
+                left: 44px
+            }
+        }
+
+        /* small helper UI */
+        .panel {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            padding: 10px 0
+        }
+
+        .legend {
+            font-size: 13px;
+            color: #334155
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Simulasi: Listrik Statis — Interaksi Muatan Sejenis</h1>
+        <div class="panel">
+            <div class="controls">
+                <button id="btnGosok">Gosok</button>
+                <button id="btnReset" class="secondary">Reset</button>
+                <div style="font-size:13px;color:#334155;">Petunjuk: seret <strong>Pita2</strong> dan <strong>Kain
+                        Wol</strong>. Posisikan dekat lalu tekan <em>Gosok</em>.</div>
+            </div>
+            <div class="legend">Indikator: <span style="margin-left:6px;">Netral / Muatan Negatif (-)</span></div>
+        </div>
+
+        <div class="lab" id="lab">
+            <div id="statif">Statif</div>
+            <div id="pita1" class="neutral" aria-label="Pita 1">
+                <div class="charge-indicator">Netral</div>
+            </div>
+
+            <div id="pita2" class="neutral" aria-label="Pita 2">
+                <div class="charge-indicator">Netral</div>
+            </div>
+
+            <div id="kainWol" aria-label="Kain Wol">Kain Wol</div>
+
+            <div class="label" id="statusText">Status: Siap</div>
+        </div>
+    </div>
+
+    <script>
+        // Elemen utama
+        const lab = document.getElementById('lab');
+        const pita1 = document.getElementById('pita1');
+        const pita2 = document.getElementById('pita2');
+        const kain = document.getElementById('kainWol');
+        const btnGosok = document.getElementById('btnGosok');
+        const btnReset = document.getElementById('btnReset');
+        const statusText = document.getElementById('statusText');
+
+        // Status muatan: 'neutral' or 'negative'
+        const state = { pita1: 'neutral', pita2: 'neutral' };
+
+        // Utility: posisi pusat elemen relatif ke lab
+        function getCenter(el) {
+            const r = el.getBoundingClientRect();
+            const labR = lab.getBoundingClientRect();
+            return { x: r.left - labR.left + r.width / 2, y: r.top - labR.top + r.height / 2 };
+        }
+
+        // Set charge visual
+        function setCharge(el, which, charge) {
+            el.classList.remove('neutral', 'negative');
+            if (charge === 'negative') {
+                el.classList.add('negative');
+                el.querySelector('.charge-indicator').textContent = 'Muatan Negatif (-)';
+            } else {
+                el.classList.add('neutral');
+                el.querySelector('.charge-indicator').textContent = 'Netral';
+            }
+            state[which] = charge;
+        }
+
+        // Reset
+        function resetAll() {
+            // reset positions: pita1 near statif, pita2 right, kain top-right
+            setCharge(pita1, 'pita1', 'neutral');
+            setCharge(pita2, 'pita2', 'neutral');
+            statusText.textContent = 'Status: Siap';
+            pita1.style.left = '56px';
+            pita1.style.top = '40px';
+            pita1.style.transform = 'translate(0,0)';
+            pita2.style.right = '24px';
+            pita2.style.left = '';
+            pita2.style.top = '120px';
+            kain.style.right = '24px';
+            kain.style.left = '';
+            kain.style.top = '40px';
+            stopRepel();
+        }
+
+        btnReset.addEventListener('click', resetAll);
+
+        // Drag & pointer logic for movable elements (pita2 and kain)
+        function makeDraggable(el) {
+            let dragging = false; let start = { x: 0, y: 0 }; let orig = { x: 0, y: 0 };
+            el.style.touchAction = 'none';
+
+            el.addEventListener('pointerdown', (ev) => {
+                ev.preventDefault();
+                dragging = true; el.setPointerCapture(ev.pointerId);
+                el.style.cursor = 'grabbing';
+                const r = el.getBoundingClientRect();
+                const labR = lab.getBoundingClientRect();
+                start.x = ev.clientX; start.y = ev.clientY;
+                orig.x = r.left - labR.left; orig.y = r.top - labR.top;
+            });
+
+            window.addEventListener('pointermove', (ev) => {
+                if (!dragging) return;
+                ev.preventDefault();
+                const dx = ev.clientX - start.x; const dy = ev.clientY - start.y;
+                let nx = orig.x + dx; let ny = orig.y + dy;
+                // keep inside lab bounds
+                const labR = lab.getBoundingClientRect();
+                const elR = el.getBoundingClientRect();
+                const maxX = labR.width - elR.width; const maxY = labR.height - elR.height;
+                nx = Math.max(0, Math.min(nx, maxX));
+                ny = Math.max(0, Math.min(ny, maxY));
+                el.style.left = nx + 'px'; el.style.top = ny + 'px';
+                // clear right if set
+                el.style.right = '';
+                checkRepelCondition();
+            });
+
+            window.addEventListener('pointerup', (ev) => {
+                if (!dragging) return;
+                dragging = false; el.releasePointerCapture(ev.pointerId);
+                el.style.cursor = 'grab';
+            });
+        }
+
+        makeDraggable(pita2);
+        makeDraggable(kain);
+
+        // Gosok button: check proximity with kain for pita1 and pita2
+        function distance(a, b) {
+            const dx = a.x - b.x; const dy = a.y - b.y; return Math.sqrt(dx * dx + dy * dy);
+        }
+
+        btnGosok.addEventListener('click', () => {
+            const centerK = getCenter(kain);
+            const center1 = getCenter(pita1);
+            const center2 = getCenter(pita2);
+            const thr = 80; // threshold to consider "dekat"
+            let changed = false;
+
+            if (distance(center1, centerK) < thr) { setCharge(pita1, 'pita1', 'negative'); changed = true; }
+            if (distance(center2, centerK) < thr) { setCharge(pita2, 'pita2', 'negative'); changed = true; }
+            if (changed) { statusText.textContent = 'Status: Ada pita yang bermuatan (-)'; }
+            else { statusText.textContent = 'Status: Tidak ada kain dekat pita'; }
+            checkRepelCondition();
+        });
+
+        // Repel behaviour when both negative and dekat
+        let repelling = false; let repelLoopId = null;
+        function checkRepelCondition() {
+            if (state.pita1 === 'negative' && state.pita2 === 'negative') {
+                const c1 = getCenter(pita1); const c2 = getCenter(pita2);
+                const d = distance(c1, c2);
+                if (d < 220) { startRepel(); return; }
+            }
+            stopRepel();
+        }
+
+        function startRepel() {
+            if (repelling) return; repelling = true; pita1.classList.add('repelling');
+            // requestAnimationFrame loop to push pita1 away from pita2 and add small oscillation
+            let t0 = performance.now();
+            repelLoopId = requestAnimationFrame(function loop(t) {
+                const c1 = getCenter(pita1); const c2 = getCenter(pita2);
+                const dx = c1.x - c2.x; const dy = c1.y - c2.y; const ang = Math.atan2(dy, dx);
+                const d = Math.max(20, distance(c1, c2));
+                const pushStrength = Math.max(0, 200 - d) / 1; // larger when closer
+                // compute new position for pita1 (move along ang direction)
+                const cur = pita1.getBoundingClientRect(); const labR = lab.getBoundingClientRect();
+                // current left/top relative
+                let curLeft = cur.left - labR.left; let curTop = cur.top - labR.top;
+                // push vector
+                const nx = curLeft + Math.cos(ang) * pushStrength;
+                const ny = curTop + Math.sin(ang) * pushStrength * 0.6; // less vertical movement
+                // limits
+                const maxX = labR.width - cur.width; const maxY = labR.height - cur.height;
+                pita1.style.left = Math.max(4, Math.min(nx, maxX - 4)) + 'px';
+                pita1.style.top = Math.max(4, Math.min(ny, maxY - 4)) + 'px';
+                // small sinusoidal wobble
+                const elapsed = (t - t0) / 200;
+                const wobble = Math.sin(elapsed * 4) * 6; // px
+                pita1.style.transform = 'translateX(' + wobble + 'px)';
+                repelLoopId = requestAnimationFrame(loop);
+            });
+            statusText.textContent = 'Status: Tolak-menolak aktif — Pita saling menjauh';
+        }
+
+        function stopRepel() {
+            if (!repelling) return; repelling = false; pita1.classList.remove('repelling');
+            if (repelLoopId) cancelAnimationFrame(repelLoopId); repelLoopId = null; pita1.style.transform = 'translateX(0)'; statusText.textContent = 'Status: Siap';
+        }
+
+        // Start with reasonable positions
+        resetAll();
+
+        // Keep checking proximity occasionally (in case user moves pita2 quickly)
+        setInterval(checkRepelCondition, 160);
+
+        // Accessibility: allow keyboard gosok when focused on an element
+        kain.addEventListener('keydown', (e) => { if (e.key === 'Enter') btnGosok.click(); });
+    </script>
+</body>
+
+</html>
