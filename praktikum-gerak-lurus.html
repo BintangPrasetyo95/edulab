@@ -1,0 +1,561 @@
+<!doctype html>
+<html lang="id">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Simulasi Perahu Dayung — Hukum Newton</title>
+    <style>
+        :root {
+            --bg-sky: #bfe9ff;
+            --bg-water: #70c4ff;
+            --panel-bg: rgba(255, 255, 255, 0.9);
+            --accent: #2b7a78;
+            --accent-dark: #165a59;
+            --text: #073642;
+            --boat-color: #8b4a2b;
+        }
+
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            font-family: system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial;
+        }
+
+        body {
+            background: linear-gradient(180deg, var(--bg-sky) 0%, #d7f0ff 40%, var(--bg-water) 60%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px;
+            box-sizing: border-box;
+            color: var(--text);
+        }
+
+        .sim-container {
+            width: 100%;
+            max-width: 960px;
+            aspect-ratio: 16/9;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.0), rgba(0, 0, 0, 0.02));
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 8px 30px rgba(7, 54, 66, 0.15);
+            position: relative;
+            display: grid;
+            grid-template-columns: 1fr 320px;
+        }
+
+        /* Left: visual scene */
+        .scene {
+            position: relative;
+            background:
+                radial-gradient(ellipse at 20% 10%, rgba(255, 255, 255, 0.25) 0%, transparent 20%),
+                linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(0, 0, 0, 0.02));
+            padding: 8px;
+            overflow: hidden;
+        }
+
+        /* Simple horizon and distant trees to create local feel */
+        .horizon {
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 0;
+            height: 35%;
+            background:
+                linear-gradient(180deg, #dff3ff 0%, rgba(255, 255, 255, 0) 60%);
+            pointer-events: none;
+        }
+
+        .trees {
+            position: absolute;
+            left: 6%;
+            top: 8%;
+            height: 20%;
+            width: 30%;
+            background:
+                radial-gradient(circle at 10% 70%, #2f8b3b 0 12%, transparent 13%),
+                radial-gradient(circle at 35% 60%, #227a33 0 12%, transparent 13%),
+                radial-gradient(circle at 70% 68%, #2f8b3b 0 12%, transparent 13%);
+            opacity: 0.85;
+            filter: drop-shadow(0 6px 4px rgba(0, 0, 0, 0.06));
+        }
+
+        .water {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            height: 55%;
+            background: linear-gradient(180deg, #70c4ff 0%, #3aa0e0 100%);
+            clip-path: ellipse(100% 80% at 50% 40%);
+        }
+
+        /* River bank/grass */
+        .bank {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 55%;
+            height: 6%;
+            background: linear-gradient(90deg, #8fbf6b, #6fa34f);
+            opacity: 0.9;
+        }
+
+        /* Boat area (we will move .boat horizontally) */
+        .river {
+            position: absolute;
+            left: 6%;
+            right: 6%;
+            bottom: 8%;
+            height: 40%;
+            overflow: visible;
+            pointer-events: none;
+        }
+
+        .boat {
+            position: absolute;
+            bottom: 40%;
+            left: 0;
+            transform: translateY(-50%);
+            width: 220px;
+            height: 70px;
+            pointer-events: auto;
+            transition: left 0.05s linear;
+            will-change: left;
+        }
+
+        /* Simple boat body */
+        .boat .hull {
+            position: absolute;
+            left: 10%;
+            right: 10%;
+            bottom: 0;
+            height: 54%;
+            background: linear-gradient(90deg, var(--boat-color), #6b3d24);
+            border-radius: 18px 18px 40px 40px;
+            box-shadow: inset 0 -6px 8px rgba(0, 0, 0, 0.25);
+        }
+
+        /* seat */
+        .boat .seat {
+            position: absolute;
+            left: 40%;
+            bottom: 18%;
+            width: 20%;
+            height: 12%;
+            background: #d6a57c;
+            border-radius: 6px;
+        }
+
+        /* paddle element */
+        .paddle {
+            position: absolute;
+            width: 56px;
+            height: 12px;
+            left: 18%;
+            bottom: 50%;
+            transform-origin: 8% 50%;
+            transform: rotate(-18deg);
+            transition: transform 80ms linear;
+            pointer-events: none;
+        }
+
+        .paddle .stick {
+            position: absolute;
+            left: 0;
+            top: 3px;
+            width: 100%;
+            height: 6px;
+            background: #b87f56;
+            border-radius: 3px;
+        }
+
+        .paddle .blade {
+            position: absolute;
+            right: -16px;
+            top: -4px;
+            width: 26px;
+            height: 20px;
+            background: #ead2b2;
+            border-radius: 4px;
+            box-shadow: inset 0 -3px 4px rgba(0, 0, 0, 0.12);
+        }
+
+        /* Panel on right */
+        .panel {
+            padding: 16px;
+            background: var(--panel-bg);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            box-sizing: border-box;
+            align-items: stretch;
+        }
+
+        .title {
+            font-weight: 700;
+            font-size: 18px;
+            color: var(--accent-dark);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .metric-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(11, 78, 78, 0.03);
+            padding: 8px;
+            border-radius: 8px;
+        }
+
+        .metric-row .label {
+            font-size: 13px;
+            color: #234;
+        }
+
+        .metric-row .value {
+            font-weight: 700;
+            font-size: 16px;
+            color: var(--accent-dark);
+        }
+
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .big-button {
+            background: linear-gradient(180deg, var(--accent), var(--accent-dark));
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 16px;
+            box-shadow: 0 6px 12px rgba(21, 90, 89, 0.12);
+            cursor: pointer;
+        }
+
+        .big-button:active {
+            transform: translateY(1px);
+        }
+
+        .small {
+            font-size: 13px;
+            color: #045257;
+        }
+
+        .slider-row {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        input[type="range"] {
+            width: 100%;
+        }
+
+        .hint {
+            font-size: 12px;
+            color: #247;
+        }
+
+        .footer {
+            margin-top: auto;
+            font-size: 12px;
+            color: #234;
+            opacity: 0.9;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width:720px) {
+            .sim-container {
+                grid-template-columns: 1fr;
+                aspect-ratio: 9/16;
+                padding-bottom: 0;
+            }
+
+            .panel {
+                order: 2;
+                height: 40vh;
+                overflow: auto
+            }
+
+            .scene {
+                order: 1;
+                height: 60vh
+            }
+
+            .boat {
+                width: 160px;
+                height: 52px;
+                bottom: 45%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="sim-container" role="application" aria-label="Simulasi Perahu Dayung">
+        <div class="scene" id="scene">
+            <div class="horizon"></div>
+            <div class="trees" aria-hidden="true"></div>
+            <div class="bank" aria-hidden="true"></div>
+            <div class="water" aria-hidden="true"></div>
+
+            <div class="river" id="river">
+                <div class="boat" id="perahu" role="img" aria-label="Perahu dayung tradisional">
+                    <div class="hull"></div>
+                    <div class="seat"></div>
+
+                    <div class="paddle" id="dayung">
+                        <div class="stick"></div>
+                        <div class="blade"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <aside class="panel" id="panelKontrol" aria-live="polite">
+            <div class="title">Simulasi: Perahu Dayung — Hukum Newton</div>
+
+            <div class="metric-row">
+                <div class="label">Kecepatan (m/s)</div>
+                <div class="value" id="velLabel">0.00</div>
+            </div>
+
+            <div class="metric-row">
+                <div class="label">Gaya Dayung (N)</div>
+                <div class="value" id="forceLabel">0</div>
+            </div>
+
+            <div class="metric-row">
+                <div class="label">Massa total (kg)</div>
+                <div class="value" id="massLabel">120</div>
+            </div>
+
+            <div class="controls">
+                <button class="big-button" id="tombolDayung" aria-pressed="false">Dayung! (Paddle)</button>
+
+                <div class="slider-row">
+                    <div style="min-width:80px">Muatan</div>
+                    <input id="sliderMuatan" type="range" min="50" max="400" value="120" step="5"
+                        aria-label="Slider massa perahu" />
+                </div>
+
+                <div class="hint">Geser slider untuk menambah/mengurangi massa (mis. penumpang + muatan).</div>
+
+                <div class="small">
+                    <strong>Keterangan singkat fisika:</strong>
+                    <ul>
+                        <li>Setiap kali Anda menekan "Dayung!", dayung mendorong air ke belakang (aksi) → perahu
+                            terdorong maju (reaksi).</li>
+                        <li>Percepatan a muncul sesuai F = m · a. Massa lebih besar → percepatan lebih kecil untuk gaya
+                            tetap.</li>
+                        <li>Terdapat hambatan air sehingga jika berhenti mendayung, perahu melambat.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer">Skala visual bukan skala nyata — angka adalah hasil perhitungan sederhana model fisika.
+            </div>
+        </aside>
+    </div>
+
+    <script>
+        /* Simulasi fisika sederhana:
+           State variables:
+             x (meter): posisi perahu (horizontal along river)
+             v (m/s): kecepatan
+             m (kg): massa total
+           Forces:
+             F_paddle (N): gaya yang diterapkan saat dayung melakukan stroke (konstan selama durasi stroke)
+             Drag modeled as: F_drag = c_d * v  (linear drag)
+           Dynamics:
+             dv/dt = (F_applied - F_drag) / m
+           We'll integrate using requestAnimationFrame with variable dt (s).
+        */
+
+        // --- Parameter model (tweakable)
+        const PIXELS_PER_METER = 14;      // visual scale: 1 meter -> 14 pixels
+        const DEFAULT_MASS = 120;         // kg
+        const PADDLE_FORCE = 180;         // Newtons applied while stroke (representative for single person stroke)
+        const PADDLE_DURATION = 0.18;     // seconds the force is applied per click (stroke duration)
+        const DRAG_COEFF = 25;            // linear drag coefficient (N per (m/s)) - tuned for visible behaviour
+        const MAX_FORWARD_METERS = 120;   // for wrapping limits visual
+
+        // --- DOM
+        const perahuEl = document.getElementById('perahu');
+        const dayungEl = document.getElementById('dayung');
+        const tombolDayung = document.getElementById('tombolDayung');
+        const sliderMuatan = document.getElementById('sliderMuatan');
+        const velLabel = document.getElementById('velLabel');
+        const forceLabel = document.getElementById('forceLabel');
+        const massLabel = document.getElementById('massLabel');
+        const riverEl = document.getElementById('river');
+        const panel = document.getElementById('panelKontrol');
+
+        // --- state
+        let m = DEFAULT_MASS;
+        let x = 0;         // meters along river from center
+        let v = 0;         // m/s
+        let appliedForce = 0; // instantaneous applied force (N)
+        let paddleTimer = 0; // remaining seconds of active stroke
+        let lastTime = null;
+        let isPaddling = false;
+
+        // initialize UI
+        sliderMuatan.value = m;
+        massLabel.textContent = m.toFixed(0);
+        velLabel.textContent = v.toFixed(2);
+        forceLabel.textContent = '0';
+
+        // helper: set visual position of boat based on x (meters)
+        function updateBoatVisual() {
+            // x=0 starts from left edge of river
+            const riverRect = riverEl.getBoundingClientRect();
+            const widthPx = riverRect.width;
+
+            // compute pixel position from left (x meters to pixels)
+            const px = x * PIXELS_PER_METER;
+
+            // clamp to river bounds
+            const clampedPx = Math.max(0, Math.min(widthPx - 220, px));
+
+            perahuEl.style.left = `${clampedPx}px`;
+
+            // REMOVE TILT - keep boat level
+            perahuEl.style.transform = `translateY(-50%)`;
+        }
+
+        // paddle animation (visual)
+        function animatePaddle(isStroke) {
+            if (isStroke) {
+                // rotate blade back quickly and return
+                dayungEl.style.transition = 'transform 90ms linear';
+                dayungEl.style.transform = 'rotate(14deg) translateX(-6px)'; // blade pulled back
+                // after short timeout, return to resting
+                setTimeout(() => {
+                    dayungEl.style.transition = 'transform 220ms cubic-bezier(.2,.8,.2,1)';
+                    dayungEl.style.transform = 'rotate(-18deg) translateX(0)';
+                }, 120);
+            } else {
+                // small idle movement if needed
+                dayungEl.style.transform = 'rotate(-18deg)';
+            }
+        }
+
+        // handle paddle click / touch
+        function triggerPaddle() {
+            // each click applies a stroke: set paddleTimer to max(PADDLE_DURATION, existing small) to allow repeated strokes to extend force
+            paddleTimer = Math.max(paddleTimer, PADDLE_DURATION);
+            isPaddling = true;
+            appliedForce = PADDLE_FORCE;
+            animatePaddle(true);
+            tombolDayung.setAttribute('aria-pressed', 'true');
+            // short accessible focus effect
+            setTimeout(() => tombolDayung.setAttribute('aria-pressed', 'false'), 180);
+        }
+
+        tombolDayung.addEventListener('click', (e) => { e.preventDefault(); triggerPaddle(); });
+        // support keyboard: space or enter when focused
+        tombolDayung.addEventListener('keydown', (e) => {
+            if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); triggerPaddle(); }
+        });
+
+        // support touch anywhere on scene to paddle (optional)
+        document.getElementById('scene').addEventListener('click', (e) => {
+            // don't trigger if click on panel (right)
+            triggerPaddle();
+        });
+
+        // slider changes mass
+        sliderMuatan.addEventListener('input', (e) => {
+            m = Number(e.target.value);
+            massLabel.textContent = m.toFixed(0);
+        });
+
+        // physics loop
+        function step(timestamp) {
+            if (!lastTime) lastTime = timestamp;
+            const dt = Math.min(0.05, (timestamp - lastTime) / 1000); // limit dt to 50ms for stability
+            lastTime = timestamp;
+
+            // apply paddle force while timer > 0
+            if (paddleTimer > 0) {
+                // appliedForce is PADDLE_FORCE while timer > 0
+                appliedForce = PADDLE_FORCE;
+                paddleTimer -= dt;
+                if (paddleTimer <= 0) {
+                    paddleTimer = 0;
+                    appliedForce = 0;
+                    isPaddling = false;
+                }
+            } else {
+                appliedForce = 0;
+                isPaddling = false;
+            }
+
+            // drag force proportional to velocity (opposes motion)
+            // F_drag = c * v (opposite sign)
+            const F_drag = DRAG_COEFF * v;
+            // net force:
+            const F_net = appliedForce - F_drag;
+            // acceleration
+            const a = F_net / m;
+
+            // integrate
+            v += a * dt;
+            // prevent tiny oscillations; clamp very small velocities to zero
+            if (Math.abs(v) < 0.0005) v = 0;
+
+            // update position (meters)
+            x += v * dt;
+
+            // keep x in some visual bounds (wrap-around or constrain)
+            // keep x in visual bounds (from 0 to maxX)
+            const maxX = MAX_FORWARD_METERS;
+            if (x > maxX) x = maxX;
+            if (x < 0) x = 0;  // don't go backward past left edge
+
+            // update visuals & labels
+            updateBoatVisual();
+            velLabel.textContent = v.toFixed(2);
+            // Show Gaya Dayung sebagai the instantaneous appliedForce magnitude (N). If drag > appliedForce, net negative acceleration but we show applied F separately.
+            forceLabel.textContent = appliedForce > 0 ? appliedForce.toFixed(0) : '0';
+
+            // small indicator: if user not paddling and v>0, in panel show tiny message (no separate UI element to keep single-file simple)
+
+            // loop
+            requestAnimationFrame(step);
+        }
+
+        // Start animation loop
+        requestAnimationFrame(step);
+
+        // Initialize position on resize
+        window.addEventListener('resize', () => updateBoatVisual());
+        // initial visual update after layout
+        setTimeout(updateBoatVisual, 50);
+
+        // Accessibility: allow paddle by pressing spacebar anywhere
+        window.addEventListener('keydown', (e) => {
+            if (e.key === ' ' || e.key === 'Spacebar') {
+                // avoid double-firing if focused on button
+                if (document.activeElement === tombolDayung) return;
+                e.preventDefault();
+                triggerPaddle();
+            }
+        });
+
+        // Optional: small explanatory console output (developers)
+        console.log('Simulasi siap — P = stroke force, m = massa, drag linear.');
+    </script>
+</body>
+
+</html>
