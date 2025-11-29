@@ -1,0 +1,21 @@
+{
+  "name": "edulab",
+  "version": "1.0.0",
+  "description": "",
+  "main": "service-worker.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BintangPrasetyo95/edulab.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/BintangPrasetyo95/edulab/issues"
+  },
+  "homepage": "https://github.com/BintangPrasetyo95/edulab#readme"
+}

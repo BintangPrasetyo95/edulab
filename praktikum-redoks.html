@@ -1615,7 +1615,7 @@
             const title = ok ? '✅ Berhasil: Air menjadi lebih jernih' : '⚠️ Hasil terbatas: Air masih keruh';
             const para = ok
                 ? 'Urutan dan bahan lengkap terpasang dengan benar! Arang aktif membantu adsorpsi kontaminan dan koagulan (tawas) membantu pengendapan partikel halus. Air hasil filtrasi tampak lebih jernih.'
-                : 'Urutan salah atau bahan penting (seperti arang aktif) tidak ada. Beberapa kontaminan larut masih tersisa sehingga air tetap keruh. Coba urutkan ulang sesuai tips yang diberikan.';
+                : 'Urutan salah atau bahan penting tidak ada. Beberapa kontaminan larut masih tersisa sehingga air tetap keruh. Coba urutkan ulang sesuai tips yang diberikan.';
             showSimpleModal(title, para);
         }
 
@@ -1641,12 +1641,12 @@
             card.style.border = '1px solid var(--glass-border)';
 
             card.innerHTML = `
-            <h3 style="color:var(--primary-purple); margin-bottom:16px; font-size:20px">${title}</h3>
-            <p style="font-size:14px; color:var(--text-dark); line-height:1.7; margin-bottom:20px">${text}</p>
-            <div style="display:flex; justify-content:flex-end">
-<button class="btn" style="padding:10px 20px">Tutup</button>
-</div>
-`;
+                <h3 style="color:var(--primary-purple); margin-bottom:16px; font-size:20px">${title}</h3>
+                <p style="font-size:14px; color:var(--text-dark); line-height:1.7; margin-bottom:20px">${text}</p>
+                <div style="display:flex; justify-content:flex-end">
+                <button class="btn" style="padding:10px 20px">Tutup</button>
+                </div>
+            `;
             modal.appendChild(card);
             document.body.appendChild(modal);
 
@@ -1703,13 +1703,13 @@
                 confirmReset.style.maxWidth = '300px';
 
                 confirmReset.innerHTML = `
-                <div style="font-size:18px;font-weight:700;margin-bottom:12px;color:var(--text-dark)">Reset Filter?</div>
-                <div style="color:var(--text-muted);margin-bottom:20px;font-size:14px">Semua lapisan akan dihapus dan filter dikembalikan ke kondisi awal</div>
-                <div style="display:flex;gap:10px;justify-content:center">
-                    <button id="cancelReset" style="padding:10px 20px;border-radius:8px;background:rgba(102,126,234,0.1);border:1px solid rgba(102,126,234,0.2);color:var(--primary-purple);font-weight:600;cursor:pointer">Batal</button>
-                    <button id="confirmReset" style="padding:10px 20px;border-radius:8px;background:linear-gradient(90deg,#ef4444,#dc2626);border:none;color:white;font-weight:600;cursor:pointer">Reset</button>
-                </div>
-            `;
+                    <div style="font-size:18px;font-weight:700;margin-bottom:12px;color:var(--text-dark)">Reset Filter?</div>
+                    <div style="color:var(--text-muted);margin-bottom:20px;font-size:14px">Semua lapisan akan dihapus dan filter dikembalikan ke kondisi awal</div>
+                    <div style="display:flex;gap:10px;justify-content:center">
+                        <button id="cancelReset" style="padding:10px 20px;border-radius:8px;background:rgba(102,126,234,0.1);border:1px solid rgba(102,126,234,0.2);color:var(--primary-purple);font-weight:600;cursor:pointer">Batal</button>
+                        <button id="confirmReset" style="padding:10px 20px;border-radius:8px;background:linear-gradient(90deg,#ef4444,#dc2626);border:none;color:white;font-weight:600;cursor:pointer">Reset</button>
+                    </div>
+                `;
 
                 document.body.appendChild(confirmReset);
 
