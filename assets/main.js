@@ -355,18 +355,16 @@ function highlightActiveNav() {
         link.classList.remove('active', 'disabled');
         const href = link.getAttribute('href').toLowerCase().replace(/^\.\//, '');
         if (href !== 'beranda.html') {
-            if (topicId !== 'asam-basa') {
-                link.classList.add('disabled');
-            } else {
-                if (currentPath.includes('start-praktikum.html')) {
-                    if (href === 'start-praktikum.html') {
-                        link.classList.add('active');
-                    }
-                } else if (currentPath.includes('topik.html') && href === 'topik.html') {
-                    link.classList.add('active');
-                } else if (currentPath.includes('modul.html') && href === 'modul.html') {
+            if (currentPath.includes('start-praktikum.html')) {
+                if (href === 'start-praktikum.html') {
                     link.classList.add('active');
                 }
+            } else if (currentPath.includes('topik.html') && href === 'topik.html') {
+                link.classList.add('active');
+            } else if (currentPath.includes('modul.html') && href === 'modul.html') {
+                link.classList.add('active');
+            } else if (currentPath.includes('kelompok.html') && href === 'kelompok.html') {
+                link.classList.add('active');
             }
         }
     });
