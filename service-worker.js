@@ -1,4 +1,4 @@
-const CACHE_NAME = 'edulab-v2';
+const CACHE_NAME = 'edulab-v2z';
 
 // Install event - no pre-caching to avoid errors
 self.addEventListener('install', (event) => {

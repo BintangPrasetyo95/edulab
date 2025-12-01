@@ -4,67 +4,346 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Simulasi Perahu Dayung — Hukum Newton</title>
+    <title>Simulasi Perahu Dayung – Hukum Newton</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="shortcut icon" href="./assets/images/Logo.png" type="image/x-icon">
+
+    <link rel="manifest" href="/edulab/manifest.json">
+    <meta name="theme-color" content="#000000">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="Edulab">
+    <link rel="apple-touch-icon" href="/assets/images/Logo.png">
+
     <style>
+        /* Reset & base */
         :root {
+            --primary-purple: #667eea;
+            --secondary-purple: #764ba2;
+            --accent-blue: #1565c0;
+            --text-dark: #2c3e50;
+            --text-muted: #666;
+            --glass-bg: rgba(255, 255, 255, 0.95);
+            --glass-border: rgba(102, 126, 234, 0.1);
             --bg-sky: #bfe9ff;
             --bg-water: #70c4ff;
-            --panel-bg: rgba(255, 255, 255, 0.9);
-            --accent: #2b7a78;
-            --accent-dark: #165a59;
-            --text: #073642;
             --boat-color: #8b4a2b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
         html,
         body {
             height: 100%;
-            margin: 0;
-            font-family: system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial;
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: var(--text-dark);
+            overflow-x: hidden;
+            position: relative;
         }
 
-        body {
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 118, 117, 0.15) 0%, transparent 50%);
+            z-index: -1;
+        }
+
+        .app {
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 14px;
+            padding: 12px;
+            min-height: 100vh;
+            height: auto;
+        }
+
+        @media (max-width:900px) {
+            .app {
+                grid-template-columns: 1fr;
+                grid-template-rows: 1fr auto;
+                padding: 8px;
+            }
+
+            .workspace {
+                order: 1;
+            }
+
+            aside.right {
+                order: 2;
+            }
+        }
+
+        button {
+            background-color: #f0f0f0;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 4px;
+        }
+
+        button:hover {
+            background-color: #e0e0e0;
+        }
+
+        #selesaiBtn {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        #selesaiBtn:hover {
+            background: linear-gradient(135deg, #059669, #047857);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+        }
+
+        .panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--glass-border);
+            min-height: 80px;
+            height: fit-content;
+            align-self: start;
+        }
+
+        .panel h3 {
+            margin: 0 0 1rem 0;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .workspace {
+            position: relative;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            height: 95vh;
+            overflow-y: auto;
+        }
+
+        .lab-area {
+            width: 100%;
+            height: 100%;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid var(--glass-border);
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        @media (max-width:900px) {
+            .lab-area {
+                height: 100%;
+                min-height: 400px;
+            }
+        }
+
+        .bench {
+            flex: 0 0 50%;
+            position: relative;
+            border-radius: 12px;
+            padding: 12px;
+            overflow: hidden;
+            min-height: 400px;
+            border: 1px solid var(--glass-border);
+            z-index: 1;
+        }
+
+        .bench::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             background: linear-gradient(180deg, var(--bg-sky) 0%, #d7f0ff 40%, var(--bg-water) 60%);
+            filter: blur(3px);
+            z-index: -1;
+            transform: scale(1.1);
+        }
+
+        @media (max-width:900px) {
+            .bench {
+                height: 100%;
+                min-height: 400px;
+            }
+        }
+
+        .lab-pretest {
+            flex: 0 0 40%;
+            background: rgba(102, 126, 234, 0.05);
+            border: 2px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 16px;
+            overflow-y: auto;
+            min-height: auto;
+        }
+
+        .lab-pretest-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+            padding-bottom: 10px;
+            border-bottom: 2px dashed rgba(102, 126, 234, 0.3);
+        }
+
+        .lab-pretest-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--primary-purple);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .lab-pretest-badge {
+            background: linear-gradient(135deg, var(--primary-purple), var(--secondary-purple));
+            color: white;
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 11px;
+            font-weight: 700;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+        }
+
+        .lab-question-card {
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            border-radius: 10px;
+            padding: 14px;
+            margin-bottom: 12px;
+            display: flex;
+            gap: 12px;
+        }
+
+        .lab-question-image {
+            flex: 0 0 20%;
+            min-width: 80px;
+            max-width: 150px;
+            border-radius: 8px;
+            overflow: hidden;
+            background: rgba(102, 126, 234, 0.05);
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 12px;
-            box-sizing: border-box;
-            color: var(--text);
+            border: 1px solid rgba(102, 126, 234, 0.2);
         }
 
-        .sim-container {
+        .lab-question-image img {
             width: 100%;
-            max-width: 960px;
-            aspect-ratio: 16/9;
-            background: linear-gradient(180deg, rgba(255, 255, 255, 0.0), rgba(0, 0, 0, 0.02));
-            border-radius: 14px;
-            overflow: hidden;
-            box-shadow: 0 8px 30px rgba(7, 54, 66, 0.15);
-            position: relative;
-            display: grid;
-            grid-template-columns: 1fr 320px;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
         }
 
-        /* Left: visual scene */
+        .lab-question-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .lab-question-text {
+            color: var(--text-dark);
+            font-size: 13px;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .lab-question-context {
+            background: rgba(96, 165, 250, 0.1);
+            padding: 10px;
+            border-radius: 8px;
+            border-left: 3px solid #60a5fa;
+            font-size: 12px;
+            line-height: 1.5;
+            color: var(--text-dark);
+            margin-top: 8px;
+        }
+
+        .lab-pretest::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .lab-pretest::-webkit-scrollbar-track {
+            background: rgba(102, 126, 234, 0.05);
+            border-radius: 3px;
+        }
+
+        .lab-pretest::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, var(--primary-purple), var(--secondary-purple));
+            border-radius: 3px;
+        }
+
+        @media (max-width:900px) {
+            .lab-question-card {
+                flex-direction: column;
+            }
+
+            .lab-question-image {
+                flex: 0 0 auto;
+                width: 100%;
+                max-width: 100%;
+                height: 150px;
+            }
+
+            .lab-area {
+                flex-direction: column;
+            }
+
+            .bench {
+                flex: 0 0 60%;
+                min-height: 350px;
+            }
+
+            .lab-pretest {
+                flex: 0 0 30%;
+                min-height: 200px;
+            }
+
+            .lab-question-text {
+                font-size: 12px;
+            }
+
+            .lab-question-context {
+                font-size: 11px;
+            }
+        }
+
+        /* Scene styling */
         .scene {
             position: relative;
-            background:
-                radial-gradient(ellipse at 20% 10%, rgba(255, 255, 255, 0.25) 0%, transparent 20%),
-                linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(0, 0, 0, 0.02));
-            padding: 8px;
-            overflow: hidden;
+            width: 100%;
+            height: 100%;
+            min-height: 420px;
         }
 
-        /* Simple horizon and distant trees to create local feel */
         .horizon {
             position: absolute;
             left: 0;
             right: 0;
             top: 0;
             height: 35%;
-            background:
-                linear-gradient(180deg, #dff3ff 0%, rgba(255, 255, 255, 0) 60%);
+            background: linear-gradient(180deg, #dff3ff 0%, rgba(255, 255, 255, 0) 60%);
             pointer-events: none;
         }
 
@@ -92,7 +371,6 @@
             clip-path: ellipse(100% 80% at 50% 40%);
         }
 
-        /* River bank/grass */
         .bank {
             position: absolute;
             left: 0;
@@ -103,7 +381,6 @@
             opacity: 0.9;
         }
 
-        /* Boat area (we will move .boat horizontally) */
         .river {
             position: absolute;
             left: 6%;
@@ -126,7 +403,6 @@
             will-change: left;
         }
 
-        /* Simple boat body */
         .boat .hull {
             position: absolute;
             left: 10%;
@@ -138,7 +414,6 @@
             box-shadow: inset 0 -6px 8px rgba(0, 0, 0, 0.25);
         }
 
-        /* seat */
         .boat .seat {
             position: absolute;
             left: 40%;
@@ -149,7 +424,6 @@
             border-radius: 6px;
         }
 
-        /* paddle element */
         .paddle {
             position: absolute;
             width: 56px;
@@ -183,312 +457,806 @@
             box-shadow: inset 0 -3px 4px rgba(0, 0, 0, 0.12);
         }
 
-        /* Panel on right */
-        .panel {
-            padding: 16px;
-            background: var(--panel-bg);
+        .right {
             display: flex;
             flex-direction: column;
-            gap: 12px;
-            box-sizing: border-box;
-            align-items: stretch;
+            gap: 10px;
+            max-height: calc(100vh - 24px);
+            overflow-y: auto;
         }
 
-        .title {
-            font-weight: 700;
-            font-size: 18px;
-            color: var(--accent-dark);
-            display: flex;
-            align-items: center;
-            gap: 8px;
+        .right::-webkit-scrollbar {
+            width: 6px;
         }
 
-        .metric-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: rgba(11, 78, 78, 0.03);
-            padding: 8px;
-            border-radius: 8px;
+        .right::-webkit-scrollbar-track {
+            background: rgba(102, 126, 234, 0.05);
+            border-radius: 3px;
         }
 
-        .metric-row .label {
-            font-size: 13px;
-            color: #234;
-        }
-
-        .metric-row .value {
-            font-weight: 700;
-            font-size: 16px;
-            color: var(--accent-dark);
+        .right::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, var(--primary-purple), var(--secondary-purple));
+            border-radius: 3px;
         }
 
         .controls {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 12px;
         }
 
-        .big-button {
-            background: linear-gradient(180deg, var(--accent), var(--accent-dark));
-            color: white;
-            border: none;
-            padding: 12px;
-            border-radius: 10px;
-            font-weight: 700;
-            font-size: 16px;
-            box-shadow: 0 6px 12px rgba(21, 90, 89, 0.12);
-            cursor: pointer;
-        }
-
-        .big-button:active {
-            transform: translateY(1px);
-        }
-
-        .small {
-            font-size: 13px;
-            color: #045257;
-        }
-
-        .slider-row {
+        .values {
             display: flex;
             gap: 8px;
             align-items: center;
+            flex-wrap: wrap;
         }
 
-        input[type="range"] {
+        .value {
+            flex: 1;
+            padding: 10px;
+            border-radius: 8px;
+            background: linear-gradient(180deg, #fff, #f7f7f7);
+            text-align: center;
+            min-width: 80px;
+        }
+
+        .value strong {
+            display: block;
+            font-size: 18px;
+        }
+
+        .label {
+            font-size: 12px;
+            color: #555;
+        }
+
+        .rangeRow {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        input[type=range] {
+            -webkit-appearance: none;
             width: 100%;
         }
 
-        .hint {
-            font-size: 12px;
-            color: #247;
+        input[type=range]::-webkit-slider-runnable-track {
+            height: 6px;
+            background: linear-gradient(90deg, #81d4fa, #0288d1);
+            border-radius: 6px;
         }
 
-        .footer {
-            margin-top: auto;
-            font-size: 12px;
-            color: #234;
-            opacity: 0.9;
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            background: #fff;
+            border: 4px solid #0288d1;
+            border-radius: 50%;
+            margin-top: -6px;
         }
 
-        /* Responsive adjustments */
-        @media (max-width:720px) {
-            .sim-container {
-                grid-template-columns: 1fr;
-                aspect-ratio: 9/16;
-                padding-bottom: 0;
+        .note {
+            font-size: 13px;
+            color: #444;
+            line-height: 1.6;
+        }
+
+        strong {
+            color: var(--primary-purple);
+            font-weight: 700;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 8px 12px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--primary-purple), var(--secondary-purple));
+            color: white;
+            font-weight: 700;
+            font-family: 'Montserrat', sans-serif;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.95), rgba(118, 75, 162, 0.95));
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .loader p {
+            margin-top: 1rem;
+            font-size: 1.2rem;
+            color: white;
+            font-weight: 700;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
             }
 
-            .panel {
-                order: 2;
-                height: 40vh;
-                overflow: auto
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .post-test-popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            z-index: 10000;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .post-test-popup.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .post-test-content {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border-radius: 16px;
+            max-width: 900px;
+            width: 100%;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--glass-border);
+            animation: slideUp 0.4s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
             }
 
-            .scene {
-                order: 1;
-                height: 60vh
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(30px);
+                opacity: 0;
             }
 
-            .boat {
-                width: 160px;
-                height: 52px;
-                bottom: 45%;
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .post-test-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px 28px;
+            border-bottom: 2px solid rgba(102, 126, 234, 0.2);
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+        }
+
+        .post-test-header h2 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary-purple);
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .close-btn {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #ef4444;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            font-size: 20px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+        }
+
+        .close-btn:hover {
+            background: rgba(239, 68, 68, 0.2);
+            transform: rotate(90deg);
+        }
+
+        .post-test-body {
+            padding: 24px 28px;
+            overflow-y: auto;
+            max-height: calc(90vh - 180px);
+        }
+
+        .post-test-body::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .post-test-body::-webkit-scrollbar-track {
+            background: rgba(102, 126, 234, 0.05);
+            border-radius: 4px;
+        }
+
+        .post-test-body::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, var(--primary-purple), var(--secondary-purple));
+            border-radius: 4px;
+        }
+
+        .test-intro {
+            background: rgba(96, 165, 250, 0.1);
+            padding: 16px;
+            border-radius: 12px;
+            border-left: 4px solid #60a5fa;
+            margin-bottom: 24px;
+        }
+
+        .question-card {
+            background: rgba(255, 255, 255, 0.6);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .question-card:hover {
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .question-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .question-number {
+            background: linear-gradient(135deg, var(--primary-purple), var(--secondary-purple));
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 14px;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .question-tag {
+            background: rgba(102, 126, 234, 0.1);
+            color: var(--primary-purple);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 13px;
+            border: 1px solid rgba(102, 126, 234, 0.2);
+        }
+
+        .question-context {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 14px;
+            border-radius: 8px;
+            margin-bottom: 14px;
+            line-height: 1.6;
+            color: var(--text-dark);
+            font-size: 14px;
+            border-left: 3px solid rgba(102, 126, 234, 0.5);
+        }
+
+        .question-text {
+            color: var(--text-dark);
+            line-height: 1.7;
+            font-size: 14px;
+        }
+
+        .question-text p {
+            margin-bottom: 10px;
+        }
+
+        .question-text ol {
+            margin-left: 20px;
+            margin-top: 8px;
+            line-height: 1.8;
+        }
+
+        .question-text ol li {
+            margin-bottom: 10px;
+            padding-left: 8px;
+        }
+
+        .post-test-footer {
+            padding: 20px 28px;
+            border-top: 2px solid rgba(102, 126, 234, 0.2);
+            display: flex;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        .close-test-btn {
+            padding: 14px 40px;
+            font-size: 16px;
+            background: linear-gradient(135deg, var(--primary-purple), var(--secondary-purple));
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .close-test-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 35px rgba(102, 126, 234, 0.4);
+        }
+
+        @media (max-width: 900px) {
+            .post-test-popup {
+                padding: 10px;
+            }
+
+            .post-test-content {
+                max-height: 95vh;
+            }
+
+            .post-test-header {
+                padding: 16px 20px;
+            }
+
+            .post-test-header h2 {
+                font-size: 18px;
+            }
+
+            .post-test-body {
+                padding: 16px 20px;
+                max-height: calc(95vh - 160px);
+            }
+
+            .question-card {
+                padding: 16px;
+            }
+
+            .question-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+
+            .question-text ol {
+                margin-left: 16px;
             }
         }
     </style>
 </head>
 
 <body>
-    <div class="sim-container" role="application" aria-label="Simulasi Perahu Dayung">
-        <div class="scene" id="scene">
-            <div class="horizon"></div>
-            <div class="trees" aria-hidden="true"></div>
-            <div class="bank" aria-hidden="true"></div>
-            <div class="water" aria-hidden="true"></div>
+    <div class="loader">
+        <div class="spinner"></div>
+        <p>Loading...</p>
+    </div>
 
-            <div class="river" id="river">
-                <div class="boat" id="perahu" role="img" aria-label="Perahu dayung tradisional">
-                    <div class="hull"></div>
-                    <div class="seat"></div>
+    <div class="app">
+        <main class="panel workspace">
+            <div class="lab-area">
+                <div class="bench">
+                    <div class="scene">
+                        <div class="horizon"></div>
+                        <div class="trees" aria-hidden="true"></div>
+                        <div class="bank" aria-hidden="true"></div>
+                        <div class="water" aria-hidden="true"></div>
 
-                    <div class="paddle" id="dayung">
-                        <div class="stick"></div>
-                        <div class="blade"></div>
+                        <div class="river" id="river">
+                            <div class="boat" id="perahu" role="img" aria-label="Perahu dayung tradisional">
+                                <div class="hull"></div>
+                                <div class="seat"></div>
+
+                                <div class="paddle" id="dayung">
+                                    <div class="stick"></div>
+                                    <div class="blade"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="padding:12px;display:flex;gap:10px;align-items:center;justify-content:flex-start">
+                            <div style="flex:1">
+                                <h2 style="margin:6px 0 0 0">Simulasi Perahu Dayung – Hukum Newton</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lab-pretest">
+                    <div class="lab-pretest-header">
+                        <div class="lab-pretest-title">
+                            📝 Studi Kasus
+                        </div>
+                        <span class="lab-pretest-badge">Hukum Newton</span>
+                    </div>
+
+                    <div class="lab-question-card">
+                        <div class="lab-question-image">
+                            <img src="./assets/images/dayung.jpg" alt="Ilustrasi Perahu Dayung"
+                                onerror="this.style.display='none'">
+                        </div>
+
+                        <div class="lab-question-content">
+                            <div class="lab-question-text">
+                                <strong>Pertanyaan:</strong><br>
+                                Seorang nelayan tradisional di danau menggunakan perahu dayung untuk menjaring ikan. Ia
+                                mengamati bahwa ketika ia mendayung dengan kuat, perahu melaju lebih cepat. Namun, saat
+                                perahu diisi muatan ikan yang banyak, perahu terasa lebih berat dan lambat. Jelaskan
+                                fenomena ini menggunakan Hukum Newton II!
+                            </div>
+
+                            <div class="lab-question-context">
+                                💡 <strong>Petunjuk:</strong> Pikirkan tentang hubungan antara gaya, massa, dan
+                                percepatan (F = m × a). Bagaimana massa mempengaruhi gerak perahu?
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </main>
 
-        <aside class="panel" id="panelKontrol" aria-live="polite">
-            <div class="title">Simulasi: Perahu Dayung — Hukum Newton</div>
+        <aside class="panel right">
+            <button onclick="window.location.href='./start-praktikum.html'">Kembali</button>
+            <button id="selesaiBtn">Selesai</button>
 
-            <div class="metric-row">
-                <div class="label">Kecepatan (m/s)</div>
-                <div class="value" id="velLabel">0.00</div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px">
+                <h3 style="margin:0">📊 Kontrol</h3>
             </div>
+            <div
+                style="background: rgba(102, 126, 234, 0.05); padding: 12px; border-radius: 10px; border: 1px solid var(--glass-border); margin-bottom: 12px;">
+                <div class="controls">
+                    <button class="btn" id="tombolDayung"
+                        style="width:100%; padding:16px; font-size:18px; background: linear-gradient(135deg, #10b981, #059669); box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);">
+                        🚣 Dayung! (Paddle)
+                    </button>
 
-            <div class="metric-row">
-                <div class="label">Gaya Dayung (N)</div>
-                <div class="value" id="forceLabel">0</div>
-            </div>
-
-            <div class="metric-row">
-                <div class="label">Massa total (kg)</div>
-                <div class="value" id="massLabel">120</div>
-            </div>
-
-            <div class="controls">
-                <button class="big-button" id="tombolDayung" aria-pressed="false">Dayung! (Paddle)</button>
-
-                <div class="slider-row">
-                    <div style="min-width:80px">Muatan</div>
-                    <input id="sliderMuatan" type="range" min="50" max="400" value="120" step="5"
-                        aria-label="Slider massa perahu" />
-                </div>
-
-                <div class="hint">Geser slider untuk menambah/mengurangi massa (mis. penumpang + muatan).</div>
-
-                <div class="small">
-                    <strong>Keterangan singkat fisika:</strong>
-                    <ul>
-                        <li>Setiap kali Anda menekan "Dayung!", dayung mendorong air ke belakang (aksi) → perahu
-                            terdorong maju (reaksi).</li>
-                        <li>Percepatan a muncul sesuai F = m · a. Massa lebih besar → percepatan lebih kecil untuk gaya
-                            tetap.</li>
-                        <li>Terdapat hambatan air sehingga jika berhenti mendayung, perahu melambat.</li>
-                    </ul>
+                    <div class="rangeRow">
+                        <label for="sliderMuatan" style="font-weight: 600; min-width: 100px;">Muatan (kg)</label>
+                        <input id="sliderMuatan" type="range" min="50" max="400" value="120" step="5"
+                            aria-label="Slider massa perahu" />
+                        <div id="muatanVal" style="width:60px;text-align:right;font-weight:600;">120</div>
+                    </div>
                 </div>
             </div>
 
-            <div class="footer">Skala visual bukan skala nyata — angka adalah hasil perhitungan sederhana model fisika.
+            <div id="panelKontrol" aria-live="polite"
+                style="background: rgba(102, 126, 234, 0.05); padding: 12px; border-radius: 10px; border: 1px solid var(--glass-border); margin-bottom: 12px;">
+                <h3 style="margin: 0 0 12px 0; font-size: 16px;">⚡ Data Fisika</h3>
+                <div class="values">
+                    <div class="value">
+                        <strong id="velLabel" style="color: #667eea;">0.00</strong>
+                        <span class="label">Kecepatan (m/s)</span>
+                    </div>
+                    <div class="value">
+                        <strong id="forceLabel" style="color: #10b981;">0</strong>
+                        <span class="label">Gaya (N)</span>
+                    </div>
+                    <div class="value">
+                        <strong id="massLabel" style="color: #f59e0b;">120</strong>
+                        <span class="label">Massa (kg)</span>
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-top:10px">
+                <strong>📖 Penjelasan Singkat</strong>
+                <p class="note"
+                    style="margin-top: 8px; background: rgba(102, 126, 234, 0.05); padding: 12px; border-radius: 8px; border: 1px solid var(--glass-border);">
+                    Setiap kali Anda mendayung, dayung mendorong air ke belakang (aksi) → perahu terdorong maju
+                    (reaksi). Percepatan muncul sesuai <em>F = m × a</em>. Massa lebih besar → percepatan lebih kecil
+                    untuk gaya yang sama. Hambatan air menyebabkan perahu melambat jika berhenti mendayung.
+                </p>
+            </div>
+
+            <div style="margin-top:10px">
+                <strong>📋 Instruksi</strong>
+                <ol style="margin:8px 0 0 0;padding-left:18px;font-size:13px;line-height:1.7;">
+                    <li>Klik tombol <strong>"Dayung!"</strong> untuk memberikan gaya pada perahu.</li>
+                    <li>Atur <strong>Muatan</strong> menggunakan slider untuk mengubah massa total.</li>
+                    <li>Perhatikan perubahan kecepatan dan perilaku gerak perahu.</li>
+                </ol>
             </div>
         </aside>
+
+        <div id="postTestPopup" class="post-test-popup">
+            <div class="post-test-content">
+                <div class="post-test-header">
+                    <h2>📋 Post Test - Evaluasi Praktikum</h2>
+                    <button id="closePostTest" class="close-btn">✕</button>
+                </div>
+
+                <div class="post-test-body">
+                    <div class="test-intro">
+                        <p style="margin-bottom: 16px; color: var(--text-muted); line-height: 1.6;">
+                            Selamat! Anda telah menyelesaikan praktikum virtual gerak lurus dan Hukum Newton. Berikut
+                            adalah 5 soal analisis untuk menguji pemahaman Anda tentang konsep gerak dan hukum Newton.
+                        </p>
+                    </div>
+
+                    <!-- Soal 1 -->
+                    <div class="question-card">
+                        <div class="question-header">
+                            <span class="question-number">Soal 1</span>
+                            <span class="question-tag">Hukum Newton II</span>
+                        </div>
+                        <div class="question-context">
+                            Dalam simulasi, ketika massa perahu ditingkatkan dari 120 kg menjadi 240 kg dengan gaya
+                            dayung tetap 180 N, kecepatan perahu berubah dari kondisi awal.
+                        </div>
+                        <div class="question-text">
+                            <p><strong>Pertanyaan:</strong></p>
+                            <ol>
+                                <li>Hitung percepatan perahu untuk kedua kondisi massa tersebut menggunakan F = m × a!
+                                </li>
+                                <li>Jelaskan mengapa perahu dengan massa lebih besar bergerak lebih lambat meskipun
+                                    gaya yang diberikan sama!</li>
+                            </ol>
+                        </div>
+                    </div>
+
+                    <!-- Soal 2 -->
+                    <div class="question-card">
+                        <div class="question-header">
+                            <span class="question-number">Soal 2</span>
+                            <span class="question-tag">Hukum Newton III (Aksi-Reaksi)</span>
+                        </div>
+                        <div class="question-context">
+                            Ketika mendayung, dayung mendorong air ke belakang, dan sebagai respons, perahu bergerak
+                            maju. Ini adalah contoh Hukum Newton III.
+                        </div>
+                        <div class="question-text">
+                            <p><strong>Pertanyaan:</strong></p>
+                            <ol>
+                                <li>Jelaskan pasangan gaya aksi-reaksi yang terjadi saat mendayung!</li>
+                                <li>Mengapa kedua gaya (aksi dan reaksi) tidak saling meniadakan meskipun besarnya
+                                    sama?</li>
+                            </ol>
+                        </div>
+                    </div>
+
+                    <!-- Soal 3 -->
+                    <div class="question-card">
+                        <div class="question-header">
+                            <span class="question-number">Soal 3</span>
+                            <span class="question-tag">Hambatan dan Gesekan</span>
+                        </div>
+                        <div class="question-context">
+                            Dalam simulasi, perahu melambat secara bertahap setelah berhenti mendayung karena adanya
+                            hambatan air (drag force).
+                        </div>
+                        <div class="question-text">
+                            <p><strong>Pertanyaan:</strong></p>
+                            <ol>
+                                <li>Jelaskan mengapa perahu tidak terus bergerak dengan kecepatan konstan setelah
+                                    berhenti mendayung!</li>
+                                <li>Apa yang akan terjadi jika tidak ada hambatan air sama sekali? Kaitkan dengan Hukum
+                                    Newton I!</li>
+                            </ol>
+                        </div>
+                    </div>
+
+                    <!-- Soal 4 -->
+                    <div class="question-card">
+                        <div class="question-header">
+                            <span class="question-number">Soal 4</span>
+                            <span class="question-tag">Energi Kinetik</span>
+                        </div>
+                        <div class="question-context">
+                            Perahu yang bergerak memiliki energi kinetik yang bergantung pada massa dan kecepatannya (Ek
+                            = ½mv²).
+                        </div>
+                        <div class="question-text">
+                            <p><strong>Pertanyaan:</strong></p>
+                            <ol>
+                                <li>Hitung energi kinetik perahu dengan massa 120 kg yang bergerak dengan kecepatan 2
+                                    m/s!</li>
+                                <li>Jika kecepatan perahu digandakan menjadi 4 m/s, berapa kali lipat perubahan energi
+                                    kinetiknya? Jelaskan!</li>
+                            </ol>
+                        </div>
+                    </div>
+
+                    <!-- Soal 5 -->
+                    <div class="question-card">
+                        <div class="question-header">
+                            <span class="question-number">Soal 5</span>
+                            <span class="question-tag">Aplikasi dalam Kehidupan</span>
+                        </div>
+                        <div class="question-context">
+                            Konsep Hukum Newton yang dipelajari dalam simulasi perahu dayung dapat diterapkan dalam
+                            berbagai situasi kehidupan sehari-hari.
+                        </div>
+                        <div class="question-text">
+                            <p><strong>Pertanyaan:</strong></p>
+                            <ol>
+                                <li>Sebutkan dan jelaskan 3 contoh penerapan Hukum Newton II (F = ma) dalam kehidupan
+                                    sehari-hari selain perahu dayung!</li>
+                                <li>Mengapa truk yang membawa muatan berat memerlukan jarak pengereman lebih panjang
+                                    dibandingkan mobil kosong? Jelaskan dengan konsep fisika!</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="post-test-footer">
+                    <button id="closePostTestBtn" class="btn close-test-btn">
+                        ✓ Selesai Membaca
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
-        /* Simulasi fisika sederhana:
-           State variables:
-             x (meter): posisi perahu (horizontal along river)
-             v (m/s): kecepatan
-             m (kg): massa total
-           Forces:
-             F_paddle (N): gaya yang diterapkan saat dayung melakukan stroke (konstan selama durasi stroke)
-             Drag modeled as: F_drag = c_d * v  (linear drag)
-           Dynamics:
-             dv/dt = (F_applied - F_drag) / m
-           We'll integrate using requestAnimationFrame with variable dt (s).
-        */
+        const PIXELS_PER_METER = 14;
+        const DEFAULT_MASS = 120;
+        const PADDLE_FORCE = 180;
+        const PADDLE_DURATION = 0.18;
+        const DRAG_COEFF = 25;
+        const MAX_FORWARD_METERS = 120;
 
-        // --- Parameter model (tweakable)
-        const PIXELS_PER_METER = 14;      // visual scale: 1 meter -> 14 pixels
-        const DEFAULT_MASS = 120;         // kg
-        const PADDLE_FORCE = 180;         // Newtons applied while stroke (representative for single person stroke)
-        const PADDLE_DURATION = 0.18;     // seconds the force is applied per click (stroke duration)
-        const DRAG_COEFF = 25;            // linear drag coefficient (N per (m/s)) - tuned for visible behaviour
-        const MAX_FORWARD_METERS = 120;   // for wrapping limits visual
-
-        // --- DOM
         const perahuEl = document.getElementById('perahu');
         const dayungEl = document.getElementById('dayung');
         const tombolDayung = document.getElementById('tombolDayung');
         const sliderMuatan = document.getElementById('sliderMuatan');
+        const muatanVal = document.getElementById('muatanVal');
         const velLabel = document.getElementById('velLabel');
         const forceLabel = document.getElementById('forceLabel');
         const massLabel = document.getElementById('massLabel');
         const riverEl = document.getElementById('river');
-        const panel = document.getElementById('panelKontrol');
+        const postTestPopup = document.getElementById('postTestPopup');
+        const selesaiBtn = document.getElementById('selesaiBtn');
+        const closePostTest = document.getElementById('closePostTest');
+        const closePostTestBtn = document.getElementById('closePostTestBtn');
 
-        // --- state
         let m = DEFAULT_MASS;
-        let x = 0;         // meters along river from center
-        let v = 0;         // m/s
-        let appliedForce = 0; // instantaneous applied force (N)
-        let paddleTimer = 0; // remaining seconds of active stroke
+        let x = 0;
+        let v = 0;
+        let appliedForce = 0;
+        let paddleTimer = 0;
         let lastTime = null;
         let isPaddling = false;
 
-        // initialize UI
         sliderMuatan.value = m;
+        muatanVal.textContent = m;
         massLabel.textContent = m.toFixed(0);
         velLabel.textContent = v.toFixed(2);
         forceLabel.textContent = '0';
 
-        // helper: set visual position of boat based on x (meters)
         function updateBoatVisual() {
-            // x=0 starts from left edge of river
             const riverRect = riverEl.getBoundingClientRect();
             const widthPx = riverRect.width;
-
-            // compute pixel position from left (x meters to pixels)
             const px = x * PIXELS_PER_METER;
-
-            // clamp to river bounds
             const clampedPx = Math.max(0, Math.min(widthPx - 220, px));
-
             perahuEl.style.left = `${clampedPx}px`;
-
-            // REMOVE TILT - keep boat level
             perahuEl.style.transform = `translateY(-50%)`;
         }
 
-        // paddle animation (visual)
         function animatePaddle(isStroke) {
             if (isStroke) {
-                // rotate blade back quickly and return
                 dayungEl.style.transition = 'transform 90ms linear';
-                dayungEl.style.transform = 'rotate(14deg) translateX(-6px)'; // blade pulled back
-                // after short timeout, return to resting
+                dayungEl.style.transform = 'rotate(14deg) translateX(-6px)';
                 setTimeout(() => {
                     dayungEl.style.transition = 'transform 220ms cubic-bezier(.2,.8,.2,1)';
                     dayungEl.style.transform = 'rotate(-18deg) translateX(0)';
                 }, 120);
             } else {
-                // small idle movement if needed
                 dayungEl.style.transform = 'rotate(-18deg)';
             }
         }
 
-        // handle paddle click / touch
         function triggerPaddle() {
-            // each click applies a stroke: set paddleTimer to max(PADDLE_DURATION, existing small) to allow repeated strokes to extend force
             paddleTimer = Math.max(paddleTimer, PADDLE_DURATION);
             isPaddling = true;
             appliedForce = PADDLE_FORCE;
             animatePaddle(true);
             tombolDayung.setAttribute('aria-pressed', 'true');
-            // short accessible focus effect
             setTimeout(() => tombolDayung.setAttribute('aria-pressed', 'false'), 180);
         }
 
         tombolDayung.addEventListener('click', (e) => { e.preventDefault(); triggerPaddle(); });
-        // support keyboard: space or enter when focused
         tombolDayung.addEventListener('keydown', (e) => {
             if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); triggerPaddle(); }
         });
 
-        // support touch anywhere on scene to paddle (optional)
-        document.getElementById('scene').addEventListener('click', (e) => {
-            // don't trigger if click on panel (right)
+        perahuEl.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
             triggerPaddle();
         });
 
-        // slider changes mass
+        perahuEl.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            triggerPaddle();
+        }, { passive: false });
+
+        // Make boat visually interactive
+        perahuEl.style.cursor = 'pointer';
+        perahuEl.style.transition = 'transform 0.05s linear, filter 0.2s';
+
+        // Add hover effect
+        perahuEl.addEventListener('mouseenter', () => {
+            if (!isPaddling) {
+                perahuEl.style.filter = 'brightness(1.1) drop-shadow(0 4px 8px rgba(102, 126, 234, 0.3))';
+            }
+        });
+
+        perahuEl.addEventListener('mouseleave', () => {
+            perahuEl.style.filter = 'none';
+        });
+
+        // Visual feedback on click
+        perahuEl.addEventListener('mousedown', () => {
+            perahuEl.style.filter = 'brightness(0.95)';
+        });
+
+        perahuEl.addEventListener('mouseup', () => {
+            perahuEl.style.filter = 'brightness(1.1)';
+            setTimeout(() => {
+                if (!perahuEl.matches(':hover')) {
+                    perahuEl.style.filter = 'none';
+                }
+            }, 200);
+        });
+
         sliderMuatan.addEventListener('input', (e) => {
             m = Number(e.target.value);
+            muatanVal.textContent = m;
             massLabel.textContent = m.toFixed(0);
         });
 
-        // physics loop
         function step(timestamp) {
             if (!lastTime) lastTime = timestamp;
-            const dt = Math.min(0.05, (timestamp - lastTime) / 1000); // limit dt to 50ms for stability
+            const dt = Math.min(0.05, (timestamp - lastTime) / 1000);
             lastTime = timestamp;
 
-            // apply paddle force while timer > 0
             if (paddleTimer > 0) {
-                // appliedForce is PADDLE_FORCE while timer > 0
                 appliedForce = PADDLE_FORCE;
                 paddleTimer -= dt;
                 if (paddleTimer <= 0) {
@@ -501,60 +1269,120 @@
                 isPaddling = false;
             }
 
-            // drag force proportional to velocity (opposes motion)
-            // F_drag = c * v (opposite sign)
             const F_drag = DRAG_COEFF * v;
-            // net force:
             const F_net = appliedForce - F_drag;
-            // acceleration
             const a = F_net / m;
 
-            // integrate
             v += a * dt;
-            // prevent tiny oscillations; clamp very small velocities to zero
             if (Math.abs(v) < 0.0005) v = 0;
 
-            // update position (meters)
             x += v * dt;
 
-            // keep x in some visual bounds (wrap-around or constrain)
-            // keep x in visual bounds (from 0 to maxX)
             const maxX = MAX_FORWARD_METERS;
             if (x > maxX) x = maxX;
-            if (x < 0) x = 0;  // don't go backward past left edge
+            if (x < 0) x = 0;
 
-            // update visuals & labels
             updateBoatVisual();
             velLabel.textContent = v.toFixed(2);
-            // Show Gaya Dayung sebagai the instantaneous appliedForce magnitude (N). If drag > appliedForce, net negative acceleration but we show applied F separately.
             forceLabel.textContent = appliedForce > 0 ? appliedForce.toFixed(0) : '0';
 
-            // small indicator: if user not paddling and v>0, in panel show tiny message (no separate UI element to keep single-file simple)
-
-            // loop
             requestAnimationFrame(step);
         }
 
-        // Start animation loop
         requestAnimationFrame(step);
 
-        // Initialize position on resize
         window.addEventListener('resize', () => updateBoatVisual());
-        // initial visual update after layout
         setTimeout(updateBoatVisual, 50);
 
-        // Accessibility: allow paddle by pressing spacebar anywhere
         window.addEventListener('keydown', (e) => {
             if (e.key === ' ' || e.key === 'Spacebar') {
-                // avoid double-firing if focused on button
                 if (document.activeElement === tombolDayung) return;
                 e.preventDefault();
                 triggerPaddle();
             }
         });
 
-        // Optional: small explanatory console output (developers)
-        console.log('Simulasi siap — P = stroke force, m = massa, drag linear.');
+        // Post Test functionality
+        selesaiBtn.addEventListener('click', () => {
+            postTestPopup.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            flashMessage('📋 Silakan baca soal Post Test');
+        });
+
+        closePostTest.addEventListener('click', () => {
+            postTestPopup.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        });
+
+        closePostTestBtn.addEventListener('click', () => {
+            postTestPopup.classList.remove('active');
+            document.body.style.overflow = 'auto';
+            flashMessage('✓ Terima kasih telah membaca Post Test');
+        });
+
+        postTestPopup.addEventListener('click', (e) => {
+            if (e.target === postTestPopup) {
+                postTestPopup.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && postTestPopup.classList.contains('active')) {
+                postTestPopup.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
+        });
+
+        function flashMessage(text) {
+            const f = document.createElement('div');
+            f.style.position = 'fixed';
+            f.style.left = '50%';
+            f.style.top = '20%';
+            f.style.transform = 'translateX(-50%) scale(0.8)';
+            f.style.background = 'var(--glass-bg)';
+            f.style.color = 'var(--text-dark)';
+            f.style.backdropFilter = 'blur(10px)';
+            f.style.padding = '16px 24px';
+            f.style.borderRadius = '12px';
+            f.style.zIndex = '9999';
+            f.style.fontSize = '16px';
+            f.style.fontWeight = '600';
+            f.style.boxShadow = '0 8px 32px rgba(0,0,0,0.5)';
+            f.style.border = '1px solid rgba(255,255,255,0.1)';
+            f.style.transition = 'all 0.3s ease-out';
+            f.innerText = text;
+            document.body.appendChild(f);
+
+            setTimeout(() => f.style.transform = 'translateX(-50%) scale(1)', 10);
+            setTimeout(() => {
+                f.style.opacity = '0';
+                f.style.transform = 'translateX(-50%) scale(0.8)';
+            }, 1500);
+            setTimeout(() => f.remove(), 1800);
+        }
+
+        window.addEventListener('load', () => {
+            const loader = document.querySelector('.loader');
+            if (loader) loader.style.display = 'none';
+            flashMessage('⚡ Virtual Lab siap digunakan!');
+        });
+
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/edulab/service-worker.js', {
+                    scope: '/edulab/'
+                })
+                    .then((registration) => {
+                        console.log('Service Worker registered successfully:', registration.scope);
+                    })
+                    .catch((error) => {
+                        console.log('Service Worker registration failed:', error);
+                    });
+            });
+        }
+
+        console.log('Simulasi siap – P = stroke force, m = massa, drag linear.');
     </script>
 </body>
 
