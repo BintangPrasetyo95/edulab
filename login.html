@@ -527,7 +527,7 @@
             // Auto hide after 5 seconds
             setTimeout(() => {
                 element.style.display = 'none';
-            }, 5000);
+            }, 800);
         }
 
         function setButtonLoading(buttonId, isLoading) {
@@ -560,7 +560,7 @@
             const password = document.getElementById('loginPassword').value;
 
             // Basic validation
-            if (!validateNIS(nis) && (nis !== 'sayaguru' && password !== '6969')) {
+            if (!validateNIS(nis) && (nis !== 'sayaguru' && password !== '1111')) {
                 showMessage('loginError', 'NIS harus berupa angka dan minimal 1 digit');
                 return;
             }
@@ -577,7 +577,7 @@
                 setButtonLoading('loginBtn', false);
 
                 // Check for special guru account
-                if (nis === 'sayaguru' && password === '6969') {
+                if (nis === 'sayaguru' && password === '1111') {
                     showMessage('loginSuccess', 'Login sebagai Guru berhasil! Mengalihkan...', false);
                     setTimeout(() => {
                         window.location.href = 'beranda-guru.html';
@@ -585,14 +585,19 @@
                 }
                 // Regular student login
                 else if (validateNIS(nis) && validatePassword(password)) {
-                    showMessage('loginSuccess', 'Login berhasil! Mengalihkan...', false);
-                    setTimeout(() => {
-                        window.location.href = 'beranda.html';
-                    }, 1500);
+                    if (nis === '1111' && password === '1111') {
+                        showMessage('loginSuccess', 'Login berhasil! Mengalihkan...', false);
+                        setTimeout(() => {
+                            window.location.href = 'beranda.html';
+                        }, 800);
+                    } else {
+                        showMessage('loginError', 'NIS atau kata sandi salah. Silakan coba lagi.');
+                    }
+
                 } else {
                     showMessage('loginError', 'NIS atau kata sandi salah. Silakan coba lagi.');
                 }
-            }, 1500);
+            }, 800);
         });
     </script>
 </body>

@@ -5,7 +5,7 @@ const data = {
             { id: 'redoks', title: 'Redoks', image: './assets/images/image_redoks.jpg', desc: 'Pelajari reaksi reduksi-oksidasi! Topik ini menjelaskan transfer elektron, bilangan oksidasi, dan reaksi redoks dalam sel volta, korosi, dan proses biologis seperti respirasi.', progress: 0 }
         ],
         'fisika': [
-            { id: 'gerak', title: 'Gerak Lurus', image: './assets/images/image-gerak-lurus.jpg', desc: 'Pelajari hukum Newton! Topik ini mencakup gerak lurus beraturan, berubah beraturan, gaya, massa, dan aplikasi seperti perhitungan kecepatan kendaraan atau gerak proyektil.', progress: 0 }
+            { id: 'gerak-lurus', title: 'Gerak Lurus', image: './assets/images/image-gerak-lurus.jpg', desc: 'Pelajari hukum Newton! Topik ini mencakup gerak lurus beraturan, berubah beraturan, gaya, massa, dan aplikasi seperti perhitungan kecepatan kendaraan atau gerak proyektil.', progress: 0 }
         ]
     },
     '11': {
@@ -163,6 +163,33 @@ function renderTopicContent() {
                         <button class="pre-lab normal" onclick="window.location.href='./start-praktikum.html?topic=asam-basa'"><span>📚</span> Pre-Lab</button>
                         <button class="praktikum normal" onclick="window.location.href='./start-praktikum.html?topic=asam-basa'"><span>🧪</span> Praktikum</button>
                         <button class="tugas-kelompok normal" onclick="window.location.href='./kelompok.html?topic=asam-basa'"><span>🤝</span> Tugas Kelompok</button>
+                    `;
+                } else if (topik.id === 'redoks') {
+                    quickButtons.innerHTML = `
+                        <button class="modul disabled" disabled><span>📖</span> Modul</button>
+                        <button class="pre-lab disabled" disabled><span>📚</span> Pre-Lab</button>
+                        <button class="praktikum normal" onclick="window.location.href='./praktikum-redoks.html'"><span>🧪</span> Praktikum</button>
+                        <button class="tugas-kelompok disabled" disabled><span>🤝</span> Tugas Kelompok</button>
+                    `;
+                } else if (topik.id === 'gerak-lurus') {
+                    quickButtons.innerHTML = `
+                        <button class="modul disabled" disabled><span>📖</span> Modul</button>
+                        <button class="pre-lab disabled" disabled><span>📚</span> Pre-Lab</button>
+                        <button class="praktikum normal" onclick="window.location.href='./praktikum-gerak-lurus.html'"><span>🧪</span> Praktikum</button>
+                        <button class="tugas-kelompok disabled" disabled><span>🤝</span> Tugas Kelompok</button>
+                    `;
+                } else if (topik.id === 'stoikiometri') {
+                    quickButtons.innerHTML = '<div class="coming-soon">COMING SOON</div>';
+                } else if (topik.id === 'energi') {
+                    quickButtons.innerHTML = '<div class="coming-soon">COMING SOON</div>';
+                } else if (topik.id === 'polimer') {
+                    quickButtons.innerHTML = '<div class="coming-soon">COMING SOON</div>';
+                } else if (topik.id === 'listrik') {
+                    quickButtons.innerHTML = `
+                        <button class="modul disabled" disabled><span>📖</span> Modul</button>
+                        <button class="pre-lab disabled" disabled><span>📚</span> Pre-Lab</button>
+                        <button class="praktikum normal" onclick="window.location.href='./praktikum-listrik.html'"><span>🧪</span> Praktikum</button>
+                        <button class="tugas-kelompok disabled" disabled><span>🤝</span> Tugas Kelompok</button>
                     `;
                 } else {
                     quickButtons.innerHTML = '<div class="coming-soon">COMING SOON</div>';
@@ -351,21 +378,66 @@ function highlightActiveNav() {
     const topicId = urlParams.get('topic') || 'asam-basa';
     const currentPath = window.location.pathname.toLowerCase();
 
+    // Define topics with available features
+    const topicsWithModul = ['asam-basa'];
+    const topicsWithPraktikum = ['asam-basa', 'redoks', 'gerak-lurus', 'listrik'];
+    const topicsWithKelompok = ['asam-basa'];
+
     navLinks.forEach(link => {
         link.classList.remove('active', 'disabled');
-        const href = link.getAttribute('href').toLowerCase().replace(/^\.\//, '');
-        if (href !== 'beranda.html') {
-            if (currentPath.includes('start-praktikum.html')) {
-                if (href === 'start-praktikum.html') {
-                    link.classList.add('active');
-                }
-            } else if (currentPath.includes('topik.html') && href === 'topik.html') {
+        const href = link.getAttribute('href').toLowerCase();
+
+        // Update href to use current topic
+        if (href.includes('topik.html')) {
+            link.setAttribute('href', `./topik.html?topic=${topicId}`);
+        } else if (href.includes('modul.html')) {
+            link.setAttribute('href', `./modul.html?topic=${topicId}`);
+        } else if (href.includes('start-praktikum.html') || href.includes('praktikum-')) {
+            // For asam-basa: use start-praktikum.html
+            // For others: use praktikum-(topic).html
+            if (topicId === 'asam-basa') {
+                link.setAttribute('href', `./start-praktikum.html?topic=${topicId}`);
+            } else {
+                link.setAttribute('href', `./praktikum-${topicId}.html`);
+            }
+        } else if (href.includes('kelompok.html')) {
+            link.setAttribute('href', `./kelompok.html?topic=${topicId}`);
+        }
+
+        const updatedHref = link.getAttribute('href').toLowerCase().replace(/^\.\//, '');
+
+        // Set active state
+        if (updatedHref !== 'beranda.html') {
+            if ((currentPath.includes('start-praktikum.html') || currentPath.includes('praktikum-')) &&
+                (updatedHref.includes('start-praktikum.html') || updatedHref.includes('praktikum-'))) {
                 link.classList.add('active');
-            } else if (currentPath.includes('modul.html') && href === 'modul.html') {
+            } else if (currentPath.includes('topik.html') && updatedHref.includes('topik.html')) {
                 link.classList.add('active');
-            } else if (currentPath.includes('kelompok.html') && href === 'kelompok.html') {
+            } else if (currentPath.includes('modul.html') && updatedHref.includes('modul.html')) {
+                link.classList.add('active');
+            } else if (currentPath.includes('kelompok.html') && updatedHref.includes('kelompok.html')) {
                 link.classList.add('active');
             }
+        }
+
+        // Set disabled state based on topic availability
+        if (updatedHref.includes('modul.html') && !topicsWithModul.includes(topicId)) {
+            link.classList.add('disabled');
+            link.style.pointerEvents = 'none';
+            link.style.opacity = '0.5';
+        } else if ((updatedHref.includes('start-praktikum.html') || updatedHref.includes('praktikum-')) &&
+            !topicsWithPraktikum.includes(topicId)) {
+            link.classList.add('disabled');
+            link.style.pointerEvents = 'none';
+            link.style.opacity = '0.5';
+        } else if (updatedHref.includes('kelompok.html') && !topicsWithKelompok.includes(topicId)) {
+            link.classList.add('disabled');
+            link.style.pointerEvents = 'none';
+            link.style.opacity = '0.5';
+        } else {
+            // Re-enable if not disabled
+            link.style.pointerEvents = '';
+            link.style.opacity = '';
         }
     });
 
@@ -373,37 +445,48 @@ function highlightActiveNav() {
     const mobileNavItems = document.querySelectorAll('.mobile-nav .nav-item');
     mobileNavItems.forEach(item => {
         item.classList.remove('active', 'disabled');
+        const itemText = item.textContent.trim();
 
         // Check which page we're on and set active accordingly
         if (currentPath.includes('beranda.html')) {
-            if (item.textContent.trim().includes('Beranda')) {
+            if (itemText.includes('Beranda')) {
                 item.classList.add('active');
             }
         } else if (currentPath.includes('topik.html')) {
-            if (item.textContent.trim().includes('Topik')) {
+            if (itemText.includes('Topik')) {
                 item.classList.add('active');
             }
         } else if (currentPath.includes('modul.html')) {
-            if (item.textContent.trim().includes('Modul')) {
+            if (itemText.includes('Modul')) {
                 item.classList.add('active');
             }
-        } else if (currentPath.includes('start-praktikum.html')) {
-            if (item.textContent.trim().includes('Praktikum')) {
+        } else if (currentPath.includes('start-praktikum.html') || currentPath.includes('praktikum-')) {
+            if (itemText.includes('Praktikum')) {
                 item.classList.add('active');
             }
         } else if (currentPath.includes('kelompok.html')) {
-            if (item.textContent.trim().includes('Tugas Kelompok')) {
+            if (itemText.includes('Tugas Kelompok')) {
                 item.classList.add('active');
             }
         }
 
-        // Handle disabled states
-        if (topicId !== 'asam-basa') {
-            if (item.textContent.trim().includes('Modul') ||
-                item.textContent.trim().includes('Praktikum') ||
-                item.textContent.trim().includes('Tugas Kelompok')) {
-                item.classList.add('disabled');
-            }
+        // Handle disabled states based on topic availability
+        if (itemText.includes('Modul') && !topicsWithModul.includes(topicId)) {
+            item.classList.add('disabled');
+            item.style.pointerEvents = 'none';
+            item.style.opacity = '0.5';
+        } else if (itemText.includes('Praktikum') && !topicsWithPraktikum.includes(topicId)) {
+            item.classList.add('disabled');
+            item.style.pointerEvents = 'none';
+            item.style.opacity = '0.5';
+        } else if (itemText.includes('Tugas Kelompok') && !topicsWithKelompok.includes(topicId)) {
+            item.classList.add('disabled');
+            item.style.pointerEvents = 'none';
+            item.style.opacity = '0.5';
+        } else {
+            // Re-enable if not disabled
+            item.style.pointerEvents = '';
+            item.style.opacity = '';
         }
     });
 }
@@ -463,7 +546,7 @@ function loadTopicScript() {
     const topicScriptMap = {
         'asam-basa': './assets/javascript/asam-basa.js',
         'redoks': './assets/javascript/redoks.js',
-        'gerak': './assets/javascript/gerak.js',
+        'gerak-lurus': './assets/javascript/gerak.js',
         'stoikiometri': './assets/javascript/stoikiometri.js',
         'energi': './assets/javascript/energi.js',
         'polimer': './assets/javascript/polimer.js',
@@ -505,11 +588,11 @@ function renderModulContent(type) {
     const topicContentMap = {
         'asam-basa': () => window.asamBasaContent,
         'redoks': () => window.redoksContent,
-        'gerak': () => window.gerakContent,
+        'gerak-lurus': () => window.gerakContent,
         'stoikiometri': () => window.stoikiometriContent,
         'energi': () => window.energiContent,
-        'polimer': () => window.polomerContent,
-        'listrik': () => window.listrikaContent
+        'polimer': () => window.polimerContent,
+        'listrik': () => window.listrikContent
     };
 
     const getTopicContent = topicContentMap[topicId];
@@ -602,7 +685,7 @@ const topicsDataGuru = {
             { id: 'redoks', title: 'Redoks', image: './assets/images/image_redoks.jpg', students: 0, completed: 0, avgScore: 0 }
         ],
         'fisika': [
-            { id: 'gerak', title: 'Gerak Lurus', image: './assets/images/image-gerak-lurus.jpg', students: 0, completed: 0, avgScore: 0 }
+            { id: 'gerak-lurus', title: 'Gerak Lurus', image: './assets/images/image-gerak-lurus.jpg', students: 0, completed: 0, avgScore: 0 }
         ]
     },
     '11': {
