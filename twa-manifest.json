@@ -1,7 +1,7 @@
 {
   "packageId": "io.github.bintangprasetyo95.twa",
   "host": "bintangprasetyo95.github.io",
-  "name": "Neoengineer : EduLab",
+  "name": "Neoengineer : Edulab",
   "launcherName": "EduLab",
   "display": "standalone",
   "themeColor": "#4285F4",
@@ -19,8 +19,8 @@
     "path": "C:\\xampp\\htdocs\\edulab\\android.keystore",
     "alias": "android"
   },
-  "appVersionName": "1.4",
-  "appVersionCode": 1,
+  "appVersionName": "2",
+  "appVersionCode": 2,
   "shortcuts": [],
   "generatorApp": "bubblewrap-cli",
   "webManifestUrl": "https://bintangprasetyo95.github.io/edulab/manifest.json",
@@ -42,5 +42,5 @@
   "fileHandlers": [],
   "launchHandlerClientMode": "",
   "displayOverride": [],
-  "appVersion": "1.4"
+  "appVersion": "2"
 }
